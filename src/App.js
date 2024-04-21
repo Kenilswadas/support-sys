@@ -1,23 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./App.css";
+// import SignInpage from "./pages/SignInpage.jsx";
+import Leandingpage from "./Support-sys/pages/Leandingpage.jsx";
+import OnlineSupport from "./Support-sys/pages/OnlineSupport.jsx";
+import SupportTicket from "./Support-sys/pages/SupportTicket.jsx";
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Leandingpage />} />
+          <Route path="/OnlineSupport" element={<OnlineSupport />} />
+          <Route path="/SupportTicket" element={<SupportTicket />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
