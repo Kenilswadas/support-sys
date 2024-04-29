@@ -1,11 +1,10 @@
-import { Field, Form, Formik } from "formik";
-import React, { useState } from "react";
+import { Form, Formik } from "formik";
+import React from "react";
 import * as Yup from "yup";
-import { IoCloseCircle } from "react-icons/io5";
 import { FormikInput } from "./FormikInput.jsx";
 import { RxCross1 } from "react-icons/rx";
 import Button from "./Button.jsx";
-function LoginModel({ handleClose, title, handlegetHelp }) {
+function LoginModel({ handleClose, title, handlegetHelp, alldata }) {
   return (
     <div className="fixed inset-0 bg-cover bg-center flex items-center justify-center bg-black bg-opacity-70 z-50">
       <div className="flex items-center justify-center z-50 mt-auto sm:mt-auto sm:mb-auto mb-auto ">
@@ -25,15 +24,30 @@ function LoginModel({ handleClose, title, handlegetHelp }) {
             <Formik
               initialValues={{
                 name: "",
+                email: "",
                 mobile: null,
               }}
               validationSchema={Yup.object({
                 name: Yup.string().required("*required"),
+                email: Yup.string()
+                  .email("Invalid email address")
+                  .required("*required"),
                 mobile: Yup.string()
                   .matches(/^[0-9]{10}$/, "Must be exactly 10 digits")
                   .required("*required"),
               })}
               onSubmit={(values) => {
+                // var formdata = new FormData();
+                // alert(formdata.values);
+                var alldata = {
+                  email: values.email,
+                  name: values.name,
+                  mobile: values.mobile,
+                };
+                var data = JSON.stringify(alldata);
+
+                localStorage.setItem("userInfo", data);
+
                 handlegetHelp();
                 handleClose();
               }}
@@ -47,6 +61,14 @@ function LoginModel({ handleClose, title, handlegetHelp }) {
                         placeholder={"Name"}
                         type={"name"}
                         label={"Enter Your Name"}
+                      />
+                    </div>
+                    <div className="w-full">
+                      <FormikInput
+                        name={"email"}
+                        placeholder={"Email"}
+                        type={"email"}
+                        label={"Enter Your Email"}
                       />
                     </div>
                     <div>

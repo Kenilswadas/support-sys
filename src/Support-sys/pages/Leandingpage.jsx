@@ -64,6 +64,9 @@ function LandingPage() {
                     rerum repudiandae consequuntur sequi! Deleniti, dolores
                     incidunt itaque voluptates eveniet veniam vero assumenda?
                   </p>
+                  <p className="flex items-end mt-10 h-full text-2xl">
+                    Explore more{" >> "}
+                  </p>
                 </div>
               </div>
             </NavLink>
@@ -84,6 +87,9 @@ function LandingPage() {
                     rerum repudiandae consequuntur sequi! Deleniti, dolores
                     incidunt itaque voluptates eveniet veniam vero assumenda?
                   </p>
+                  <p className="flex items-end mt-10 h-full text-2xl">
+                    Explore more{" >> "}
+                  </p>
                 </div>
               </div>
             </NavLink>
@@ -103,6 +109,9 @@ function LandingPage() {
                     Totam ea nemo, fugit architecto nobis quasi fugiat ratione
                     rerum repudiandae consequuntur sequi! Deleniti, dolores
                     incidunt itaque voluptates eveniet veniam vero assumenda?
+                  </p>
+                  <p className="flex items-end mt-10 h-full text-2xl">
+                    Explore more{" >> "}
                   </p>
                 </div>
               </div>
