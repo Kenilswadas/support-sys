@@ -24,7 +24,7 @@ function LandingPage() {
           <img src={backimg} alt="" className="" />
         </div>
         <div className="">
-          <h1 className="absolute top-1/2 left-3/4 transform -translate-x-1/2 -translate-y-1/2 text-[#E3FEF7] font-semibold text-4xl z-50 shadow-2xl">
+          <h1 className="absolute top-1/2 left-3/4 transform -translate-x-1/2 -translate-y-1/2 text-[#E3FEF7] font-semibold text-4xl shadow-2xl">
             <TypeAnimation
               className="text-7xl font-semibold  w-full text-center mt-8"
               cursor={false}
@@ -43,16 +43,16 @@ function LandingPage() {
         </div>
       </div>
       <div className=" relative w-auto mt-5 h-auto ">
-        <h1 className="text-[#003C43]  font-semibold text-5xl w-full text-center">
+        <h1 className="text-[#FF4B5C]  font-semibold text-5xl w-full text-center">
           Browse Help Topics
         </h1>
         <div className="flex items-center justify-around m-10 max-sm:flex-col max-md:flex-col ">
           <div className="w-3/12 max-md:w-3/4">
             <NavLink to={"/Onlinesupport"}>
               <div className="bg-white rounded-full w-fit relative top-10 left-32 p-8 z-10 ">
-                <FaQuora size={28} />
+                <FaQuora size={28} className="text-[#FF4B5C]" />
               </div>
-              <div className="bg-[#003C43] w-full h-96 shadow-2xl rounded-2xl p-6 hover:bg-[#77B0AA] text-[#E3FEF7] hover:text-[#003C43]   duration-300 hover:-translate-y-2">
+              <div className="bg-[#E0ECE4] w-full h-96 shadow-2xl rounded-2xl p-6  text-[#056674] hover:text-[#FF4B5C]   duration-300 hover:-translate-y-2">
                 <h1 className="text-3xl font-semibold  w-full text-center mt-8 mb-8">
                   Online Support
                 </h1>
@@ -72,11 +72,11 @@ function LandingPage() {
             </NavLink>
           </div>
           <div className="w-3/12 max-md:w-3/4">
-            <NavLink to={"Knowledgebased"}>
+            <NavLink to={"/Knowledgebased"}>
               <div className="bg-white rounded-full w-fit relative top-10 left-32 p-8 z-10">
-                <MdMenuBook size={28} />
+                <MdMenuBook size={28} className="text-[#FF4B5C]" />
               </div>
-              <div className="bg-[#003C43] w-full h-96 shadow-2xl rounded-2xl p-6 hover:bg-[#77B0AA] text-[#E3FEF7] hover:text-[#003C43]   duration-300 hover:-translate-y-2">
+              <div className="bg-[#E0ECE4] w-full h-96 shadow-2xl rounded-2xl p-6 text-[#056674] hover:text-[#FF4B5C]     duration-300 hover:-translate-y-2">
                 <h1 className="text-3xl font-semibold  w-full text-center mt-8 mb-8">
                   Knowledge based
                 </h1>
@@ -97,9 +97,9 @@ function LandingPage() {
           <div className="w-3/12 max-md:w-3/4">
             <NavLink to={"SupportTicket"}>
               <div className="bg-white rounded-full w-fit relative top-10 left-32 p-8 z-10">
-                <BiSupport size={28} />
+                <BiSupport size={28} className="text-[#FF4B5C]" />
               </div>
-              <div className="bg-[#003C43] w-full h-96 shadow-2xl rounded-2xl p-6 hover:bg-[#77B0AA] text-[#F1F6F9] hover:text-[#003C43]   duration-300 hover:-translate-y-2">
+              <div className="bg-[#E0ECE4] w-full h-96 shadow-2xl rounded-2xl p-6 text-[#056674] hover:text-[#FF4B5C]   duration-300 hover:-translate-y-2">
                 <h1 className="text-3xl font-semibold  w-full text-center mt-8 mb-8">
                   Support Ticket
                 </h1>

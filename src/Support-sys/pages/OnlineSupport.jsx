@@ -49,7 +49,7 @@ function OnlineSupport() {
         <div className="flex items-center justify-center mt-auto sm:mt-auto sm:mb-auto mb-auto w-full">
           {!showAns ? (
             <div className="bg-white  border mt-5 shadow-2xl p-4 sm:p-8 rounded  w-2/4 mx-autosrc/Support-sys/pages/Leandingpage.jsx src/Support-sys/pages/components ">
-              <h2 className="text-lg sm:text-4xl font-semibold mb-2 sm:mb-4 text-[#77B0AA]">
+              <h2 className="text-lg sm:text-4xl font-semibold mb-2 sm:mb-4 text-[#FF4B5C]">
                 {"Online - Support"}
               </h2>
               <div className="w-full ">

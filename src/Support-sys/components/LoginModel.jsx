@@ -11,13 +11,13 @@ function LoginModel({ handleClose, title, handlegetHelp, alldata }) {
         <div className="bg-white p-4 sm:p-8 rounded shadow-md max-w-md w-full ">
           <div className="flex items-end justify-end ">
             <button
-              className="bg-[#77B0AA] hover:bg-[#135D66] p-2 text-lg text-[#fbffff] rounded-full "
+              className="bg-[#66BFBF] hover:bg-[#135D66] p-2 text-lg text-[#fbffff] rounded-full "
               onClick={handleClose}
             >
               <RxCross1 />
             </button>
           </div>
-          <h2 className="text-lg sm:text-2xl font-semibold mb-2 sm:mb-4 text-[#77B0AA]">
+          <h2 className="text-lg sm:text-2xl font-semibold mb-2 sm:mb-4 text-[#FF4B5C]">
             {title}
           </h2>
           <div>

@@ -19,8 +19,8 @@ function Navbar() {
   return (
     <nav
       className={`bg-${
-        scrollPosition === 0 ? "transparent text-[#212A3E]" : "top"
-      } flex sticky top-0 text-[#003C43] font-semibold bg-[#E3FEF7] z-50`}
+        scrollPosition === 0 ? "transparent text-[#FF4B5C]" : "top"
+      } flex sticky top-0 text-[#003C43] font-semibold bg-[#E0ECE4] z-50`}
     >
       <ul className="flex items-center justify-around w-full p-4 ">
         <div className="w-4/12">

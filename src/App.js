@@ -6,6 +6,7 @@ import Leandingpage from "./Support-sys/pages/Leandingpage.jsx";
 import OnlineSupport from "./Support-sys/pages/OnlineSupport.jsx";
 import SupportTicket from "./Support-sys/pages/SupportTicket.jsx";
 import TicketDashboard from "./Admin-side/TicketDashboard.jsx";
+import Knowledgebased from "./Support-sys/pages/Knowledgebased.jsx";
 function App() {
   const [Ticket, SetTicket] = useState([]);
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Leandingpage />} />
           <Route path="/Admin" element={<TicketDashboard Ticket={Ticket} />} />
           <Route path="/OnlineSupport" element={<OnlineSupport />} />
+          <Route path="/Knowledgebased" element={<Knowledgebased />} />
           <Route
             path="/SupportTicket"
             element={<SupportTicket Ticket={Ticket} SetTicket={SetTicket} />}
