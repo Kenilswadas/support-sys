@@ -45,6 +45,10 @@ function SupportTicket({ SetTicket, Ticket }) {
               })}
               onSubmit={(values) => {
                 alert(JSON.stringify(values, null, 2));
+                localStorage.setItem(
+                  "SupportTicketData",
+                  JSON.stringify(values)
+                );
                 SetTicket(values);
               }}
             >

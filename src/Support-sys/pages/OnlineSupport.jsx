@@ -18,9 +18,10 @@ import { Category, issues, modelnos, products } from "../components/Data.jsx";
 import url from "../components/EnglishGrammar_10000814.pdf";
 import { useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-function OnlineSupport() {
+import InfoModel from "../components/InfoModel.jsx";
+function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
   let location = useLocation();
-  const [view, setView] = useState(false);
+
   const [showAns, setShowAns] = useState(false);
   const [values, setValues] = useState([]);
   const [showText, setShowText] = useState(false);
@@ -29,6 +30,9 @@ function OnlineSupport() {
   const [alldata, setAlldata] = useState(null);
   const handleClose = () => {
     setView(!view);
+  };
+  const handleCloseLogin = () => {
+    setViewLogin(!viewLogin);
   };
 
   const handlegetHelp = () => {
@@ -44,7 +48,7 @@ function OnlineSupport() {
   console.log(page);
   return (
     <div className="max-sm:w-full max-md:w-full">
-      <Navbar />
+      <Navbar viewLogin={viewLogin} setViewLogin={setViewLogin} />
       <div className="bg-white flex flex-col overflow-auto items-center justify-center  w-full">
         <div className="flex items-center justify-center mt-auto sm:mt-auto sm:mb-auto mb-auto w-full">
           {!showAns ? (
@@ -160,11 +164,18 @@ function OnlineSupport() {
         </div>
       </div>
       {view ? (
-        <LoginModel
+        <InfoModel
           handleClose={handleClose}
           handlegetHelp={handlegetHelp}
           title={"User Details"}
           alldata={alldata}
+        />
+      ) : null}
+      {viewLogin ? (
+        <LoginModel
+          handleCloseLogin={handleCloseLogin}
+          handlegetHelp={handlegetHelp}
+          title={"Login"}
         />
       ) : null}
       {showAns ? (
@@ -269,7 +280,11 @@ function OnlineSupport() {
             {showPdf && (
               <>
                 <div className=" bg-[#E0ECE4] w-11/12 flex flex-col items-start p-4 h-full mt-5">
-                  <iframe src={url} className="h-full w-full" />
+                  <iframe
+                    src={url}
+                    className="h-full w-full"
+                    title="PDF Viewer"
+                  />
                 </div>
               </>
             )}
