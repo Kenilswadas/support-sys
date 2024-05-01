@@ -63,7 +63,7 @@ function OnlineSupport() {
                   }}
                   validationSchema={Yup.object({
                     product: Yup.string().required("*required"),
-                    // category: Yup.string().required("*required"),
+                    issue: Yup.string().required("*required"),
                     modelno: Yup.string().required("*required"),
                     serialno: Yup.string().required("*required"),
                   })}
@@ -149,7 +149,7 @@ function OnlineSupport() {
               </div>
             </div>
           ) : (
-            <div className="m-2 w-full flex items-start justify-center">
+            <div className="m-2 w-11/12 flex items-center justify-end border-2 border-t-0 border-l-0 border-r-0 p-4 border-b-orange-500 ">
               <Button
                 name={"Get Help Again"}
                 type={"button"}
@@ -168,15 +168,15 @@ function OnlineSupport() {
         />
       ) : null}
       {showAns ? (
-        <div className="flex flex-col items-start justify-start w-full h-screen  bg-slate-100 mt-5">
-          <h1 className="text-[#003C43]  font-semibold text-5xl w-full text-center">
+        <div className="flex flex-col items-start justify-start w-full h-screen  mt-5">
+          <h1 className="text-[#FF4B5C]  font-semibold text-5xl w-full text-center">
             Your Solution
           </h1>
           <div className="flex flex-col items-center justify-center w-full">
-            <div className="flex w-full items-center justify-around">
+            <div className="flex w-11/12 justify-end ">
               <SquareBtn
                 name={"Text"}
-                faicon={<CiTextAlignCenter size={28} />}
+                faicon={<CiTextAlignCenter size={20} />}
                 clickFunction={() => {
                   setShowText(!showText);
                   setShowVideo(false);
@@ -185,7 +185,7 @@ function OnlineSupport() {
               />
               <SquareBtn
                 name={"Video"}
-                faicon={<IoVideocam size={28} />}
+                faicon={<IoVideocam size={20} />}
                 clickFunction={() => {
                   setShowText(false);
                   setShowVideo(!showVideo);
@@ -194,7 +194,7 @@ function OnlineSupport() {
               />
               <SquareBtn
                 name={"Pdf"}
-                faicon={<IoDocumentText size={28} />}
+                faicon={<IoDocumentText size={20} />}
                 clickFunction={() => {
                   setShowText(false);
                   setShowVideo(false);
@@ -207,13 +207,13 @@ function OnlineSupport() {
           <div className="flex flex-col items-center justify-center w-full h-full">
             {showText ? (
               <>
-                <div className="bg-slate-200 w-3/4 flex flex-col items-start p-4 h-full mt-5">
+                <div className="bg-[#E0ECE4] w-11/12 flex flex-col items-start p-4 h-full mt-5">
                   <div>
                     {issues
                       .filter((data) => data.name === values.issue)
                       .map((e) => {
                         return (
-                          <p className="text-gray-700 text-4xl">
+                          <p className="text-[#056674] text-4xl">
                             {e.name}
                             {" : "}
                           </p>
@@ -226,7 +226,7 @@ function OnlineSupport() {
                       .map((e) => {
                         return (
                           <>
-                            <p className="text-gray-700 text-4xl">
+                            <p className="text-[#056674] text-4xl">
                               {e.solution}
                             </p>
                             <p>
@@ -252,7 +252,7 @@ function OnlineSupport() {
             ) : null}
             {showVideo ? (
               <>
-                <div className="bg-slate-200 w-3/4 flex flex-col items-start p-4 h-full mt-5">
+                <div className="bg-[#E0ECE4] w-11/12 flex flex-col items-start p-4 h-full mt-5">
                   <iframe
                     width="560"
                     height="315"
@@ -268,7 +268,7 @@ function OnlineSupport() {
             ) : null}
             {showPdf && (
               <>
-                <div className=" bg-slate-200 w-3/4 flex flex-col items-start p-4 h-full mt-5">
+                <div className=" bg-[#E0ECE4] w-11/12 flex flex-col items-start p-4 h-full mt-5">
                   <iframe src={url} className="h-full w-full" />
                 </div>
               </>
