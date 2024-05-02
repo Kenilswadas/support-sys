@@ -4,8 +4,10 @@ import * as Yup from "yup";
 import { FormikInput } from "./FormikInput.jsx";
 import { RxCross1 } from "react-icons/rx";
 import Button from "./Button.jsx";
+import { useNavigate } from "react-router-dom";
 function LoginModel({ handleCloseLogin, title }) {
   const [showLogin, setShowLogin] = useState(true);
+  const navigate = useNavigate();
   return (
     <div className="fixed inset-0 bg-cover bg-center flex items-center justify-center bg-black bg-opacity-70 z-50">
       <div className="flex items-center justify-center z-50 mt-auto sm:mt-auto sm:mb-auto mb-auto ">
@@ -64,12 +66,13 @@ function LoginModel({ handleCloseLogin, title }) {
                 })}
                 onSubmit={(values) => {
                   var val = {
-                    name: values.name,
                     email: values.email,
                     password: values.password,
-                    mobile: values.mobile,
                   };
                   localStorage.setItem("SigninData", JSON.stringify(val));
+                  if (values.email === "admin@gmail.com") {
+                    navigate("/adminDashboard");
+                  }
                   handleCloseLogin();
                 }}
               >
@@ -124,6 +127,7 @@ function LoginModel({ handleCloseLogin, title }) {
                 })}
                 onSubmit={(values) => {
                   alert(JSON.stringify(values, 2, null));
+
                   var val = {
                     name: values.name,
                     email: values.email,
@@ -131,6 +135,7 @@ function LoginModel({ handleCloseLogin, title }) {
                     mobile: values.mobile,
                   };
                   localStorage.setItem("SignupData", JSON.stringify(val));
+
                   handleCloseLogin();
                 }}
               >
