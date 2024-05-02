@@ -5,10 +5,52 @@ import "./App.css";
 import Landingpage from "./Support-sys/pages/Landingpage.jsx";
 import OnlineSupport from "./Support-sys/pages/OnlineSupport.jsx";
 import SupportTicket from "./Support-sys/pages/SupportTicket.jsx";
-import TicketDashboard from "./Admin-side/TicketDashboard.jsx";
+import Dashboard from "./Admin-side/Dashboard.jsx";
 import Knowledgebased from "./Support-sys/pages/Knowledgebased.jsx";
+import Tickets from "./Admin-side/Tickets.jsx";
+import Categories from "./Admin-side/Categories.jsx";
 function App() {
-  const [Ticket, SetTicket] = useState([]);
+  const [Ticket, SetTicket] = useState([
+    {
+      "Sr No.": "1",
+      "Ticket Id": "47s474",
+      Name: "Kenil",
+      "Email Id": "kenilsoni2710@gmail.com",
+      Category: "Automatic Digital Epstein Tester-VET",
+      SubCategory: "3 Phase Precision Power Analyzer - VPAs",
+      "Model No": "Akfn7814144",
+      "Serial No": "78174w71s",
+      Issue:
+        "No Electricity getting in motter -- Power not getting - power supply isse ",
+      Status: "Pending",
+    },
+    {
+      "Sr No.": "2",
+      "Ticket Id": "47s474",
+      Name: "Kenil",
+      "Email Id": "kenilsoni2710@gmail.com",
+      Category: "Automatic Digital Epstein Tester-VET",
+      SubCategory: "3 Phase Precision Power Analyzer - VPAs",
+      "Model No": "Akfn7814144",
+      "Serial No": "78174w71s",
+      Issue:
+        "No Electricity getting in motter -- Power not getting - power supply isse ",
+      Status: "Pending",
+    },
+    {
+      "Sr No.": "3",
+      "Ticket Id": "47s474",
+      Name: "Kenil",
+      "Email Id": "kenilsoni2710@gmail.com",
+      Category: "Automatic Digital Epstein Tester-VET",
+      SubCategory: "3 Phase Precision Power Analyzer - VPAs",
+      "Model No": "Akfn7814144",
+      "Serial No": "78174w71s",
+      Issue:
+        "No Electricity getting in motter -- Power not getting - power supply isse ",
+      Status: "Pending",
+    },
+  ]);
   const [view, setView] = useState(false);
   const [viewLogin, setViewLogin] = useState(false);
   return (
@@ -21,7 +63,9 @@ function App() {
               <Landingpage viewLogin={viewLogin} setViewLogin={setViewLogin} />
             }
           />
-          <Route path="/Admin" element={<TicketDashboard Ticket={Ticket} />} />
+          <Route path="/AdminDashboard" element={<Dashboard />} />
+          <Route path="/Ticket" element={<Tickets Ticket={Ticket} />} />
+          <Route path="/Categories" element={<Categories Ticket={Ticket} />} />
           <Route
             path="/OnlineSupport"
             element={
@@ -36,7 +80,14 @@ function App() {
           <Route path="/Knowledgebased" element={<Knowledgebased />} />
           <Route
             path="/SupportTicket"
-            element={<SupportTicket Ticket={Ticket} SetTicket={SetTicket} />}
+            element={
+              <SupportTicket
+                Ticket={Ticket}
+                SetTicket={SetTicket}
+                viewLogin={viewLogin}
+                setViewLogin={setViewLogin}
+              />
+            }
           />
         </Routes>
       </BrowserRouter>

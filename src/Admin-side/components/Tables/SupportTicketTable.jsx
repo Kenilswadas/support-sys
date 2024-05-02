@@ -10,7 +10,7 @@ import TableRow from "@mui/material/TableRow";
 
 function SupportTicketTable({ Ticket }) {
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(1);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -21,29 +21,16 @@ function SupportTicketTable({ Ticket }) {
     setPage(0);
   };
   const columns = [
-    { id: "name", label: "Name", minWidth: 170 },
-    { id: "code", label: "ISO\u00a0Code", minWidth: 100 },
-    {
-      id: "population",
-      label: "Population",
-      minWidth: 170,
-      align: "right",
-      format: (value) => value.toLocaleString("en-US"),
-    },
-    {
-      id: "size",
-      label: "Size\u00a0(km\u00b2)",
-      minWidth: 170,
-      align: "right",
-      format: (value) => value.toLocaleString("en-US"),
-    },
-    {
-      id: "density",
-      label: "Density",
-      minWidth: 170,
-      align: "right",
-      format: (value) => value.toFixed(2),
-    },
+    { id: "Sr No.", label: "Sr No.", minWidth: 50 },
+    { id: "Ticket Id", label: "Ticket Id", minWidth: 50 },
+    { id: "Name", label: "Name", minWidth: 50 },
+    { id: "Email Id", label: "Email Id", minWidth: 50 },
+    { id: "Category", label: "Category", minWidth: 50 },
+    { id: "SubCategory", label: "SubCategory", minWidth: 50 },
+    { id: "Model No", label: "Model No", minWidth: 50 },
+    { id: "Serial No", label: "Serial No", minWidth: 50 },
+    { id: "Issue", label: "Issue", minWidth: 50 },
+    { id: "Status", label: "Status", minWidth: 50 },
   ];
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -55,7 +42,13 @@ function SupportTicketTable({ Ticket }) {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{
+                    minWidth: column.minWidth,
+                    fontFamily: "revert",
+                    color: "#003C4C",
+                    fontSize: "16px",
+                    // fontWeight: "700",
+                  }}
                 >
                   {column.label}
                 </TableCell>
@@ -70,10 +63,18 @@ function SupportTicketTable({ Ticket }) {
               return (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                   {columns.map((column) => {
-                    // const value = row[column.id];
+                    const value = row[column.id];
                     return (
-                      <TableCell key={column.id} align={column.align}>
-                        {Ticket.product}
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{
+                          textAlign: "justify",
+                          color: "#056674",
+                          font: "small-caption",
+                        }}
+                      >
+                        {value}
                       </TableCell>
                     );
                   })}
@@ -86,7 +87,7 @@ function SupportTicketTable({ Ticket }) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        // count={rows.length}
+        count={Ticket.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

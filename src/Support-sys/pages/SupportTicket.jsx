@@ -15,13 +15,17 @@ import {
   products,
 } from "../components/Data.jsx";
 import { NavLink } from "react-router-dom";
+import LoginModel from "../components/LoginModel.jsx";
 
-function SupportTicket({ SetTicket, Ticket }) {
+function SupportTicket({ SetTicket, Ticket, viewLogin, setViewLogin }) {
+  const handleCloseLogin = () => {
+    setViewLogin(!viewLogin);
+  };
   return (
     <div className="max-sm:w-full max-md:w-full">
-      <Navbar />
+      <Navbar viewLogin={viewLogin} setViewLogin={setViewLogin} />
       <div className="bg-white flex flex-col overflow-auto items-center justify-center  w-full">
-        <div className="bg-white p-4 sm:p-8 rounded shadow-md flex flex-col items-center justify-center   w-2/4 mx-autosrc/Support-sys/pages/Leandingpage.jsx src/Support-sys/pages/components ">
+        <div className="shadow-2xl p-4 sm:p-8 rounded flex flex-col items-center justify-center   w-2/4 mx-autosrc/Support-sys/pages/Leandingpage.jsx src/Support-sys/pages/components ">
           <h2 className="text-lg sm:text-4xl font-semibold mb-2 sm:mb-4 text-[#FF0000]">
             {"Support - Ticket"}
           </h2>
@@ -170,6 +174,9 @@ function SupportTicket({ SetTicket, Ticket }) {
           </div>
         </div>
       </div>
+      {viewLogin ? (
+        <LoginModel handleCloseLogin={handleCloseLogin} title={"Login"} />
+      ) : null}
     </div>
   );
 }

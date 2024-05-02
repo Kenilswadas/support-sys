@@ -172,11 +172,7 @@ function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
         />
       ) : null}
       {viewLogin ? (
-        <LoginModel
-          handleCloseLogin={handleCloseLogin}
-          handlegetHelp={handlegetHelp}
-          title={"Login"}
-        />
+        <LoginModel handleCloseLogin={handleCloseLogin} title={"Login"} />
       ) : null}
       {showAns ? (
         <div className="flex flex-col items-start justify-start w-full h-screen  mt-5">
