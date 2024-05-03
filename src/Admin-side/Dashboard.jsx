@@ -1,8 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import VericalNavbar from "./components/VericalNavbar";
 import Navbar from "../Admin-side/components/Navbar.jsx";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../FirebaseConfig.jsx";
 function Dashboard({ Ticket }) {
   const [ToggleView, setToggleView] = useState(false);
+  const [allusers, setAllusers] = useState([]);
+  const [userCount, setUserCount] = useState(0);
+  useEffect(() => {
+    onSnapshot(collection(db, "UserDetails"), (snap) => {
+      const alldata = snap.docs.map((e) => ({
+        id: e.id,
+        ...e.data(),
+      }));
+      setAllusers(alldata);
+    });
+  }, []);
+  const sumOfIndices = allusers.length;
+
   return (
     <div className="max-sm:w-full max-md:w-full">
       <Navbar />
@@ -39,7 +54,7 @@ function Dashboard({ Ticket }) {
             <div className="bg-white rounded-lg h-28 m-2 p-4">
               <h1 className="w-full text-2xl text-[#056674]">Customers</h1>
               <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
-                200
+                {sumOfIndices}
               </div>
             </div>
           </div>
