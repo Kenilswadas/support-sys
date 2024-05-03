@@ -8,14 +8,31 @@ import LoginModel from "../components/LoginModel";
 import { NavLink } from "react-router-dom";
 import backimg from "../../helpers/images/jeshoots-com-sMKUYIasyDM-unsplash.jpg";
 import { TypeAnimation } from "react-type-animation";
-function LandingPage({ viewLogin, setViewLogin }) {
+import { ToastContainer } from "react-toastify";
+import Loader from "../../helpers/Loader";
+
+function LandingPage({
+  viewLogin,
+  setViewLogin,
+  userName,
+  setUserName,
+  setIsloading,
+  isLoading,
+}) {
   const handleCloseLogin = () => {
     setViewLogin(!viewLogin);
   };
   const CURSOR_CLASS_NAME = "custom-type-animation-cursor";
   return (
     <div className="max-sm:w-full max-md:w-full">
-      <Navbar viewLogin={viewLogin} setViewLogin={setViewLogin} />
+      <Navbar
+        viewLogin={viewLogin}
+        setViewLogin={setViewLogin}
+        userName={userName}
+        setUserName={setUserName}
+      />
+
+      <ToastContainer />
       <div className="">
         <div>
           <img src={backimg} alt="" className="" />
@@ -136,7 +153,13 @@ function LandingPage({ viewLogin, setViewLogin }) {
         </p>
       </div>
       {viewLogin ? (
-        <LoginModel handleCloseLogin={handleCloseLogin} title={"Login"} />
+        <LoginModel
+          handleCloseLogin={handleCloseLogin}
+          title={"Login"}
+          setUserName={setUserName}
+          isLoading={isLoading}
+          setIsloading={setIsloading}
+        />
       ) : null}
     </div>
   );

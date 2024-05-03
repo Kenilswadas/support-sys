@@ -121,7 +121,7 @@ function VericalNavbar({ ToggleView, setToggleView }) {
             }`}
           >
             <NavLink
-              to={"/"}
+              to={"/Customers"}
               className={({ isActive }) =>
                 `${
                   isActive

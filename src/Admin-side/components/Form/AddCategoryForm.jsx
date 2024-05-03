@@ -34,6 +34,7 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
               subcategory: "",
               modelno: "",
               serialno: "",
+              image: "",
               issue: [],
             }}
             validationSchema={Yup.object({
@@ -48,6 +49,7 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                 subcategory: values.subcategory,
                 modelno: values.modelno,
                 serialno: values.serialno,
+                image: values.image,
                 issue: values.issue.filter((issue) => issue.trim() !== ""), // Filter out empty issues
               };
               alert(JSON.stringify(formData, null, 2));
@@ -84,11 +86,19 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                             type={"number"}
                           />
                         </div>
+
                         <div className="m-2">
                           <FormikInput
                             label={"Enter Model No."}
                             name={"modelno"}
                             type={"text"}
+                          />
+                        </div>
+                        <div className="m-2">
+                          <FormikInput
+                            label={"Upload Image"}
+                            name={"image"}
+                            type={"file"}
                           />
                         </div>
                       </div>

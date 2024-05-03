@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 // import SignInpage from "./pages/SignInpage.jsx";
@@ -9,7 +9,24 @@ import Dashboard from "./Admin-side/Dashboard.jsx";
 import Knowledgebased from "./Support-sys/pages/Knowledgebased.jsx";
 import Tickets from "./Admin-side/Tickets.jsx";
 import Categories from "./Admin-side/Categories.jsx";
+import "react-toastify/dist/ReactToastify.css";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./FirebaseConfig.jsx";
+import Customers from "./Admin-side/Customers.jsx";
+
 function App() {
+  const [userName, setUserName] = useState();
+  const [isLoading, setIsloading] = useState(false);
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserName(auth?.currentUser?.displayName);
+      } else {
+        setUserName(null);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth?.currentUser, userName]);
   const [Ticket, SetTicket] = useState([
     {
       "Sr No.": "1",
@@ -60,12 +77,20 @@ function App() {
           <Route
             path="/"
             element={
-              <Landingpage viewLogin={viewLogin} setViewLogin={setViewLogin} />
+              <Landingpage
+                viewLogin={viewLogin}
+                setViewLogin={setViewLogin}
+                userName={userName}
+                setUserName={setUserName}
+                setIsloading={setIsloading}
+                isLoading={isLoading}
+              />
             }
           />
           <Route path="/AdminDashboard" element={<Dashboard />} />
           <Route path="/Ticket" element={<Tickets Ticket={Ticket} />} />
           <Route path="/Categories" element={<Categories Ticket={Ticket} />} />
+          <Route path="/Customers" element={<Customers Ticket={Ticket} />} />
           <Route
             path="/OnlineSupport"
             element={
