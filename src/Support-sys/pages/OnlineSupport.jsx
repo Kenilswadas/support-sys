@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { Form, Formik } from "formik";
@@ -14,11 +14,12 @@ import { IoVideocam } from "react-icons/io5";
 import Navbar from "../components/Navbar.jsx";
 import { pdfjs } from "react-pdf";
 import { Category, issues, modelnos, products } from "../components/Data.jsx";
-
 import url from "../components/EnglishGrammar_10000814.pdf";
 import { useParams } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import InfoModel from "../components/InfoModel.jsx";
+import { UserContext } from "../../App.js";
+
 function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
   let location = useLocation();
 
@@ -46,9 +47,14 @@ function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
   });
   const page = useParams();
   console.log(page);
+  const setUserName = useContext(UserContext);
   return (
     <div className="max-sm:w-full max-md:w-full">
-      <Navbar viewLogin={viewLogin} setViewLogin={setViewLogin} />
+      <Navbar
+        viewLogin={viewLogin}
+        setViewLogin={setViewLogin}
+        setUserName={setUserName}
+      />
       <div className="bg-white flex flex-col overflow-auto items-center justify-center  w-full">
         <div className="flex items-center justify-center mt-auto sm:mt-auto sm:mb-auto mb-auto w-full">
           {!showAns ? (
