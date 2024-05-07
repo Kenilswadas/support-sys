@@ -11,13 +11,11 @@ import Categories from "./Admin-side/Categories.jsx";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./FirebaseConfig.jsx";
 import Customers from "./Admin-side/Customers.jsx";
-
 export const UserContext = createContext(null);
-
+export const LoadderContext = createContext(null);
 function App() {
   const [userName, setUserName] = useState(null);
   const [isLoading, setIsloading] = useState(false);
-
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -29,103 +27,58 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth?.currentUser, userName]);
 
-  const [Ticket, SetTicket] = useState([
-    {
-      "Sr No.": "1",
-      "Ticket Id": "47s474",
-      Name: "Kenil",
-      "Email Id": "kenilsoni2710@gmail.com",
-      Category: "Automatic Digital Epstein Tester-VET",
-      SubCategory: "3 Phase Precision Power Analyzer - VPAs",
-      "Model No": "Akfn7814144",
-      "Serial No": "78174w71s",
-      Issue:
-        "No Electricity getting in motter -- Power not getting - power supply isse ",
-      Status: "Pending",
-    },
-    {
-      "Sr No.": "2",
-      "Ticket Id": "47s474",
-      Name: "Kenil",
-      "Email Id": "kenilsoni2710@gmail.com",
-      Category: "Automatic Digital Epstein Tester-VET",
-      SubCategory: "3 Phase Precision Power Analyzer - VPAs",
-      "Model No": "Akfn7814144",
-      "Serial No": "78174w71s",
-      Issue:
-        "No Electricity getting in motter -- Power not getting - power supply isse ",
-      Status: "Pending",
-    },
-    {
-      "Sr No.": "3",
-      "Ticket Id": "47s474",
-      Name: "Kenil",
-      "Email Id": "kenilsoni2710@gmail.com",
-      Category: "Automatic Digital Epstein Tester-VET",
-      SubCategory: "3 Phase Precision Power Analyzer - VPAs",
-      "Model No": "Akfn7814144",
-      "Serial No": "78174w71s",
-      Issue:
-        "No Electricity getting in motter -- Power not getting - power supply isse ",
-      Status: "Pending",
-    },
-  ]);
-
   const [view, setView] = useState(false);
   const [viewLogin, setViewLogin] = useState(false);
 
   return (
-    <UserContext.Provider value={setUserName}>
-      <div>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Landingpage
-                  viewLogin={viewLogin}
-                  setViewLogin={setViewLogin}
-                  userName={userName}
-                  setUserName={setUserName}
-                  setIsloading={setIsloading}
-                  isLoading={isLoading}
-                />
-              }
-            />
-            <Route path="/AdminDashboard" element={<Dashboard />} />
-            <Route path="/Ticket" element={<Tickets Ticket={Ticket} />} />
-            <Route
-              path="/Categories"
-              element={<Categories Ticket={Ticket} />}
-            />
-            <Route path="/Customers" element={<Customers Ticket={Ticket} />} />
-            <Route
-              path="/OnlineSupport"
-              element={
-                <OnlineSupport
-                  view={view}
-                  setView={setView}
-                  viewLogin={viewLogin}
-                  setViewLogin={setViewLogin}
-                />
-              }
-            />
-            <Route path="/Knowledgebased" element={<Knowledgebased />} />
-            <Route
-              path="/SupportTicket"
-              element={
-                <SupportTicket
-                  Ticket={Ticket}
-                  SetTicket={SetTicket}
-                  viewLogin={viewLogin}
-                  setViewLogin={setViewLogin}
-                />
-              }
-            />
-          </Routes>
-        </BrowserRouter>
-      </div>
-    </UserContext.Provider>
+    <LoadderContext.Provider value={{ setIsloading, isLoading }}>
+      <UserContext.Provider value={setUserName}>
+        <div>
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Landingpage
+                    viewLogin={viewLogin}
+                    setViewLogin={setViewLogin}
+                    userName={userName}
+                    setUserName={setUserName}
+                    setIsloading={setIsloading}
+                    isLoading={isLoading}
+                  />
+                }
+              />
+              <Route path="/AdminDashboard" element={<Dashboard />} />
+              <Route path="/Ticket" element={<Tickets />} />
+              <Route path="/Categories" element={<Categories />} />
+              <Route path="/Customers" element={<Customers />} />
+              <Route
+                path="/OnlineSupport"
+                element={
+                  <OnlineSupport
+                    view={view}
+                    setView={setView}
+                    viewLogin={viewLogin}
+                    setViewLogin={setViewLogin}
+                  />
+                }
+              />
+              <Route path="/Knowledgebased" element={<Knowledgebased />} />
+              <Route
+                path="/SupportTicket"
+                element={
+                  <SupportTicket
+                    viewLogin={viewLogin}
+                    setViewLogin={setViewLogin}
+                  />
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      </UserContext.Provider>
+    </LoadderContext.Provider>
   );
 }
 

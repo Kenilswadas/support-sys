@@ -10,7 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import { MdDelete } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 
-function CustomerDetailTable({ data, handleDeleteCustomer }) {
+function ProductDetailTable({ data, handleDelete }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -23,10 +23,12 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
     setPage(0);
   };
   const columns = [
+    { id: "Image", label: "Image", minWidth: 50 },
     { id: "id", label: "Id", minWidth: 50 },
-    { id: "Name", label: "Name", minWidth: 50 },
-    { id: "Email", label: "Email Id", minWidth: 50 },
-    { id: "Mobile", label: "Mobile", minWidth: 50 },
+    { id: "ProductName", label: "ProductName", minWidth: 50 },
+    { id: "Category", label: "Category", minWidth: 50 },
+    { id: "Model_No", label: "Model_No", minWidth: 50 },
+    { id: "Serial_No", label: "Serial_No", minWidth: 50 },
     { id: "Action", label: "Action", minWidth: 50 },
   ];
   return (
@@ -60,6 +62,7 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                     {columns.map((column) => {
                       const value = row[column.id];
+
                       return (
                         <TableCell
                           key={column.id}
@@ -70,7 +73,13 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
                             font: "small-caption",
                           }}
                         >
-                          {value ? (
+                          {column.id === "Image" ? (
+                            <img
+                              src={value}
+                              alt="ProductImage"
+                              className="w-20 h-20"
+                            />
+                          ) : value ? (
                             value
                           ) : (
                             <div className="w-full flex justify-between">
@@ -80,7 +89,7 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
                                 className=""
                               />
                               <MdDelete
-                                onClick={() => handleDeleteCustomer(row.id)}
+                                onClick={() => handleDelete(row.id)}
                                 size={28}
                                 className="cursor-pointer"
                               />
@@ -108,4 +117,4 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
   );
 }
 
-export default CustomerDetailTable;
+export default ProductDetailTable;

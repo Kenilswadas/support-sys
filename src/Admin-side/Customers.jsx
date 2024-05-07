@@ -4,6 +4,7 @@ import VericalNavbar from "./components/VericalNavbar";
 import CustomerDetailTable from "./components/Tables/CustomerDetailTable";
 import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../FirebaseConfig";
+import ProductDetailTable from "./components/Tables/ProductDetailTable";
 
 function Customers() {
   const [allusers, setAllusers] = useState([]);
@@ -17,7 +18,8 @@ function Customers() {
       setAllusers(alldata);
     });
   }, []);
-  const handleDeleteCustomer = (id) => {
+  const handleDeleteuser = (id) => {
+    alert(id);
     deleteDoc(doc(db, "UserDetails", id));
   };
   return (
@@ -32,7 +34,7 @@ function Customers() {
         >
           <CustomerDetailTable
             data={allusers}
-            handleDeleteCustomer={handleDeleteCustomer}
+            handleDeleteCustomer={handleDeleteuser}
           />
         </div>
       </div>
