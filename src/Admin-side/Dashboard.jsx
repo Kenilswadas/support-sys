@@ -2,8 +2,21 @@ import React, { useEffect, useState } from "react";
 import VericalNavbar from "./components/VericalNavbar";
 import Navbar from "../Admin-side/components/Navbar.jsx";
 import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../FirebaseConfig.jsx";
+import { auth, db } from "../FirebaseConfig.jsx";
+import { onAuthStateChanged } from "firebase/auth";
+import { NavLink, useNavigate } from "react-router-dom";
 function Dashboard({ Ticket }) {
+  const navigate = useNavigate();
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log(user);
+        if (user.email === "admin@gmail.com") {
+          navigate("/adminDashboard");
+        } else navigate("/");
+      } else navigate("/");
+    });
+  }, [navigate]);
   const [ToggleView, setToggleView] = useState(false);
   const [allusers, setAllusers] = useState([]);
   const [userCount, setUserCount] = useState(0);
@@ -51,12 +64,14 @@ function Dashboard({ Ticket }) {
                 20
               </div>
             </div>
-            <div className="bg-white rounded-lg h-28 m-2 p-4">
-              <h1 className="w-full text-2xl text-[#056674]">Customers</h1>
-              <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
-                {sumOfIndices}
+            <NavLink to={"/Customers"}>
+              <div className="bg-white rounded-lg h-28 m-2 p-4">
+                <h1 className="w-full text-2xl text-[#056674]">Customers</h1>
+                <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
+                  {sumOfIndices}
+                </div>
               </div>
-            </div>
+            </NavLink>
           </div>
         </div>
       </div>

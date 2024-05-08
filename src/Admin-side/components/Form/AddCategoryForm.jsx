@@ -1,8 +1,6 @@
 import { FieldArray, Form, Formik } from "formik";
-import React, { useState } from "react";
-import { Formikselect } from "../../../Support-sys/components/Formikselect";
+import React, { useContext, useState } from "react";
 import { FormikInput } from "../../../Support-sys/components/FormikInput";
-import { NavLink } from "react-router-dom";
 import * as Yup from "yup";
 import { RxCross1 } from "react-icons/rx";
 import Button from "../../../Support-sys/components/Button.jsx";
@@ -13,8 +11,12 @@ import { db, storage } from "../../../FirebaseConfig.jsx";
 import { ToastContainer, toast } from "react-toastify";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import "react-toastify/dist/ReactToastify.css";
+import { LoadderContext } from "../../../App.js";
+import Loader from "../../../helpers/Loader.jsx";
 
 function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
+  const { isLoading, setIsloading } = useContext(LoadderContext);
+  // const setIsLoading = IsLoadingObject.setIsLoading;
   const handleCloseLogin = () => {
     setShowCategoryForm(!CategoryForm);
   };
@@ -30,6 +32,7 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
   return (
     <div className="bg-black flex flex-col overflow-auto items-center justify-center  w-full fixed inset-0  bg-cover bg-center bg-opacity-50 z-50 ">
       <ToastContainer />
+      {isLoading === true ? <Loader /> : null}
       <div className="bg-white shadow-2xl p-4 sm:p-8 rounded flex flex-col items-center justify-center w-11/12 mx-autosrc/Support-sys/pages/Leandingpage.jsx src/Support-sys/pages/components ">
         <div className="flex items-end justify-end w-full ">
           <button
@@ -57,8 +60,15 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
               category: Yup.string().required("*required"),
               modelno: Yup.string().required("*required"),
               serialno: Yup.string().required("*required"),
+              allissues: Yup.array().of(
+                Yup.object().shape({
+                  video: Yup.string().url("Invalid URL format"),
+                })
+              ),
             })}
             onSubmit={async (values) => {
+              setIsloading(true);
+              console.log(values);
               try {
                 // Upload image
                 const imageUrl = await uploadFile(values.image);
@@ -71,7 +81,7 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                   })
                 );
                 // Upload videos
-                const videoUrls = values.allissues.map((issue) => issue.videos);
+                const videoUrls = values.allissues.map((issue) => issue.video);
                 // Add document to Firestore
                 await addDoc(collection(db, "Products"), {
                   ProductName: values.name,
@@ -80,15 +90,19 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                   Model_No: values.modelno,
                   Allissues: values.allissues.map((issue, index) => ({
                     ...issue,
-                    pdf: pdfUrls[index] || null, // Replace File object with URL
-                    // videos: videoUrls[index] || [], // Add videos array
+                    pdf: pdfUrls[index] || [], // Replace File object with URL
+                    video: videoUrls[index] || [], // Add videos array
                   })),
                   Image: imageUrl,
                 });
                 toast.success("Added Successfully");
+                setIsloading(false);
+                handleCloseLogin();
               } catch (error) {
                 console.error(error);
                 toast.error(error.message);
+                setIsloading(false);
+                handleCloseLogin();
               }
             }}
           >
@@ -128,13 +142,8 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                           />
                         </div>
                         <div className="m-2">
-                          {/* <FormikInput
-                            label={"Upload Image"}
-                            name={"image"}
-                            type={"file"}
-                          /> */}
                           <label className="block  text-lg font-semibold text-[#056674] ">
-                            {"image"}
+                            {"Product Image"}
                           </label>
                           <input
                             type="file"
@@ -143,7 +152,6 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                                 "image",
                                 event.currentTarget.files[0]
                               );
-                              // setImage(event.currentTarget.files[0]);
                             }}
                           />
                         </div>
@@ -158,8 +166,8 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                             push({
                               issue: "",
                               text: "",
-                              video: "",
-                              pdf: null,
+                              video: [],
+                              pdf: [],
                             })
                           }
                         >
@@ -184,13 +192,13 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                                 label={`Video Solution ${index + 1}`}
                                 name={`allissues[${index}].video`}
                                 type={"text"}
+                                onChange={(event) => {
+                                  setFieldValue(
+                                    `allissues[${index}].video`,
+                                    event.currentTarget.values
+                                  );
+                                }}
                               />
-
-                              {/* <FormikInput
-                                label={`Pdf Solution ${index + 1}`}
-                                name={`allissues[${index}].pdf`}
-                                type={"file"}
-                              /> */}
                               <div className="w-full">
                                 <label className="block  text-lg font-semibold text-[#056674] ">
                                   {`Pdf Solution${index + 1}`}
@@ -202,11 +210,10 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                                   onChange={(event) => {
                                     setFieldValue(
                                       `allissues[${index}].pdf`,
-                                      event.currentTarget.files[0]
+                                      event.currentTarget.files
                                     );
-                                    // setpdf(event.currentTarget.files[0]);
                                   }}
-                                  multiple
+                                  // multiple
                                 />
                               </div>
                               <button
