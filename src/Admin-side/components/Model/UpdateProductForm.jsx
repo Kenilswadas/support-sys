@@ -6,7 +6,7 @@ import { RxCross1 } from "react-icons/rx";
 import Button from "../../../Support-sys/components/Button.jsx";
 import { FaPlus } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../FirebaseConfig.jsx";
 import { ToastContainer, toast } from "react-toastify";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -14,11 +14,17 @@ import "react-toastify/dist/ReactToastify.css";
 import { LoadderContext } from "../../../App.js";
 import Loader from "../../../helpers/Loader.jsx";
 
-function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
+function UpdateProductForm({
+  setOpenupdate,
+  openupdate,
+  selectedProduct,
+  setId,
+  id,
+}) {
   const { isLoading, setIsloading } = useContext(LoadderContext);
-  // const setIsLoading = IsLoadingObject.setIsLoading;
   const handleCloseLogin = () => {
-    setShowCategoryForm(!CategoryForm);
+    setOpenupdate(!openupdate);
+    setId(null);
   };
 
   async function uploadFile(file) {
@@ -41,17 +47,18 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
           </button>
         </div>
         <h2 className="text-lg sm:text-4xl font-semibold mb-2 sm:mb-4 text-[#FF0000]">
-          {"Add Products"}
+          {"Add Product Category"}
         </h2>
         <div className="w-full ">
+          {console.log(selectedProduct)}
           <Formik
             initialValues={{
-              name: "",
-              category: "",
-              modelno: "",
-              serialno: "",
-              image: null,
-              allissues: [],
+              name: selectedProduct.ProductName,
+              category: selectedProduct.Category,
+              modelno: selectedProduct.Model_No,
+              serialno: selectedProduct.Serial_No,
+              image: selectedProduct.Image,
+              allissues: selectedProduct.Allissues,
             }}
             validationSchema={Yup.object({
               name: Yup.string().required("*required"),
@@ -81,17 +88,28 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                 // Upload videos
                 const videoUrls = values.allissues.map((issue) => issue.video);
                 // Add document to Firestore
-                await addDoc(collection(db, "Products"), {
+                await updateDoc(doc(db, "Products", id), {
                   ProductName: values.name,
                   Category: values.category,
                   Serial_No: values.serialno,
                   Model_No: values.modelno,
                   Allissues: values.allissues.map((issue, index) => ({
                     ...issue,
-                    pdf: pdfUrls[index] || [], // Replace File object with URL
-                    video: videoUrls[index] || [], // Add videos array
+                    pdf:
+                      selectedProduct?.Allissues[index]?.pdf ===
+                      values.allissues[index].pdf
+                        ? values.allissues[index].pdf
+                        : pdfUrls[index] || [], // Replace File object with URL
+                    video:
+                      selectedProduct?.Allissues[index]?.video ===
+                      values.allissues[index].video
+                        ? values.allissues[index].video
+                        : videoUrls[index] || [], // Add videos array
                   })),
-                  Image: imageUrl,
+                  Image:
+                    selectedProduct.Image === values.image
+                      ? values.Image
+                      : imageUrl,
                 });
                 toast.success("Added Successfully");
                 setIsloading(false);
@@ -115,6 +133,7 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                             label={"Enter Product Name"}
                             name={"name"}
                             type={"text"}
+                            value={values.name}
                           />
                         </div>
                         <div className="m-2">
@@ -122,6 +141,7 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                             label={"Enter Category"}
                             name={"category"}
                             type={"text"}
+                            value={values.category}
                           />
                         </div>
                         <div className="m-2">
@@ -129,6 +149,7 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                             label={"Enter Serial Number"}
                             name={"serialno"}
                             type={"number"}
+                            value={values.serialno}
                           />
                         </div>
 
@@ -137,12 +158,20 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                             label={"Enter Model No."}
                             name={"modelno"}
                             type={"text"}
+                            value={values.modelno}
                           />
                         </div>
                         <div className="m-2">
                           <label className="block  text-lg font-semibold text-[#056674] ">
                             {"Product Image"}
                           </label>
+                          {/* <label htmlFor="">Privious Image</label> */}
+                          {/* {console.log(values.image)}
+                          <img
+                            src={values.image}
+                            alt=""
+                            className="w-20 h-20"
+                          /> */}
                           <input
                             type="file"
                             onChange={(event) => {
@@ -180,11 +209,13 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                                 label={`Issues No ${index + 1}`}
                                 name={`allissues[${index}].issue`}
                                 type={"text"}
+                                value={values.allissues[index].issue}
                               />
                               <FormikInput
                                 label={`Text Solution ${index + 1}`}
                                 name={`allissues[${index}].text`}
                                 type={"textarea"}
+                                value={values.allissues[index].text}
                               />
                               <FormikInput
                                 label={`Video Solution ${index + 1}`}
@@ -196,11 +227,17 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
                                     event.currentTarget.values
                                   );
                                 }}
+                                value={values.allissues[index].video}
                               />
                               <div className="w-full">
                                 <label className="block  text-lg font-semibold text-[#056674] ">
                                   {`Pdf Solution${index + 1}`}
                                 </label>
+                                {/* <iframe
+                                  src={values.allissues[index].pdf}
+                                  className="h-20 w-20"
+                                  title="PDF Viewer"
+                                /> */}
                                 <input
                                   className="block w-full px-4 py-2  text-gray-700 placeholder-gray-400 bg-white border border-[#77B0AA] rounded-md  focus:border-[#77B0AA]  focus:ring-[#66BFBF] focus:outline-none focus:ring focus:ring-opacity-40"
                                   type="file"
@@ -243,4 +280,4 @@ function AddCategoryForm({ CategoryForm, setShowCategoryForm }) {
   );
 }
 
-export default AddCategoryForm;
+export default UpdateProductForm;

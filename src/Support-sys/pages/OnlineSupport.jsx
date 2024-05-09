@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { Form, Formik } from "formik";
@@ -13,22 +13,35 @@ import { IoDocumentText } from "react-icons/io5";
 import { IoVideocam } from "react-icons/io5";
 import Navbar from "../components/Navbar.jsx";
 import { pdfjs } from "react-pdf";
-import { Category, issues, modelnos, products } from "../components/Data.jsx";
+// import { Category, issues, modelnos, products } from "../components/Data.jsx";
 import url from "../components/EnglishGrammar_10000814.pdf";
 import { useParams } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 import InfoModel from "../components/InfoModel.jsx";
 import { UserContext } from "../../App.js";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../../FirebaseConfig.jsx";
 
 function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
-  let location = useLocation();
+  const [products, setProducts] = useState([]);
+  const [categorys, setCategorys] = useState([]);
+  useEffect(() => {
+    onSnapshot(collection(db, "Products"), (snap) => {
+      const allProducts = snap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log(allProducts);
+      setProducts(allProducts);
+      setCategorys(allProducts.map((e) => e.Category));
+      console.log(categorys);
+    });
+  }, []);
 
   const [showAns, setShowAns] = useState(false);
   const [values, setValues] = useState([]);
   const [showText, setShowText] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [showPdf, setShowPdf] = useState(false);
-  const [alldata, setAlldata] = useState(null);
   const handleClose = () => {
     setView(!view);
   };
@@ -74,8 +87,8 @@ function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
                   validationSchema={Yup.object({
                     product: Yup.string().required("*required"),
                     issue: Yup.string().required("*required"),
-                    modelno: Yup.string().required("*required"),
-                    serialno: Yup.string().required("*required"),
+                    // modelno: Yup.string().required("*required"),
+                    // serialno: Yup.string().required("*required"),
                   })}
                   onSubmit={(values) => {
                     // var formdata = new FormData();
@@ -87,16 +100,15 @@ function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
                       serialno: values.serialno,
                       issue: values.issue,
                     };
-                    const data = JSON.stringify(alldata);
+                    const data = JSON.stringify(alldata, 2, null);
+                    alert(data);
                     localStorage.setItem("currentdata", data);
-                    // console.log(formdata);
-                    setAlldata(values);
                     setView(!view);
                     setValues(values);
-                    setShowText(true);
+                    // setShowText(true);
                   }}
                 >
-                  {({ values }) => (
+                  {({ values, setFieldValue }) => (
                     <Form className="flex flex-col items-center justify-center w-full">
                       <div className="mt-2 sm:mt-4 w-full p-2 ">
                         <div className="grid grid-cols-2">
@@ -104,27 +116,67 @@ function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
                             <Formikselect
                               label={"Select Product"}
                               name={"product"}
-                              data={products}
+                              data={products.map((e) => e.ProductName)}
+                              onChange={(selectedProduct) => {
+                                setFieldValue("product", selectedProduct);
+                                const selectedProductData = products.find(
+                                  (data) => data.ProductName === selectedProduct
+                                );
+                                setFieldValue(
+                                  "category",
+                                  selectedProductData
+                                    ? selectedProductData.Category
+                                    : ""
+                                );
+                                setFieldValue(
+                                  "serialno",
+                                  selectedProductData
+                                    ? selectedProductData.Serial_No
+                                    : ""
+                                );
+                                setFieldValue(
+                                  "modelno",
+                                  selectedProductData
+                                    ? selectedProductData.Model_No
+                                    : ""
+                                );
+                                setFieldValue("issue", "");
+                              }}
                             />
                           </div>
                           <div className="m-2">
-                            <Formikselect
-                              label={"Select Category"}
+                            <FormikInput
+                              readOnly={true}
+                              label={"Category"}
                               name={"category"}
-                              data={Category.filter(
-                                (data) => `${data.P_id}` === `${values.product}`
-                              )}
+                              value={values.category}
                             />
                           </div>
                           <div className="m-2">
+                            <FormikInput
+                              readOnly={true}
+                              label={"Model No"}
+                              name={"modelno"}
+                              value={values.modelno}
+                            />
+                          </div>
+                          <div className="m-2">
+                            <FormikInput
+                              readOnly={true}
+                              label={"Serial No"}
+                              name={"serialno"}
+                              value={values.serialno}
+                            />
+                          </div>
+                          {/* <div className="m-2">
                             <Formikselect
                               label={"Select Model No"}
                               name={"modelno"}
                               data={modelnos}
                             />
-                          </div>
+                          </div> */}
                         </div>
-                        <div className="grid grid-cols-1">
+                        {/* <div className="grid grid-cols-1">
                           <div className="m-2">
                             <FormikInput
                               label={"Enter Serial Number"}
@@ -132,20 +184,21 @@ function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
                               type={"number"}
                             />
                           </div>
-                        </div>
+                        </div> */}
                         <div className="grid grid-cols-1">
                           <div className="m-2">
-                            {console.log(location.pathname)}
                             <Formikselect
                               label={"Select Your Issue"}
                               name={"issue"}
-                              data={
-                                location.pathname === "/Onlinesupport"
-                                  ? issues.filter(
-                                      (data) => data.name !== "other"
-                                    )
-                                  : issues
-                              }
+                              data={products
+                                .filter(
+                                  (data) => data.ProductName === values.product
+                                )
+                                .map((e) => e.Allissues)
+                                .flat()}
+                              onChange={(selectedProduct) => {
+                                setFieldValue("issue", selectedProduct);
+                              }}
                             />
                           </div>
                         </div>
@@ -174,7 +227,7 @@ function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
           handleClose={handleClose}
           handlegetHelp={handlegetHelp}
           title={"User Details"}
-          alldata={alldata}
+          info={values}
         />
       ) : null}
       {viewLogin ? (
@@ -220,43 +273,20 @@ function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
           <div className="flex flex-col items-center justify-center w-full h-full">
             {showText ? (
               <>
-                <div className="bg-[#E0ECE4] w-11/12 flex flex-col items-start p-4 h-full mt-5">
+                {" "}
+                <h2 className="text-[#056674] text-xl font-semibold mb-2">
+                  Text
+                </h2>
+                <div className="bg-[#E0ECE4] w-11/12 flex items-start p-4 h-full mt-5">
                   <div>
-                    {issues
-                      .filter((data) => data.name === values.issue)
+                    {products
+                      .filter((data) => data.ProductName === values.product)
                       .map((e) => {
                         return (
-                          <p className="text-[#056674] text-4xl">
-                            {e.name}
+                          <p className="text-[#056674] text-xl">
+                            {e.Allissues.map((e) => e.text)}
                             {" : "}
                           </p>
-                        );
-                      })}
-                  </div>
-                  <div className="">
-                    {issues
-                      .filter((data) => data.name === values.issue)
-                      .map((e) => {
-                        return (
-                          <>
-                            <p className="text-[#056674] text-4xl">
-                              {e.solution}
-                            </p>
-                            <p>
-                              Lorem ipsum dolor sit amet consectetur adipisicing
-                              elit. Velit ducimus quas praesentium ipsam, ullam
-                              nam soluta culpa, error blanditiis saepe
-                              perspiciatis suscipit ea iure excepturi ratione
-                              quidem! Libero, consectetur a.
-                            </p>
-                            <p>
-                              Lorem ipsum dolor sit amet consectetur adipisicing
-                              elit. Velit ducimus quas praesentium ipsam, ullam
-                              nam soluta culpa, error blanditiis saepe
-                              perspiciatis suscipit ea iure excepturi ratione
-                              quidem! Libero, consectetur a.
-                            </p>
-                          </>
                         );
                       })}
                   </div>
@@ -265,28 +295,57 @@ function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
             ) : null}
             {showVideo ? (
               <>
-                <div className="bg-[#E0ECE4] w-11/12 flex flex-col items-start p-4 h-full mt-5">
-                  <iframe
-                    width="560"
-                    height="315"
-                    src="https://www.youtube.com/embed/bzFT-3QJpWw?si=r4rcNUS74AF3Eggz"
-                    title="YouTube video player"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    allowfullscreen
-                  ></iframe>
+                <h2 className="text-[#056674] text-xl font-semibold mb-2">
+                  Videos
+                </h2>
+                <div className="bg-[#E0ECE4] w-11/12 flex items-start justify-center p-4 h-full mt-5">
+                  {products
+                    .filter((data) => data.ProductName === values.product)
+                    .map((product) =>
+                      product.Allissues.map((issue, index) => {
+                        const videoId = issue.video
+                          .split("/")
+                          .slice(-1)[0]
+                          .split("?")[0];
+                        return (
+                          <div key={index} className="w-fit  h-fit m-2">
+                            <iframe
+                              title={`Video ${index}`}
+                              width="100%"
+                              height="100%"
+                              src={`https://www.youtube.com/embed/${videoId}`}
+                              frameBorder="0"
+                              allowFullScreen
+                            />
+                          </div>
+                        );
+                      })
+                    )}
                 </div>
               </>
             ) : null}
             {showPdf && (
               <>
-                <div className=" bg-[#E0ECE4] w-11/12 flex flex-col items-start p-4 h-full mt-5">
-                  <iframe
-                    src={url}
-                    className="h-full w-full"
-                    title="PDF Viewer"
-                  />
+                <h2 className="text-[#056674] text-xl font-semibold mb-2">
+                  PDFs
+                </h2>
+                <div className=" bg-[#E0ECE4] w-11/12 flex flex-col items-start h-screen p-4 mt-5">
+                  {products
+                    .filter((data) => data.ProductName === values.product)
+                    .map((product) =>
+                      product.Allissues.map((issue, index) => {
+                        const pdfId = issue.pdf;
+                        return (
+                          <div key={index} className="w-full h-full m-2">
+                            <iframe
+                              src={pdfId}
+                              className="h-full w-full"
+                              title="PDF Viewer"
+                            />
+                          </div>
+                        );
+                      })
+                    )}
                 </div>
               </>
             )}

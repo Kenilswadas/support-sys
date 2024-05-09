@@ -1,7 +1,14 @@
 import { ErrorMessage, Field } from "formik";
 import React from "react";
+import { useLocation } from "react-router-dom";
 
-function Formikselect({ label, name, data }) {
+function Formikselect({ label, name, data, onChange }) {
+  const uniqueOptions = new Set(data);
+
+  // Check if data is an array of objects
+  const isObjectArray = Array.isArray(data) && typeof data[0] === "object";
+  let location = useLocation();
+
   return (
     <div>
       <label className="block mb-2 text-lg font-semibold text-[#056674]">
@@ -10,14 +17,27 @@ function Formikselect({ label, name, data }) {
       <Field
         as="select"
         name={name}
+        onChange={(e) => onChange(e.target.value)}
         className="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-[#77B0AA] rounded-md  focus:border-[#77B0AA]  focus:ring-[#66BFBF] focus:outline-none focus:ring focus:ring-opacity-40"
       >
         <option value="">{`please select option`}</option>
-        {data.map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.name}
-          </option>
-        ))}
+
+        {!isObjectArray
+          ? [...uniqueOptions].map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))
+          : [...uniqueOptions].map((option, index) => {
+              return (
+                <option key={index} value={option.issue}>
+                  {option.issue}
+                </option>
+              );
+            })}
+        {location.pathname === "/SupportTicket" && name === "issue" ? (
+          <option>{"Other"}</option>
+        ) : null}
       </Field>
       <ErrorMessage
         name={name}

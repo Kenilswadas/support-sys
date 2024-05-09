@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { FormikInput } from "./FormikInput.jsx";
 import { RxCross1 } from "react-icons/rx";
 import Button from "./Button.jsx";
-function InfoModel({ handleClose, title, handlegetHelp }) {
+function InfoModel({ handleClose, title, handlegetHelp, info }) {
   return (
     <div className="fixed inset-0 bg-cover bg-center flex items-center justify-center bg-black bg-opacity-70 z-50">
       <div className="flex items-center justify-center z-50 mt-auto sm:mt-auto sm:mb-auto mb-auto ">
@@ -39,15 +39,19 @@ function InfoModel({ handleClose, title, handlegetHelp }) {
               onSubmit={(values) => {
                 // var formdata = new FormData();
                 // alert(formdata.values);
-                // var alldata = {
-                //   email: values.email,
-                //   name: values.name,
-                //   mobile: values.mobile,
-                // };
-                // var data = JSON.stringify(alldata);
-
+                var alldata = {
+                  email: values.email,
+                  name: values.name,
+                  mobile: values.mobile,
+                  product: info.product,
+                  category: info.category,
+                  modelno: info.modelno,
+                  serialno: info.serialno,
+                  issue: info.issue,
+                };
+                var data = JSON.stringify(alldata);
+                alert(data);
                 // localStorage.setItem("userInfo", data);
-
                 handlegetHelp();
                 handleClose();
               }}

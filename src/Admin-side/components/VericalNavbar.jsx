@@ -100,7 +100,7 @@ function VericalNavbar({ ToggleView, setToggleView }) {
             }`}
           >
             <NavLink
-              to={"/Categories"}
+              to={"/Products"}
               className={({ isActive }) =>
                 `${
                   isActive
@@ -110,7 +110,7 @@ function VericalNavbar({ ToggleView, setToggleView }) {
               }
             >
               <MdOutlineCategory className="mr-4" size={20} />{" "}
-              {ToggleView ? null : ` Categories`}
+              {ToggleView ? null : `Products`}
             </NavLink>
           </li>
           <li
