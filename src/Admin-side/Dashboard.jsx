@@ -19,7 +19,11 @@ function Dashboard({ Ticket }) {
   }, [navigate]);
   const [ToggleView, setToggleView] = useState(false);
   const [allusers, setAllusers] = useState([]);
-  const [userCount, setUserCount] = useState(0);
+  const [allTickets, setAllTickets] = useState([]);
+  const [activeTickets, setActiveTickets] = useState([]);
+  const [pendingTickets, setPendingTickets] = useState([]);
+  const [completedTickets, setCompletedTickets] = useState([]);
+
   useEffect(() => {
     onSnapshot(collection(db, "UserDetails"), (snap) => {
       const alldata = snap.docs.map((e) => ({
@@ -28,9 +32,27 @@ function Dashboard({ Ticket }) {
       }));
       setAllusers(alldata);
     });
+    onSnapshot(collection(db, "Tickets"), (snap) => {
+      const alldata = snap.docs.map((e) => ({
+        id: e.id,
+        ...e.data(),
+      }));
+      setAllTickets(alldata);
+      const allpendingickets = alldata.filter(
+        (data) => data.Status === "Pending"
+      );
+      setPendingTickets(allpendingickets);
+      const allactivetickets = alldata.filter(
+        (data) => data.Status === "Active"
+      );
+      setActiveTickets(allactivetickets);
+      const allcompletedtickets = alldata.filter(
+        (data) => data.Status === "Completed"
+      );
+      setCompletedTickets(allcompletedtickets);
+    });
   }, []);
-  const sumOfIndices = allusers.length;
-
+  const TotalUsers = allusers.length;
   return (
     <div className="max-sm:w-full max-md:w-full">
       <Navbar />
@@ -45,7 +67,7 @@ function Dashboard({ Ticket }) {
             <div className="bg-white rounded-lg h-28 m-2 p-4">
               <h1 className="w-full text-2xl text-[#056674]">Active Tickets</h1>
               <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
-                11
+                {activeTickets.length}
               </div>
             </div>
             <div className="bg-white rounded-lg h-28 m-2 p-4">
@@ -53,7 +75,7 @@ function Dashboard({ Ticket }) {
                 Pending Tickets
               </h1>
               <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
-                2
+                {pendingTickets.length}
               </div>
             </div>
             <div className="bg-white rounded-lg h-28 m-2 p-4">
@@ -61,14 +83,14 @@ function Dashboard({ Ticket }) {
                 Completed Tickets
               </h1>
               <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
-                20
+                {completedTickets.length}
               </div>
             </div>
             <NavLink to={"/Customers"}>
               <div className="bg-white rounded-lg h-28 m-2 p-4">
                 <h1 className="w-full text-2xl text-[#056674]">Customers</h1>
                 <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
-                  {sumOfIndices}
+                  {TotalUsers}
                 </div>
               </div>
             </NavLink>

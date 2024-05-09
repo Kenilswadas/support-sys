@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { Form, Formik } from "formik";
@@ -7,17 +7,33 @@ import Button from "../components/Button.jsx";
 import * as Yup from "yup";
 import { Formikselect } from "../components/Formikselect.jsx";
 import Navbar from "../components/Navbar.jsx";
-import {
-  Category,
-  issues,
-  modelnos,
-  option,
-  products,
-} from "../components/Data.jsx";
+import { option } from "../components/Data.jsx";
 import { NavLink } from "react-router-dom";
 import LoginModel from "../components/LoginModel.jsx";
 import { UserContext } from "../../App.js";
-function SupportTicket({ SetTicket, Ticket, viewLogin, setViewLogin }) {
+import { addDoc, collection, onSnapshot } from "firebase/firestore";
+import { auth, db } from "../../FirebaseConfig.jsx";
+import { CgDetailsLess } from "react-icons/cg";
+import { v4 as uuidv4 } from "uuid";
+import { ToastContainer, toast } from "react-toastify";
+import { LoadderContext } from "../../App.js";
+import Loader from "../../helpers/Loader.jsx";
+function SupportTicket({ viewLogin, setViewLogin }) {
+  const { isLoading, setIsloading } = useContext(LoadderContext);
+  const [products, setProducts] = useState([]);
+  const [categorys, setCategorys] = useState([]);
+  useEffect(() => {
+    onSnapshot(collection(db, "Products"), (snap) => {
+      const allProducts = snap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log(allProducts);
+      setProducts(allProducts);
+      setCategorys(allProducts.map((e) => e.Category));
+      console.log(categorys);
+    });
+  }, []);
   const handleCloseLogin = () => {
     setViewLogin(!viewLogin);
   };
@@ -30,6 +46,9 @@ function SupportTicket({ SetTicket, Ticket, viewLogin, setViewLogin }) {
         setUserName={setUserName}
       />
       <div className="bg-white flex flex-col overflow-auto items-center justify-center  w-full">
+        <ToastContainer />
+        {console.log(isLoading)}
+        {isLoading === true ? <Loader /> : null}
         <div className="shadow-2xl p-4 sm:p-8 rounded flex flex-col items-center justify-center   w-2/4 mx-autosrc/Support-sys/pages/Leandingpage.jsx src/Support-sys/pages/components ">
           <h2 className="text-lg sm:text-4xl font-semibold mb-2 sm:mb-4 text-[#FF0000]">
             {"Support - Ticket"}
@@ -43,22 +62,46 @@ function SupportTicket({ SetTicket, Ticket, viewLogin, setViewLogin }) {
                 serialno: "",
                 issue: "",
                 haveyougonethrough: "",
-                getsolution: "",
                 other: "",
               }}
               validationSchema={Yup.object({
                 product: Yup.string().required("*required"),
                 // category: Yup.string().required("*required"),
-                modelno: Yup.string().required("*required"),
-                serialno: Yup.string().required("*required"),
+                // modelno: Yup.string().required("*required"),
+                issue: Yup.string().required("*required"),
               })}
               onSubmit={(values) => {
-                alert(JSON.stringify(values, null, 2));
-                localStorage.setItem(
-                  "SupportTicketData",
-                  JSON.stringify(values)
-                );
-                SetTicket(values);
+                setIsloading(true);
+                const formData = {
+                  ...values,
+                  userEmail: auth?.currentUser?.email,
+                  userName: auth?.currentUser?.displayName,
+                  userUid: auth?.currentUser?.uid,
+                  TicketId: uuidv4(),
+                };
+                addDoc(collection(db, "Tickets"), {
+                  Category: formData.category,
+                  Issue: formData.issue,
+                  Model_No: formData.modelno,
+                  OnlineSupport: formData.haveyougonethrough,
+                  OtherIssue: formData.other,
+                  ProductName: formData.product,
+                  Serial_No: formData.serialno,
+                  TicketId: formData.TicketId,
+                  UserEmail: formData.userEmail,
+                  UserName: formData.userName,
+                  UserUid: formData.userUid,
+                  Status: "Pending",
+                })
+                  .then((res) => {
+                    toast.success("Ticket Genrated.");
+                    setIsloading(false);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    toast.error(err.message);
+                    setIsloading(false);
+                  });
               }}
             >
               {({ values, setFieldValue }) => (
@@ -69,32 +112,57 @@ function SupportTicket({ SetTicket, Ticket, viewLogin, setViewLogin }) {
                         <Formikselect
                           label={"Select Product"}
                           name={"product"}
-                          data={products}
+                          data={products.map((e) => e.ProductName)}
+                          onChange={(selectedProduct) => {
+                            setFieldValue("product", selectedProduct);
+                            const selectedProductData = products.find(
+                              (data) => data.ProductName === selectedProduct
+                            );
+                            setFieldValue(
+                              "category",
+                              selectedProductData
+                                ? selectedProductData.Category
+                                : ""
+                            );
+                            setFieldValue(
+                              "serialno",
+                              selectedProductData
+                                ? selectedProductData.Serial_No
+                                : ""
+                            );
+                            setFieldValue(
+                              "modelno",
+                              selectedProductData
+                                ? selectedProductData.Model_No
+                                : ""
+                            );
+                            setFieldValue("issue", "");
+                            setFieldValue("other", "");
+                          }}
                         />
                       </div>
-                      <div className="m-2">
-                        <Formikselect
-                          label={"Select Category"}
-                          name={"category"}
-                          data={Category.filter(
-                            (data) => `${data.P_id}` === `${values.product}`
-                          )}
-                        />
-                      </div>
-                      <div className="m-2">
-                        <Formikselect
-                          label={"Select Model No"}
-                          name={"modelno"}
-                          data={modelnos}
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1">
                       <div className="m-2">
                         <FormikInput
-                          label={"Enter Serial Number"}
+                          readOnly={true}
+                          label={"Category"}
+                          name={"category"}
+                          value={values.category}
+                        />
+                      </div>
+                      <div className="m-2">
+                        <FormikInput
+                          readOnly={true}
+                          label={"Model No"}
+                          name={"modelno"}
+                          value={values.modelno}
+                        />
+                      </div>
+                      <div className="m-2">
+                        <FormikInput
+                          readOnly={true}
+                          label={"Serial No"}
                           name={"serialno"}
-                          type={"number"}
+                          value={values.serialno}
                         />
                       </div>
                     </div>
@@ -103,36 +171,64 @@ function SupportTicket({ SetTicket, Ticket, viewLogin, setViewLogin }) {
                         <Formikselect
                           label={"Select Your Issue"}
                           name={"issue"}
-                          data={issues}
+                          data={products
+                            .filter(
+                              (data) => data.ProductName === values.product
+                            )
+                            .map((e) => e.Allissues)
+                            .flat()}
+                          onChange={(selectedProduct) => {
+                            setFieldValue("issue", selectedProduct);
+                            setFieldValue("haveyougonethrough", "");
+                          }}
                         />
                       </div>
                     </div>
-                    {values.issue && values.issue !== "other" && (
-                      <div className="flex items-center justify-end w-full">
-                        <div className="m-2 flex items-center justify-between w-full">
-                          <p className=" text-[#77B0AA] text-xl font-medium mr-4">
-                            Have you gone through the Online Support ? -{" "}
-                          </p>
-                          <Formikselect
-                            name={"haveyougonethrough"}
-                            data={option}
-                          />
+                    {values.issue === "" ||
+                      (values.issue && values.issue !== "Other" && (
+                        <div className="flex items-center justify-end w-full">
+                          <div className="m-2 flex items-center justify-between w-full">
+                            <p className=" text-[#77B0AA] text-xl font-medium mr-4">
+                              Have you gone through the Online Support ? -{" "}
+                            </p>
+                            <Formikselect
+                              name={"haveyougonethrough"}
+                              data={option.map((e) => e.name)}
+                              onChange={(selectedProduct) => {
+                                setFieldValue(
+                                  "haveyougonethrough",
+                                  selectedProduct
+                                );
+                              }}
+                            />
+                          </div>
                         </div>
-                      </div>
-                    )}
-                    {values.haveyougonethrough === "yes" && (
-                      <div className="flex items-center justify-end w-full">
-                        <div className="m-2 flex items-center justify-between w-full">
-                          <p className=" text-[#77B0AA] text-xl font-medium mr-10">
-                            Did you get the solution ? -{" "}
-                          </p>
-                          <Formikselect name={"getsolution"} data={option} />
+                      ))}
+                    {values.haveyougonethrough === "yes" &&
+                      values.issue !== "" && (
+                        <div className="flex items-center justify-end w-full">
+                          <div className="flex items-center justify-end w-full">
+                            <div className="m-2 flex flex-col items-center justify-between w-full">
+                              <p className="text-[#056674] w-full flex">
+                                <span className="pr-2">
+                                  <CgDetailsLess size={20} />
+                                </span>
+                                <span>
+                                  If You Still Not Get The Solution Then Please
+                                </span>
+                              </p>
+                              <FormikInput
+                                name={"other"}
+                                label={"Describe Your Issue --"}
+                                placeholder={"other issue"}
+                              />
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                     {(values.haveyougonethrough === "no" ||
                       (values.haveyougonethrough && values.issue) ===
-                        "other") && (
+                        "Other") && (
                       <div className="flex items-center justify-end w-full">
                         <div className="m-2 flex items-center justify-between w-full">
                           <p className=" text-[#77B0AA] text-xl font-medium mr-10">
@@ -150,7 +246,7 @@ function SupportTicket({ SetTicket, Ticket, viewLogin, setViewLogin }) {
                       </div>
                     )}
                     {(values.getsolution === "no" ||
-                      values.issue === "other") && (
+                      values.issue === "Other") && (
                       <div className="flex items-center justify-end w-full">
                         <div className="m-2 flex items-center justify-between w-full">
                           <FormikInput
@@ -161,13 +257,9 @@ function SupportTicket({ SetTicket, Ticket, viewLogin, setViewLogin }) {
                         </div>
                       </div>
                     )}
-                    {(!(
-                      values.haveyougonethrough === "yes" &&
-                      values.getsolution === "yes"
-                    ) ||
-                      (values.haveyougonethrough == "no" &&
-                        values.getsolution === "yes") ||
-                      values.issue === "other") && (
+                    {(values.issue === "Other" ||
+                      values.haveyougonethrough === "yes" ||
+                      values.issue === "") && (
                       <div className="m-2">
                         <Button name={"Get Help"} type={"submit"} />
                       </div>

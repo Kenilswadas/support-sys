@@ -2,10 +2,15 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import VideoCard from "../components/VideoCard";
 
-function Knowledgebased() {
+function Knowledgebased({ viewLogin, setViewLogin, userName, setUserName }) {
   return (
     <div className="max-sm:w-full max-md:w-full">
-      <Navbar />
+      <Navbar
+        viewLogin={viewLogin}
+        setViewLogin={setViewLogin}
+        userName={userName}
+        setUserName={setUserName}
+      />
       <section className="grid grid-cols-4 p-4">
         <VideoCard
           src="https://www.youtube.com/embed/kUz96sbDXAI?si=qJInctemiMFLKf_O"

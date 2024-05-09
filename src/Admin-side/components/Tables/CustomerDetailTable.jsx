@@ -27,7 +27,6 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
     { id: "Name", label: "Name", minWidth: 50 },
     { id: "Email", label: "Email Id", minWidth: 50 },
     { id: "Mobile", label: "Mobile", minWidth: 50 },
-    { id: "Action", label: "Action", minWidth: 50 },
   ];
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>

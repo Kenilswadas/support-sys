@@ -3,6 +3,9 @@ import { FaUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 import { NavLink } from "react-router-dom";
 import logo from "../../helpers/images/logo.png";
+import { signOut } from "firebase/auth";
+import { auth } from "../../FirebaseConfig";
+import { toast } from "react-toastify";
 
 function Navbar() {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -12,6 +15,17 @@ function Navbar() {
 
   const handleProfileLeave = () => {
     setIsDropdownVisible(false);
+  };
+  const handleLogout = () => {
+    signOut(auth)
+      .then((res) => {
+        toast.success("Sign-out Successfully.");
+        localStorage.clear();
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.message);
+      });
   };
   return (
     <>
@@ -47,6 +61,9 @@ function Navbar() {
                   </li>
                   <div className="border-t-2 border-[#056674] w-full p-2 flex items-start justify-start">
                     <NavLink
+                      onClick={() => {
+                        handleLogout();
+                      }}
                       className={
                         "p-2 flex items-center justify-center hover:bg-[#E0ECE4] hover:border border-[#056674]"
                       }

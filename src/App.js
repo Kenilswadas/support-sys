@@ -7,10 +7,10 @@ import SupportTicket from "./Support-sys/pages/SupportTicket.jsx";
 import Dashboard from "./Admin-side/Dashboard.jsx";
 import Knowledgebased from "./Support-sys/pages/Knowledgebased.jsx";
 import Tickets from "./Admin-side/Tickets.jsx";
-import Categories from "./Admin-side/Categories.jsx";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./FirebaseConfig.jsx";
 import Customers from "./Admin-side/Customers.jsx";
+import Products from "./Admin-side/Products.jsx";
 export const UserContext = createContext(null);
 export const LoadderContext = createContext(null);
 function App() {
@@ -51,7 +51,7 @@ function App() {
               />
               <Route path="/AdminDashboard" element={<Dashboard />} />
               <Route path="/Ticket" element={<Tickets />} />
-              <Route path="/Categories" element={<Categories />} />
+              <Route path="/Products" element={<Products />} />
               <Route path="/Customers" element={<Customers />} />
               <Route
                 path="/OnlineSupport"

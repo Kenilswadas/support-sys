@@ -138,6 +138,7 @@ function LoginModel({
                               placeholder={"Email"}
                               type={"email"}
                               label={"Enter Your Email"}
+                              value={values.email}
                             />
                           </div>
                           <div>
@@ -146,6 +147,7 @@ function LoginModel({
                               placeholder={"Password"}
                               type={"password"}
                               label={"Enter Your Password"}
+                              value={values.password}
                             />
                           </div>
                           <div>
@@ -260,6 +262,7 @@ function LoginModel({
                               placeholder={"Name"}
                               type={"name"}
                               label={"Enter Your Name"}
+                              value={values.name}
                             />
                           </div>
                           <div className="m-2">
@@ -268,6 +271,7 @@ function LoginModel({
                               placeholder={"Mobile No."}
                               type={"number"}
                               label={"Enter Mobile No."}
+                              value={values.mobile}
                             />
                           </div>
                           <div className="m-2">
@@ -276,6 +280,7 @@ function LoginModel({
                               placeholder={"Email"}
                               type={"email"}
                               label={"Enter Your Email"}
+                              value={values.email}
                             />
                           </div>
                           <div className="m-2">
@@ -284,6 +289,7 @@ function LoginModel({
                               placeholder={"Password"}
                               type={"password"}
                               label={"Enter Your Password"}
+                              value={values.password}
                             />
                           </div>
 
