@@ -13,15 +13,22 @@ import { IoDocumentText } from "react-icons/io5";
 import { IoVideocam } from "react-icons/io5";
 import Navbar from "../components/Navbar.jsx";
 import { pdfjs } from "react-pdf";
-// import { Category, issues, modelnos, products } from "../components/Data.jsx";
-import url from "../components/EnglishGrammar_10000814.pdf";
 import { useParams } from "react-router-dom";
 import InfoModel from "../components/InfoModel.jsx";
 import { UserContext } from "../../App.js";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../FirebaseConfig.jsx";
+import { ToastContainer } from "react-toastify";
 
-function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
+function OnlineSupport({
+  view,
+  setView,
+  viewLogin,
+  setViewLogin,
+  userName,
+  setIsloading,
+  isLoading,
+}) {
   const [products, setProducts] = useState([]);
   const [categorys, setCategorys] = useState([]);
   useEffect(() => {
@@ -58,16 +65,17 @@ function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
   document.addEventListener("contextmenu", (event) => {
     event.preventDefault();
   });
-  const page = useParams();
-  console.log(page);
   const setUserName = useContext(UserContext);
+  console.log(viewLogin);
   return (
     <div className="max-sm:w-full max-md:w-full">
       <Navbar
         viewLogin={viewLogin}
         setViewLogin={setViewLogin}
+        userName={userName}
         setUserName={setUserName}
       />
+      <ToastContainer />
       <div className="bg-white flex flex-col overflow-auto items-center justify-center  w-full">
         <div className="flex items-center justify-center mt-auto sm:mt-auto sm:mb-auto mb-auto w-full">
           {!showAns ? (
@@ -93,16 +101,16 @@ function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
                   onSubmit={(values) => {
                     // var formdata = new FormData();
                     // formdata.append("product", values.product);
-                    var alldata = {
-                      product: values.product,
-                      category: values.category,
-                      modelno: values.modelno,
-                      serialno: values.serialno,
-                      issue: values.issue,
-                    };
-                    const data = JSON.stringify(alldata, 2, null);
-                    alert(data);
-                    localStorage.setItem("currentdata", data);
+                    // var alldata = {
+                    //   product: values.product,
+                    //   category: values.category,
+                    //   modelno: values.modelno,
+                    //   serialno: values.serialno,
+                    //   issue: values.issue,
+                    // };
+                    // const data = JSON.stringify(alldata, 2, null);
+                    // alert(data);
+                    // localStorage.setItem("currentdata", data);
                     setView(!view);
                     setValues(values);
                     // setShowText(true);
@@ -231,7 +239,13 @@ function OnlineSupport({ view, setView, viewLogin, setViewLogin }) {
         />
       ) : null}
       {viewLogin ? (
-        <LoginModel handleCloseLogin={handleCloseLogin} title={"Login"} />
+        <LoginModel
+          handleCloseLogin={handleCloseLogin}
+          title={"Login"}
+          setUserName={setUserName}
+          isLoading={isLoading}
+          setIsloading={setIsloading}
+        />
       ) : null}
       {showAns ? (
         <div className="flex flex-col items-start justify-start w-full h-screen  mt-5">

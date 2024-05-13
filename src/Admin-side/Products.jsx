@@ -3,7 +3,6 @@ import Navbar from "./components/Navbar.jsx";
 import VericalNavbar from "./components/VericalNavbar.jsx";
 import SquareBtn from "../Support-sys/components/SquareBtn.jsx";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
-import AddCategoryForm from "./components/Form/AddCategoryForm.jsx";
 import {
   collection,
   deleteDoc,
@@ -13,8 +12,9 @@ import {
 } from "firebase/firestore";
 import { db } from "../FirebaseConfig.jsx";
 import ProductDetailTable from "./components/Tables/ProductDetailTable.jsx";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import UpdateProductForm from "./components/Model/UpdateProductForm.jsx";
+import AddProductsForm from "./components/Form/AddProductsForm.jsx";
 function Products() {
   const [ToggleView, setToggleView] = useState(false);
   const [CategoryForm, setShowCategoryForm] = useState(false);
@@ -55,6 +55,7 @@ function Products() {
   return (
     <div className="max-sm:w-full max-md:w-full">
       <Navbar />
+      <ToastContainer />
       <VericalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
       <div className="flex w-full h-screen p-4 overflow-auto ">
         <div
@@ -73,7 +74,7 @@ function Products() {
           />
 
           {CategoryForm ? (
-            <AddCategoryForm
+            <AddProductsForm
               CategoryForm={CategoryForm}
               setShowCategoryForm={setShowCategoryForm}
             />
