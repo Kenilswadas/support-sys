@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar.jsx";
 import VericalNavbar from "./components/VericalNavbar.jsx";
 import SquareBtn from "../Support-sys/components/SquareBtn.jsx";
@@ -35,16 +35,17 @@ function Products() {
   const handleDeleteProduct = (id) => {
     deleteDoc(doc(db, "Products", id));
   };
-  const handleUpadteProduct = (id) => {
-    updateDoc(doc(db, "Products", id), {})
-      .then((res) => {
-        toast.success("Product is Updated");
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error(err.message);
-      });
-  };
+  // const handleUpadteProduct = (id) => {
+  //   alert(id);
+  //   // updateDoc(doc(db, "Products", id), {})
+  //   //   .then((res) => {
+  //   //     toast.success("Product is Updated");
+  //   //   })
+  //   //   .catch((err) => {
+  //   //     console.log(err);
+  //   //     toast.error(err.message);
+  //   //   });
+  // };
 
   const OpenUpdateModel = (id) => {
     const handleSelectedProduct = allusers.find((data) => data.id === id);
@@ -92,7 +93,7 @@ function Products() {
                 setOpenupdate={setOpenupdate}
                 data={allusers}
                 handleDeleteProduct={handleDeleteProduct}
-                handleUpadteProduct={handleUpadteProduct}
+                // handleUpadteProduct={handleUpadteProduct}
                 allusers={allusers}
                 setSelectedProduct={setSelectedProduct}
                 OpenUpdateModel={OpenUpdateModel}

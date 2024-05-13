@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -16,16 +16,11 @@ import { Formikselect } from "../../../Support-sys/components/Formikselect.jsx";
 function ProductDetailTable({
   data,
   handleDeleteProduct,
-  handleUpadteProduct,
-  openupdate,
-  setOpenupdate,
   OpenUpdateModel,
   view,
   setView,
   setId,
   id,
-  allusers,
-  setSelectedProduct,
 }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -100,19 +95,20 @@ function ProductDetailTable({
                             </span>
                           ) : column.id === "ModelDetails" &&
                             column.label === "Image" ? (
-                            <>
+                            <div key={row.id}>
                               {value
                                 .filter((data) => data.Model_No === Model_No)
                                 .map((e) => {
                                   return (
                                     <img
+                                      key={e.Model_No}
                                       src={e.Model_Image}
                                       alt="ProductImage"
                                       className="w-20 h-20 border-2 border-[#E0ECE4] "
                                     />
                                   );
                                 })}
-                            </>
+                            </div>
                           ) : column.id === "ModelDetails" &&
                             column.label === "Model_No" ? (
                             <div className="">
@@ -136,6 +132,7 @@ function ProductDetailTable({
                                 {({ values, setFieldValue }) => (
                                   <div className="">
                                     <Formikselect
+                                      key={row.id}
                                       name={"Model_No"}
                                       data={value.map((e) => e.Model_No)}
                                       onChange={(selectedProduct) => {
