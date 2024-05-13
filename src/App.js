@@ -57,10 +57,14 @@ function App() {
                 path="/OnlineSupport"
                 element={
                   <OnlineSupport
-                    view={view}
-                    setView={setView}
                     viewLogin={viewLogin}
                     setViewLogin={setViewLogin}
+                    userName={userName}
+                    setUserName={setUserName}
+                    view={view}
+                    setView={setView}
+                    setIsloading={setIsloading}
+                    isLoading={isLoading}
                   />
                 }
               />

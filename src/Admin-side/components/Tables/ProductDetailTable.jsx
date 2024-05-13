@@ -11,6 +11,8 @@ import { MdDelete } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import { MdPreview } from "react-icons/md";
 import ViewSolution from "../Model/ViewSolution.jsx";
+import { Formik } from "formik";
+import { Formikselect } from "../../../Support-sys/components/Formikselect.jsx";
 function ProductDetailTable({
   data,
   handleDeleteProduct,
@@ -35,14 +37,14 @@ function ProductDetailTable({
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
+  const [Model_No, setModel_No] = useState(null);
   const columns = [
     { id: "Srno", label: "Sr no." },
-    { id: "Image", label: "Image", minWidth: 150 },
     { id: "id", label: "Id", maxWidth: 50 },
     { id: "ProductName", label: "ProductName" },
     { id: "Category", label: "Category" },
-    { id: "Model_No", label: "Model_No" },
+    { id: "ModelDetails", label: "Model_No" },
+    { id: "ModelDetails", label: "Image", minWidth: 150 },
     { id: "Serial_No", label: "Serial_No" },
     { id: "Solution", label: "View Solution" },
     { id: "Action", label: "Action" },
@@ -93,15 +95,72 @@ function ProductDetailTable({
                           }}
                         >
                           {column.id === "Srno" ? (
-                            <span className="font-semibold text-xl">
+                            <span className="font-semibold text-xl ">
                               {index + 1}
                             </span>
-                          ) : column.id === "Image" ? (
-                            <img
-                              src={value}
-                              alt="ProductImage"
-                              className="w-20 h-20"
-                            />
+                          ) : column.id === "ModelDetails" &&
+                            column.label === "Image" ? (
+                            <>
+                              {value
+                                .filter((data) => data.Model_No === Model_No)
+                                .map((e) => {
+                                  return (
+                                    <img
+                                      src={e.Model_Image}
+                                      alt="ProductImage"
+                                      className="w-20 h-20 border-2 border-[#E0ECE4] "
+                                    />
+                                  );
+                                })}
+                            </>
+                          ) : column.id === "ModelDetails" &&
+                            column.label === "Model_No" ? (
+                            <div className="">
+                              {/* {value.map((e) => (
+                                <p className="p-2 border-2 border-[#E0ECE4] h-20 w-20 flex items-center justify-center">
+                                  {e.Model_No}
+                                  {","}
+                                </p>
+                              ))} */}
+                              <Formik
+                                initialValues={{
+                                  Model_No: "",
+                                }}
+                                // validationSchema={Yup.object({
+                                //   status: Yup.string().required("*required"),
+                                // })}
+                                // onSubmit={(values) => {
+                                //   alert(values);
+                                // }}
+                              >
+                                {({ values, setFieldValue }) => (
+                                  <div className="">
+                                    <Formikselect
+                                      name={"Model_No"}
+                                      data={value.map((e) => e.Model_No)}
+                                      onChange={(selectedProduct) => {
+                                        setFieldValue(
+                                          "Model_No",
+                                          selectedProduct
+                                        );
+                                        setModel_No(selectedProduct);
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              </Formik>
+                            </div>
+                          ) : column.id === "Serial_No" ? (
+                            <>
+                              {value.map((e) => {
+                                return (
+                                  <p className="p-2 border-2 border-[#E0ECE4] flex items-center justify-center ">
+                                    {e}
+                                    {","}
+                                  </p>
+                                );
+                              })}
+                            </>
                           ) : column.id === "Solution" &&
                             column.label === "View Solution" ? (
                             <div className="w-full flex justify-between ">

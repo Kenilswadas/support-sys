@@ -25,11 +25,12 @@ function ProductDetailTable({ data, setView, view, id }) {
     setView(!view);
   };
   const columns = [
-    { id: "Image", label: "Image", minWidth: 150 },
+    { id: "Sr No.", label: "Sr No.", maxWidth: 50 },
     { id: "id", label: "Id", maxWidth: 50 },
     { id: "ProductName", label: "ProductName" },
     { id: "Category", label: "Category" },
-    { id: "Model_No", label: "Model_No" },
+    { id: "ModelDetails", label: "Model_No" },
+    { id: "ModelDetails", label: "Image", minWidth: 150 },
     { id: "Serial_No", label: "Serial_No" },
     { id: "Allissues", label: "Related Issue" },
     { id: "Allissues", label: "Text Solution", minWidth: 450 },
@@ -39,17 +40,18 @@ function ProductDetailTable({ data, setView, view, id }) {
 
   return (
     <div className="fixed inset-0 bg-cover bg-center flex flex-col items-center justify-center h-screen bg-black bg-opacity-50 z-50">
-      <div className=" w-11/12">
-        <div className=" w-full flex items-center justify-center text-3xl text-[#ffffff]">
-          Full Details
-        </div>
-        <div className=" w-full flex items-center justify-end">
+      <div className=" w-11/12 bg-white p-4">
+        <div className=" w-full flex items-center justify-end ">
           <IoIosCloseCircle
             size={40}
-            className="text-[#ffffff] cursor-pointer"
+            className="text-[#056674] cursor-pointer"
             onClick={() => handleClose()}
           />
         </div>
+        <div className=" w-full flex items-center justify-center text-3xl text-[#056674] mb-2">
+          Full Details
+        </div>
+
         <Paper sx={{}}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table
@@ -68,6 +70,7 @@ function ProductDetailTable({ data, setView, view, id }) {
                         fontFamily: "revert",
                         color: "#003C4C",
                         fontSize: "16px",
+                        backgroundColor: "#E0ECE4",
                       }}
                     >
                       {column.label}
@@ -93,12 +96,45 @@ function ProductDetailTable({ data, setView, view, id }) {
                               fontSize: "10px",
                             }}
                           >
-                            {column.id === "Image" ? (
-                              <img
-                                src={value}
-                                alt="ProductImage"
-                                className="w-20 h-20"
-                              />
+                            {column.id === "Sr No." ? (
+                              <>
+                                <p className="text-2xl">{index}</p>
+                              </>
+                            ) : column.id === "ModelDetails" &&
+                              column.label === "Image" ? (
+                              <>
+                                {value.map((e) => {
+                                  return (
+                                    <img
+                                      src={e.Model_Image}
+                                      alt="ProductImage"
+                                      className="w-full h-full border-2 border-[#E0ECE4] "
+                                    />
+                                  );
+                                })}
+                              </>
+                            ) : column.id === "ModelDetails" &&
+                              column.label === "Model_No" ? (
+                              <>
+                                {value.map((e) => {
+                                  return (
+                                    <p className="p-2 border-2 border-[#E0ECE4] flex items-center justify-center w-20 h-20">
+                                      {e.Model_No}
+                                    </p>
+                                  );
+                                })}
+                              </>
+                            ) : column.id === "Serial_No" ? (
+                              <>
+                                {value.map((e) => {
+                                  return (
+                                    <p className="p-2 border-2 border-[#E0ECE4] flex items-center justify-center ">
+                                      {e}
+                                      {","}
+                                    </p>
+                                  );
+                                })}
+                              </>
                             ) : column.id === "Allissues" &&
                               column.label === "Related Issue" ? (
                               value.map((e, i) => (
@@ -115,7 +151,7 @@ function ProductDetailTable({ data, setView, view, id }) {
                               value.map((e, i) => (
                                 <pre
                                   key={i}
-                                  className="text-justify w-96 h-48 overflow-auto text-wrap p-2"
+                                  className="text-justify w-96 h-48 overflow-auto text-wrap p-8 m-2 border-2 border-[#056674]"
                                 >
                                   {e.text}
                                 </pre>
@@ -130,7 +166,7 @@ function ProductDetailTable({ data, setView, view, id }) {
                                   .split("?")[0];
                                 console.log("Video ID:", videoId); // Add this line
                                 return (
-                                  <div className="w-64 h-40 m-2">
+                                  <div className="w-64 h-48 p-2 m-2 border-2 border-[#056674]">
                                     <iframe
                                       key={i}
                                       src={`https://www.youtube.com/embed/${videoId}`}
@@ -148,14 +184,12 @@ function ProductDetailTable({ data, setView, view, id }) {
                               value.map((e, i) => {
                                 console.log(e.pdf);
                                 return (
-                                  <div className="w-64 h-40 m-2">
-                                    <div className=" bg-[#E0ECE4] ">
-                                      <iframe
-                                        src={e.pdf}
-                                        className="h-full w-full"
-                                        title="PDF Viewer"
-                                      />
-                                    </div>
+                                  <div className="w-96 h-full p-4 m-2 border border-teal-600 rounded-lg">
+                                    <iframe
+                                      src={e.pdf}
+                                      className="w-full h-full"
+                                      title="PDF Viewer"
+                                    />
                                   </div>
                                 );
                               })

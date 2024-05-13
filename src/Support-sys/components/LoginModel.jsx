@@ -14,7 +14,6 @@ import {
 } from "firebase/auth";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
-
 import { auth, db } from "../../FirebaseConfig.jsx";
 import { toast } from "react-toastify";
 import Loader from "../../helpers/Loader.jsx";
