@@ -1,5 +1,5 @@
 import { FieldArray, Form, Formik } from "formik";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { FormikInput } from "../../../Support-sys/components/FormikInput.jsx";
 import * as Yup from "yup";
 import { RxCross1 } from "react-icons/rx";
@@ -63,7 +63,6 @@ function AddProductsForm({ CategoryForm, setShowCategoryForm }) {
               ),
             })}
             onSubmit={async (values) => {
-              console.log(values);
               setIsloading(true);
               try {
                 // Upload images
@@ -130,6 +129,10 @@ function AddProductsForm({ CategoryForm, setShowCategoryForm }) {
                         label={"Enter Product Name"}
                         name={"name"}
                         type={"text"}
+                        value={values.name}
+                        onChange={(event) => {
+                          setFieldValue("name", event.currentTarget.value);
+                        }}
                       />
                     </div>
                     <div className="m-2">
@@ -137,6 +140,10 @@ function AddProductsForm({ CategoryForm, setShowCategoryForm }) {
                         label={"Enter Category"}
                         name={"category"}
                         type={"text"}
+                        value={values.category}
+                        onChange={(event) => {
+                          setFieldValue("category", event.currentTarget.value);
+                        }}
                       />
                     </div>
                     {/* <div className="m-2">
@@ -184,6 +191,12 @@ function AddProductsForm({ CategoryForm, setShowCategoryForm }) {
                                     label={`Serial No ${index + 1}`}
                                     name={`serialno[${index}]`}
                                     type="text"
+                                    onChange={(event) => {
+                                      setFieldValue(
+                                        `serialno[${index}]`,
+                                        event.currentTarget.value
+                                      );
+                                    }}
                                   />
                                   <button
                                     className="text-[#FF4B5C] hover:text-red-500 focus:outline-none"
@@ -222,6 +235,12 @@ function AddProductsForm({ CategoryForm, setShowCategoryForm }) {
                                     label={`Model No ${index + 1}`}
                                     name={`modeldetails[${index}].Model_No`}
                                     type="text"
+                                    onChange={(event) => {
+                                      setFieldValue(
+                                        `modeldetails[${index}].Model_No`,
+                                        event.currentTarget.value
+                                      );
+                                    }}
                                   />
                                   <div className="m-2">
                                     <label className="block text-lg font-semibold text-[#056674] ">
@@ -282,20 +301,34 @@ function AddProductsForm({ CategoryForm, setShowCategoryForm }) {
                                     label={`Issues No ${index + 1}`}
                                     name={`allissues[${index}].issue`}
                                     type={"text"}
+                                    onChange={(event) => {
+                                      setFieldValue(
+                                        `allissues[${index}].issue`,
+                                        event.currentTarget.value
+                                      );
+                                    }}
                                   />
                                   <FormikInput
                                     label={`Text Solution ${index + 1}`}
                                     name={`allissues[${index}].text`}
                                     type={"textarea"}
+                                    onChange={(event) => {
+                                      setFieldValue(
+                                        `allissues[${index}].text`,
+                                        event.currentTarget.value
+                                      );
+                                    }}
+                                    s
                                   />
                                   <FormikInput
                                     label={`Video Solution ${index + 1}`}
                                     name={`allissues[${index}].video`}
                                     type={"text"}
+                                    // value={values.allissues[index].video}
                                     onChange={(event) => {
                                       setFieldValue(
                                         `allissues[${index}].video`,
-                                        event.currentTarget.values
+                                        event.currentTarget.value
                                       );
                                     }}
                                   />
