@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import VericalNavbar from "./components/VericalNavbar";
 import Navbar from "../Admin-side/components/Navbar.jsx";
 import { collection, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../FirebaseConfig.jsx";
 import { onAuthStateChanged } from "firebase/auth";
 import { NavLink, useNavigate } from "react-router-dom";
+import { TicketStatusContext } from "../App.js";
 function Dashboard({ Ticket }) {
   const navigate = useNavigate();
+  const { TicketStatus, setTicketStatus } = useContext(TicketStatusContext);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -64,28 +66,39 @@ function Dashboard({ Ticket }) {
           }`}
         >
           <div className="grid grid-cols-3">
-            <div className="bg-white rounded-lg h-28 m-2 p-4">
-              <h1 className="w-full text-2xl text-[#056674]">Active Tickets</h1>
-              <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
-                {activeTickets.length}
+            <NavLink to={"/Ticket"} onClick={() => setTicketStatus("Active")}>
+              <div className="bg-white rounded-lg h-28 m-2 p-4">
+                <h1 className="w-full text-2xl text-[#056674]">
+                  Active Tickets
+                </h1>
+                <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
+                  {activeTickets.length}
+                </div>
               </div>
-            </div>
-            <div className="bg-white rounded-lg h-28 m-2 p-4">
-              <h1 className="w-full text-2xl text-[#056674]">
-                Pending Tickets
-              </h1>
-              <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
-                {pendingTickets.length}
+            </NavLink>
+            <NavLink to={"/Ticket"} onClick={() => setTicketStatus("Pending")}>
+              <div className="bg-white rounded-lg h-28 m-2 p-4">
+                <h1 className="w-full text-2xl text-[#056674]">
+                  Pending Tickets
+                </h1>
+                <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
+                  {pendingTickets.length}
+                </div>
               </div>
-            </div>
-            <div className="bg-white rounded-lg h-28 m-2 p-4">
-              <h1 className="w-full text-2xl text-[#056674]">
-                Completed Tickets
-              </h1>
-              <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
-                {completedTickets.length}
+            </NavLink>
+            <NavLink
+              to={"/Ticket"}
+              onClick={() => setTicketStatus("Completed")}
+            >
+              <div className="bg-white rounded-lg h-28 m-2 p-4">
+                <h1 className="w-full text-2xl text-[#056674]">
+                  Completed Tickets
+                </h1>
+                <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
+                  {completedTickets.length}
+                </div>
               </div>
-            </div>
+            </NavLink>
             <NavLink to={"/Customers"}>
               <div className="bg-white rounded-lg h-28 m-2 p-4">
                 <h1 className="w-full text-2xl text-[#056674]">Customers</h1>
