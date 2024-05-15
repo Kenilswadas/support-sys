@@ -13,7 +13,6 @@ import { IoDocumentText } from "react-icons/io5";
 import { IoVideocam } from "react-icons/io5";
 import Navbar from "../components/Navbar.jsx";
 import { pdfjs } from "react-pdf";
-import { useParams } from "react-router-dom";
 import InfoModel from "../components/InfoModel.jsx";
 import { UserContext } from "../../App.js";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -122,58 +121,75 @@ function OnlineSupport({
                         <div className="grid grid-cols-2">
                           <div className="m-2">
                             <Formikselect
-                              label={"Select Product"}
-                              name={"product"}
-                              data={products.map((e) => e.ProductName)}
+                              label={"Category"}
+                              name={"category"}
+                              value={values.category}
+                              data={products.map((e) => e.Category)}
                               onChange={(selectedProduct) => {
-                                setFieldValue("product", selectedProduct);
+                                setFieldValue("category", selectedProduct);
                                 const selectedProductData = products.find(
                                   (data) => data.ProductName === selectedProduct
                                 );
                                 setFieldValue(
-                                  "category",
-                                  selectedProductData
-                                    ? selectedProductData.Category
-                                    : ""
+                                  "product",
+                                  selectedProductData ? selectedProductData : ""
                                 );
-                                setFieldValue(
-                                  "serialno",
-                                  selectedProductData
-                                    ? selectedProductData.Serial_No
-                                    : ""
-                                );
-                                setFieldValue(
-                                  "modelno",
-                                  selectedProductData
-                                    ? selectedProductData.Model_No
-                                    : ""
-                                );
-                                setFieldValue("issue", "");
                               }}
                             />
                           </div>
                           <div className="m-2">
-                            <FormikInput
-                              readOnly={true}
-                              label={"Category"}
-                              name={"category"}
-                              value={values.category}
+                            <Formikselect
+                              label={"Select Product"}
+                              name={"product"}
+                              data={products
+                                .filter(
+                                  (data) => data.Category === values.category
+                                )
+                                .map((e) => e.ProductName)}
+                              onChange={(selectedProduct) => {
+                                setFieldValue("product", selectedProduct);
+                                setFieldValue("issue", "");
+                              }}
                             />
                           </div>
+
                           <div className="m-2">
-                            <FormikInput
-                              readOnly={true}
-                              label={"Model No"}
-                              name={"modelno"}
-                              value={values.modelno}
-                            />
-                          </div>
-                          <div className="m-2">
-                            <FormikInput
-                              readOnly={true}
+                            <Formikselect
                               label={"Serial No"}
                               name={"serialno"}
+                              data={products
+                                .filter(
+                                  (data) => data.ProductName === values.product
+                                )
+                                .map((e, index) => {
+                                  return e.Serial_No.map((E) => {
+                                    return E;
+                                  });
+                                })
+                                .flat()}
                               value={values.serialno}
+                              onChange={(selectedProduct) => {
+                                setFieldValue("serialno", selectedProduct);
+                              }}
+                            />
+                          </div>
+                          <div className="m-2">
+                            <Formikselect
+                              label={"Model No"}
+                              name={"modelno"}
+                              placeholder={"Enter Model No"}
+                              value={values.modelno}
+                              data={products
+                                .filter(
+                                  (data) => data.ProductName === values.product
+                                )
+                                .map(
+                                  (e, index) => e.ModelDetails[index].Model_No
+                                )
+                                .flat()}
+                              onChange={(selectedProduct) => {
+                                setFieldValue("modelno", selectedProduct);
+                              }}
                             />
                           </div>
                           {/* <div className="m-2">
@@ -236,6 +252,7 @@ function OnlineSupport({
           handlegetHelp={handlegetHelp}
           title={"User Details"}
           info={values}
+          setShowText={setShowText}
         />
       ) : null}
       {viewLogin ? (
@@ -294,13 +311,17 @@ function OnlineSupport({
                 <div className="bg-[#E0ECE4] w-11/12 flex items-start p-4 h-full mt-5">
                   <div>
                     {products
-                      .filter((data) => data.ProductName === values.product)
+                      .filter(
+                        (data, index) =>
+                          data.ModelDetails[index].Model_No === values.modelno
+                      )
                       .map((e) => {
                         return (
-                          <p className="text-[#056674] text-xl">
-                            {e.Allissues.map((e) => e.text)}
-                            {" : "}
-                          </p>
+                          <pre className="text-[#056674] text-xl whitespace-pre-wrap overflow-auto max-h-96">
+                            {e.Allissues.filter(
+                              (data) => data.issue === values.issue
+                            ).map((e) => e.text)}
+                          </pre>
                         );
                       })}
                   </div>
@@ -316,13 +337,15 @@ function OnlineSupport({
                   {products
                     .filter((data) => data.ProductName === values.product)
                     .map((product) =>
-                      product.Allissues.map((issue, index) => {
+                      product.Allissues.filter(
+                        (data) => data.issue === values.issue
+                      ).map((issue, index) => {
                         const videoId = issue.video
                           .split("/")
                           .slice(-1)[0]
                           .split("?")[0];
                         return (
-                          <div key={index} className="w-fit  h-fit m-2">
+                          <div key={index} className="w-full  h-full m-2">
                             <iframe
                               title={`Video ${index}`}
                               width="100%"
@@ -347,7 +370,9 @@ function OnlineSupport({
                   {products
                     .filter((data) => data.ProductName === values.product)
                     .map((product) =>
-                      product.Allissues.map((issue, index) => {
+                      product.Allissues.filter(
+                        (data) => data.issue === values.issue
+                      ).map((issue, index) => {
                         const pdfId = issue.pdf;
                         return (
                           <div key={index} className="w-full h-full m-2">

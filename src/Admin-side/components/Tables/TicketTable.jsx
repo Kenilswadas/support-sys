@@ -11,10 +11,10 @@ import { CiEdit } from "react-icons/ci";
 import { Formikselect } from "../../../Support-sys/components/Formikselect";
 import { Formik } from "formik";
 import { MdFilterAlt } from "react-icons/md";
-
-import * as Yup from "yup";
-import { useState } from "react";
+import { FaFilterCircleXmark } from "react-icons/fa6";
 import { ToastContainer } from "react-toastify";
+import { useContext } from "react";
+import { TicketStatusContext } from "../../../App";
 function TicketsTable({
   Ticket,
   handleUpdateView,
@@ -24,10 +24,13 @@ function TicketsTable({
   selectedProduct,
   handleUpdate,
   id,
+  viewFilter,
+  setViewFilter,
 }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [viewFilter, setViewFilter] = useState(false);
+  const { TicketStatus, setTicketStatus } = useContext(TicketStatusContext);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -50,14 +53,14 @@ function TicketsTable({
     { id: "Action", label: "Action", minWidth: 50 },
   ];
   const handleViewFilter = () => {
-    if (viewFilter === false) {
-      setViewFilter(true);
-    } else {
-      setViewFilter(false);
-      handleStatusChange(null);
-    }
+    setViewFilter(true);
   };
   const options = ["Active", "Pending", "Completed"];
+  const handleClearFilter = () => {
+    setTicketStatus(null);
+    setViewFilter(false);
+    handleStatusChange("clear"); // Call function to handle filter after clearing
+  };
   return (
     <div>
       <ToastContainer />
@@ -83,6 +86,7 @@ function TicketsTable({
                     data={options}
                     onChange={(selectedProduct) => {
                       setFieldValue("status", selectedProduct);
+                      setTicketStatus(null);
                       handleStatusChange(selectedProduct);
                     }}
                   />
@@ -99,6 +103,22 @@ function TicketsTable({
               <MdFilterAlt size={28} />
             </span>
           </div>
+
+          {TicketStatus || viewFilter ? (
+            <div className="flex items-center justify-center text-[#056674]">
+              <div className="flex items-center justify-center text-[#056674] pr-2 pl-2">
+                {" || "}
+              </div>
+              <span>{"Clear Filters"}</span>
+              <FaFilterCircleXmark
+                size={25}
+                onClick={() => {
+                  handleClearFilter();
+                }}
+                className="cursor-pointer"
+              />
+            </div>
+          ) : null}
         </div>
       </div>
       <Paper sx={{ width: "100%", overflow: "auto" }}>
@@ -147,8 +167,6 @@ function TicketsTable({
                               {openupdate && row.id === id ? null : (
                                 <span className="pr-2">{value}</span>
                               )}
-                              {console.log(id)}
-                              {console.log(column.id)}
                               {openupdate && row.id === id && (
                                 <Formik
                                   initialValues={{
