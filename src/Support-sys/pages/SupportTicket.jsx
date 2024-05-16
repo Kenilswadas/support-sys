@@ -33,6 +33,7 @@ function SupportTicket({ viewLogin, setViewLogin }) {
       setCategorys(allProducts.map((e) => e.Category));
       console.log(categorys);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const handleCloseLogin = () => {
     setViewLogin(!viewLogin);
@@ -66,8 +67,6 @@ function SupportTicket({ viewLogin, setViewLogin }) {
               }}
               validationSchema={Yup.object({
                 product: Yup.string().required("*required"),
-                // category: Yup.string().required("*required"),
-                // modelno: Yup.string().required("*required"),
                 issue: Yup.string().required("*required"),
               })}
               onSubmit={(values) => {
@@ -110,59 +109,71 @@ function SupportTicket({ viewLogin, setViewLogin }) {
                     <div className="grid grid-cols-2">
                       <div className="m-2">
                         <Formikselect
-                          label={"Select Product"}
-                          name={"product"}
-                          data={products.map((e) => e.ProductName)}
-                          onChange={(selectedProduct) => {
-                            setFieldValue("product", selectedProduct);
-                            const selectedProductData = products.find(
-                              (data) => data.ProductName === selectedProduct
-                            );
-                            setFieldValue(
-                              "category",
-                              selectedProductData
-                                ? selectedProductData.Category
-                                : ""
-                            );
-                            setFieldValue(
-                              "serialno",
-                              selectedProductData
-                                ? selectedProductData.Serial_No
-                                : ""
-                            );
-                            setFieldValue(
-                              "modelno",
-                              selectedProductData
-                                ? selectedProductData.Model_No
-                                : ""
-                            );
-                            setFieldValue("issue", "");
-                            setFieldValue("other", "");
+                          label={"Category"}
+                          name={"category"}
+                          value={values.category}
+                          data={categorys}
+                          onChange={(selectedCategory) => {
+                            setFieldValue("category", selectedCategory);
+                            setFieldValue("product", "");
+                            setFieldValue("serialno", "");
                           }}
                         />
                       </div>
                       <div className="m-2">
-                        <FormikInput
-                          readOnly={true}
-                          label={"Category"}
-                          name={"category"}
-                          value={values.category}
+                        <Formikselect
+                          label={"Select Product"}
+                          name={"product"}
+                          data={products
+                            .filter((data) => data.Category === values.category)
+                            .map((e) => e.ProductName)}
+                          onChange={(selectedProduct) => {
+                            setFieldValue("product", selectedProduct);
+                            setFieldValue("issue", "");
+                            setFieldValue("serialno", "");
+                          }}
                         />
                       </div>
                       <div className="m-2">
-                        <FormikInput
-                          readOnly={true}
-                          label={"Model No"}
-                          name={"modelno"}
-                          value={values.modelno}
-                        />
-                      </div>
-                      <div className="m-2">
-                        <FormikInput
-                          readOnly={true}
+                        <Formikselect
                           label={"Serial No"}
                           name={"serialno"}
+                          data={products
+                            .filter(
+                              (data) => data.ProductName === values.product
+                            )
+                            .flatMap((product) => product.Serial_No)}
                           value={values.serialno}
+                          onChange={(selectedSerialNo) => {
+                            setFieldValue("serialno", selectedSerialNo);
+                            setFieldValue("issue", "");
+                          }}
+                        />
+                      </div>
+                      <div className="m-2">
+                        <Formikselect
+                          label={"Model No"}
+                          name={"modelno"}
+                          placeholder={"Enter Model No"}
+                          value={values.modelno}
+                          data={
+                            products
+                              .filter(
+                                (product) =>
+                                  product.ProductName === values.product
+                              ) // Filter products by ProductName
+                              .flatMap((product) =>
+                                product.ModelDetails.filter(
+                                  (model) =>
+                                    model.Assigned_Serial_No === values.serialno // Check if serialno matches Assigned_Serial_No
+                                )
+                              )
+                              .map((model) => model.Model_No) // Extract Model_No
+                          }
+                          onChange={(selectedModelNo) => {
+                            setFieldValue("modelno", selectedModelNo);
+                            setFieldValue("issue", "");
+                          }}
                         />
                       </div>
                     </div>
@@ -171,12 +182,20 @@ function SupportTicket({ viewLogin, setViewLogin }) {
                         <Formikselect
                           label={"Select Your Issue"}
                           name={"issue"}
-                          data={products
-                            .filter(
-                              (data) => data.ProductName === values.product
-                            )
-                            .map((e) => e.Allissues)
-                            .flat()}
+                          data={
+                            products
+                              .filter(
+                                (product) =>
+                                  product.ProductName === values.product
+                              ) // Filter products by ProductName
+                              .flatMap((product) =>
+                                product.Allissues.filter(
+                                  (issue) =>
+                                    issue.Assigned_Model_No === values.modelno // Check if modelno matches Assigned_Model_No
+                                )
+                              )
+                              .map((issue) => issue.issue) // Extract issue
+                          }
                           onChange={(selectedProduct) => {
                             setFieldValue("issue", selectedProduct);
                             setFieldValue("haveyougonethrough", "");

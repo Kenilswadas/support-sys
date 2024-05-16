@@ -1,18 +1,19 @@
 import { FieldArray, Form, Formik } from "formik";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { FormikInput } from "../../../Support-sys/components/FormikInput";
 import * as Yup from "yup";
 import { RxCross1 } from "react-icons/rx";
 import Button from "../../../Support-sys/components/Button.jsx";
 import { FaPlus } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../FirebaseConfig.jsx";
 import { ToastContainer, toast } from "react-toastify";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import "react-toastify/dist/ReactToastify.css";
 import { LoadderContext } from "../../../App.js";
 import Loader from "../../../helpers/Loader.jsx";
+import { Formikselect } from "../../../Support-sys/components/Formikselect.jsx";
 
 function UpdateProductForm({
   setOpenupdate,
@@ -28,7 +29,7 @@ function UpdateProductForm({
   };
 
   async function uploadFile(file) {
-    if (!file) return null;
+    if (file.length === 0) return null;
     const storageRef = ref(storage, `${file.name}`);
     await uploadBytes(storageRef, file);
     return getDownloadURL(storageRef);
@@ -36,7 +37,6 @@ function UpdateProductForm({
 
   return (
     <div className="bg-black flex flex-col overflow-auto items-center   w-full fixed inset-0  bg-cover bg-center bg-opacity-50 z-50 ">
-      {/* <ToastContainer /> */}
       {isLoading === true ? <Loader /> : null}
       <div className="bg-white shadow-2xl p-4 sm:p-8 rounded flex flex-col items-center justify-center w-11/12 mx-autosrc/Support-sys/pages/Leandingpage.jsx src/Support-sys/pages/components ">
         <div className="flex items-end justify-end w-full ">
@@ -62,8 +62,6 @@ function UpdateProductForm({
             validationSchema={Yup.object({
               name: Yup.string().required("*required"),
               category: Yup.string().required("*required"),
-              // modelno: Yup.string().required("*required"),
-              // serialno: Yup.string().required("*required"),
               allissues: Yup.array().of(
                 Yup.object().shape({
                   video: Yup.string().url("Invalid URL format"),
@@ -71,20 +69,16 @@ function UpdateProductForm({
               ),
             })}
             onSubmit={async (values) => {
-              console.log(values.allissues);
               setIsloading(true);
               try {
                 // Upload image
                 const imageUrl = await Promise.all(
                   values.modeldetails.map(async (model) => {
-                    console.log(typeof model.Model_Image);
                     if (typeof model.Model_Image === "object") {
-                      console.log(model.Model_Image);
                       return await uploadFile(model.Model_Image);
                     }
                   })
                 );
-
                 // Upload PDFs
                 const pdfUrls = await Promise.all(
                   values.allissues.map(async (issue) => {
@@ -93,16 +87,13 @@ function UpdateProductForm({
                     }
                   })
                 );
-                console.log(imageUrl);
-                console.log(pdfUrls);
-                // Upload videos
-                const videoUrls = values.allissues.map((issue) => issue.video);
                 // Add document to Firestore
                 await updateDoc(doc(db, "Products", id), {
                   ProductName: values.name,
                   Category: values.category,
                   Serial_No: values.serialno,
                   ModelDetails: values.modeldetails.map((model, index) => ({
+                    ...model,
                     Model_No: values.modeldetails[index].Model_No,
                     Model_Image:
                       typeof values.modeldetails[index].Model_Image !== "object"
@@ -183,19 +174,16 @@ function UpdateProductForm({
                     </div> */}
                   </div>
                   <div className="flex w-full justify-between">
-                    <div className="w-full">
+                    <div className="w-full m-2">
                       <FieldArray name="serialno">
                         {({ push, remove }) => (
-                          <div className="mt-2 sm:mt-4 p-2 border rounded bg-[#E0ECE4] m-2">
-                            <label className="block text-lg font-semibold text-[#056674] mb-4 border-b-2 border-[#056674] ">
+                          <div className="mt-4 p-4 border rounded  bg-[#E0ECE4] overflow-auto max-h-80">
+                            <label className="block text-lg font-semibold text-[#056674] mb-2 border-b-2 border-[#056674]">
                               Enter Serial No.
                             </label>
-                            <div className="grid grid-cols-1   overflow-auto max-h-32 ">
-                              {values.serialno.map((e, index) => (
-                                <div
-                                  key={index}
-                                  className="flex items-center justify-between"
-                                >
+                            {values.serialno.map((e, index) => (
+                              <div className="flex items-center mb-4">
+                                <div key={index} className="mr-4">
                                   <FormikInput
                                     label={`Serial No ${index + 1}`}
                                     name={`serialno[${index}]`}
@@ -208,89 +196,125 @@ function UpdateProductForm({
                                       );
                                     }}
                                   />
-                                  <button
-                                    className="text-[#FF4B5C] hover:text-red-500 focus:outline-none"
-                                    type="button"
-                                    onClick={() => remove(index)}
-                                  >
-                                    <MdDelete size={28} />
-                                  </button>
                                 </div>
-                              ))}
-                            </div>
-                            <div
-                              className="mt-4 flex items-center justify-start cursor-pointer"
-                              onClick={() => push("")}
-                            >
-                              <FaPlus size={28} className="text-[#056674]" />
-                              <span className="ml-2 text-[#056674]">
-                                Add Serial No
-                              </span>
+                                <button
+                                  className="text-[#FF4B5C] hover:text-red-500 focus:outline-none"
+                                  type="button"
+                                  onClick={() => remove(index)}
+                                >
+                                  <MdDelete size={28} />
+                                </button>
+                              </div>
+                            ))}
+                            <div className="flex items-center text-[#056674]">
+                              <button
+                                className="p-2 rounded-full bg-[#056674] bg-opacity-15 focus:ring-[#f95555] focus:outline-none focus:ring focus:ring-opacity-40 mr-2"
+                                type="button"
+                                onClick={() => push("")}
+                              >
+                                <FaPlus size={28} className="text-[#056674] " />
+                              </button>
+                              <span>Add Serial No</span>
                             </div>
                           </div>
                         )}
                       </FieldArray>
                     </div>
-                    <div className="w-full">
+                    <div className="w-full m-2">
                       <FieldArray name="modeldetails">
                         {({ push, remove }) => (
-                          <div className="mt-2 sm:mt-4 p-2 border rounded bg-[#E0ECE4]">
-                            <label className="block text-lg font-semibold text-[#056674] mb-4 border-b-2 border-[#056674] ">
-                              Enter Model No.
+                          <div className="mt-4 p-4 border rounded bg-[#E0ECE4] overflow-auto max-h-80">
+                            <label className="block text-lg font-semibold text-[#056674] mb-2 border-b-2 border-[#056674]">
+                              Enter Model Deatils.
                             </label>
-                            <div className="grid grid-cols-1  overflow-auto max-h-32 ">
-                              {values.modeldetails.map((e, index) => (
-                                <div key={index} className="flex ">
-                                  <FormikInput
-                                    label={`Model No ${index + 1}`}
-                                    name={`modeldetails[${index}].Model_No`}
-                                    type="text"
-                                    value={values.modeldetails[index].Model_No}
-                                    onChange={(event) => {
-                                      setFieldValue(
-                                        `modeldetails[${index}].Model_No`,
-                                        event.currentTarget.value
-                                      );
-                                    }}
-                                  />
-                                  <div className="m-2">
-                                    <label className="block text-lg font-semibold text-[#056674] ">
-                                      {"Product Image"}
-                                    </label>
-                                    <input
-                                      type="file"
-                                      name={`modeldetails[${index}].Model_Image`}
+                            {values.modeldetails.map((model, index) => (
+                              <div key={index} className=" border-b pb-4">
+                                <div className=" flex items-center justify-center">
+                                  <div className="mr-1 w-1/3">
+                                    {/* <label className="block text-lg font-semibold text-[#056674] mb-2">
+                                      Model No. {index + 1}
+                                    </label> */}
+                                    <FormikInput
+                                      name={`modeldetails[${index}].Model_No`}
+                                      type="text"
+                                      label={"Model No."}
+                                      placeholder={"Enter Model_No"}
+                                      value={
+                                        values.modeldetails[index].Model_No
+                                      }
                                       onChange={(event) => {
                                         setFieldValue(
-                                          `modeldetails[${index}].Model_Image`,
-                                          event.currentTarget.files[0]
+                                          `modeldetails[${index}].Model_No`,
+                                          event.currentTarget.value
                                         );
                                       }}
                                     />
                                   </div>
+                                  <div className="mr-1 w-1/3 ">
+                                    {/* <label className="block text-lg font-semibold text-[#056674] mb-2">
+                                      Assigned Serial_No.
+                                    </label> */}
+                                    <Formikselect
+                                      name={`modeldetails[${index}].Assigned_Serial_No`}
+                                      data={values.serialno}
+                                      onChange={(event) => {
+                                        setFieldValue(
+                                          `modeldetails[${index}].Assigned_Serial_No`,
+                                          event
+                                        );
+                                      }}
+                                      label={"Assigned Serial_No."}
+                                    />
+                                  </div>
+                                  <div className="w-1/3">
+                                    <label className="block text-lg font-semibold text-[#056674] mb-4">
+                                      Model Image
+                                    </label>
+                                    <div className="flex items-center">
+                                      <input
+                                        type="file"
+                                        name={`modeldetails[${index}].Model_Image`}
+                                        onChange={(event) => {
+                                          event.preventDefault();
+                                          const file =
+                                            event.currentTarget.files[0];
+                                          if (file) {
+                                            setFieldValue(
+                                              `modeldetails[${index}].Model_Image`,
+                                              file
+                                            );
+                                          } else {
+                                            console.error("No file selected");
+                                          }
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
                                   <button
-                                    className="text-[#FF4B5C] hover:text-red-500 focus:outline-none"
+                                    className="ml-4 text-[#FF4B5C] hover:text-red-500 focus:outline-none"
                                     type="button"
                                     onClick={() => remove(index)}
                                   >
-                                    <MdDelete size={28} />
+                                    <MdDelete size={24} />
                                   </button>
                                 </div>
-                              ))}
-                            </div>
-                            <div
-                              className="mt-4 flex items-center justify-start cursor-pointer"
-                              onClick={() =>
-                                push({
-                                  Model_No: "",
-                                  Model_Image: "",
-                                })
-                              }
-                            >
-                              <FaPlus size={28} className="text-[#056674]" />
-                              <span className="ml-2 text-[#056674]">
-                                Add Model No
-                              </span>
+                              </div>
+                            ))}
+                            <div className="flex items-center text-[#056674]">
+                              <button
+                                className="p-2 rounded-full bg-[#056674] bg-opacity-15 focus:ring-[#f95555] focus:outline-none focus:ring focus:ring-opacity-40 mr-2"
+                                type="button"
+                                onClick={() =>
+                                  push({
+                                    Model_No: "",
+                                    Model_Image: "",
+                                    Assigned_Serial_No: "",
+                                  })
+                                }
+                              >
+                                <FaPlus size={24} className="" />
+                              </button>
+                              <span>Add Model</span>
                             </div>
                           </div>
                         )}
@@ -301,29 +325,69 @@ function UpdateProductForm({
                     <FieldArray name="allissues">
                       {({ push, remove }) => (
                         <div className="mt-2 sm:mt-4 p-2 border rounded bg-[#E0ECE4]">
-                          <label className="block text-lg font-semibold text-[#056674] mb-4 border-b-2 border-[#056674] ">
+                          <label className="block text-lg font-semibold text-[#056674] mb-2 border-b-2 border-[#056674] ">
                             Enter Related Isssue
                           </label>
-                          <div className="grid grid-col-3 m-2 overflow-auto max-h-32 w-full border bg-[#E0ECE4]">
-                            {values.allissues.map((e, index) => {
-                              return (
-                                <div className="flex items-center justify-center  m-2">
-                                  <FormikInput
-                                    label={`Issues No ${index + 1}`}
-                                    name={`allissues[${index}].issue`}
-                                    type={"text"}
-                                    value={values.allissues[index].issue}
-                                    onChange={(event) => {
-                                      setFieldValue(
-                                        `allissues[${index}].issue`,
-                                        event.currentTarget.value
-                                      );
-                                    }}
-                                  />
-                                  <FormikInput
+
+                          {values.allissues.map((e, index) => {
+                            return (
+                              <div className="mb-4 border rounded p-4 bg-[#E0ECE4]">
+                                <div className="grid grid-cols-3 gap-4">
+                                  <div className="col-span-2">
+                                    <Formikselect
+                                      label={`Assign Model_No`}
+                                      name={`allissues[${index}].Assigned_Model_No`}
+                                      type={"text"}
+                                      data={values.modeldetails.map((e) => {
+                                        return e.Model_No;
+                                      })}
+                                      onChange={(event) => {
+                                        setFieldValue(
+                                          `allissues[${index}].Assigned_Model_No`,
+                                          event
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="col-span-2">
+                                    <FormikInput
+                                      label={`Issues No ${index + 1}`}
+                                      name={`allissues[${index}].issue`}
+                                      type={"text"}
+                                      value={values.allissues[index].issue}
+                                      onChange={(event) => {
+                                        setFieldValue(
+                                          `allissues[${index}].issue`,
+                                          event.currentTarget.value
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                  <div>
+                                    <FormikInput
+                                      label={`Video Solution ${index + 1}`}
+                                      name={`allissues[${index}].video`}
+                                      type={"text"}
+                                      value={values.allissues[index].video}
+                                      onChange={(event) => {
+                                        setFieldValue(
+                                          `allissues[${index}].video`,
+                                          event.currentTarget.value
+                                        );
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="mt-4">
+                                  <label className="block  text-lg font-semibold text-[#056674] ">{`Text Solution ${
+                                    index + 1
+                                  }`}</label>
+                                  <textarea
+                                    className="block w-full px-4 py-4 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-[#77B0AA] rounded-md  focus:border-[#77B0AA]  focus:ring-[#66BFBF] focus:outline-none focus:ring focus:ring-opacity-40"
                                     label={`Text Solution ${index + 1}`}
                                     name={`allissues[${index}].text`}
                                     type={"textarea"}
+                                    rows={4}
                                     value={values.allissues[index].text}
                                     onChange={(event) => {
                                       setFieldValue(
@@ -331,62 +395,56 @@ function UpdateProductForm({
                                         event.currentTarget.value
                                       );
                                     }}
+                                    s
                                   />
-                                  <FormikInput
-                                    label={`Video Solution ${index + 1}`}
-                                    name={`allissues[${index}].video`}
-                                    type={"text"}
+                                </div>
+                                <div className="mt-4">
+                                  <label className="block  text-lg font-semibold text-[#056674] ">
+                                    {`Pdf Solution${index + 1}`}
+                                  </label>
+                                  <input
+                                    className="block w-full px-4 py-2  text-gray-700 placeholder-gray-400 bg-white border border-[#77B0AA] rounded-md  focus:border-[#77B0AA]  focus:ring-[#66BFBF] focus:outline-none focus:ring focus:ring-opacity-40"
+                                    type="file"
+                                    name={`allissues[${index}].pdf`}
                                     onChange={(event) => {
                                       setFieldValue(
-                                        `allissues[${index}].video`,
-                                        event.currentTarget.value
+                                        `allissues[${index}].pdf`,
+                                        event.currentTarget.files[0]
                                       );
                                     }}
-                                    value={values.allissues[index].video}
+                                    // multiple
                                   />
-                                  <div className="w-full">
-                                    <label className="block  text-lg font-semibold text-[#056674] ">
-                                      {`Pdf Solution${index + 1}`}
-                                    </label>
-                                    <input
-                                      className="block w-full px-4 py-2  text-gray-700 placeholder-gray-400 bg-white border border-[#77B0AA] rounded-md  focus:border-[#77B0AA]  focus:ring-[#66BFBF] focus:outline-none focus:ring focus:ring-opacity-40"
-                                      type="file"
-                                      name={`allissues[${index}].pdf`}
-                                      onChange={(event) => {
-                                        setFieldValue(
-                                          `allissues[${index}].pdf`,
-                                          event.currentTarget.files[0]
-                                        );
-                                      }}
-                                      // multiple
-                                    />
-                                  </div>
-                                  <button
-                                    className="flex mt-5"
-                                    type="button"
-                                    onClick={() => remove(index)}
-                                  >
-                                    <MdDelete
-                                      size={28}
-                                      className="text-[#FF4B5C]"
-                                    />
-                                  </button>
                                 </div>
-                              );
-                            })}
-                          </div>
-                          <div
-                            className="mt-4 flex items-center justify-start cursor-pointer"
-                            onClick={() =>
-                              push({
-                                issue: "",
-                                text: "",
-                                video: [],
-                                pdf: [],
-                              })
-                            }
-                          >
-                            <FaPlus size={28} className="text-[#056674]" />
+                                <button
+                                  className="mt-4 text-red-600 flex items-center"
+                                  type="button"
+                                  onClick={() => remove(index)}
+                                >
+                                  <MdDelete size={28} className="mr-1" />
+                                  Remove
+                                </button>
+                              </div>
+                            );
+                          })}
+                          <div className="mt-4 flex items-center justify-start cursor-pointer p-2 ">
+                            <button
+                              type="button"
+                              className="p-2 rounded-full bg-[#056674] bg-opacity-15 focus:ring-[#f95555] focus:outline-none focus:ring focus:ring-opacity-40"
+                            >
+                              <FaPlus
+                                size={28}
+                                className="text-[#056674] "
+                                onClick={() =>
+                                  push({
+                                    Assigned_Model_No: "",
+                                    issue: "",
+                                    text: "",
+                                    video: [],
+                                    pdf: [],
+                                  })
+                                }
+                              />
+                            </button>
                             <span className="ml-2 text-[#056674]">
                               Add Related Issue
                             </span>

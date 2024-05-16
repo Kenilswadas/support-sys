@@ -56,8 +56,8 @@ function Products() {
   return (
     <div className="max-sm:w-full max-md:w-full">
       <Navbar />
-      <ToastContainer />
       <VericalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
+      <ToastContainer />
       <div className="flex w-full h-screen p-4 overflow-auto ">
         <div
           className={`bg-[#E0ECE4] w-full p-4 ${

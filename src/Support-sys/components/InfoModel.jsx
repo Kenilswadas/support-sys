@@ -13,8 +13,8 @@ function InfoModel({ handleClose, title, handlegetHelp, info }) {
   const { setIsloading, isLoading } = useContext(LoadderContext);
   return (
     <div className="fixed inset-0 bg-cover bg-center flex items-center justify-center bg-black bg-opacity-70 z-50">
-      {isLoading ? <Loader /> : null}
       <div className="flex items-center justify-center z-50 mt-auto sm:mt-auto sm:mb-auto mb-auto ">
+        {isLoading ? <Loader /> : null}
         <div className="bg-white p-4 sm:p-8 rounded shadow-md max-w-md w-full ">
           <div className="flex items-end justify-end ">
             <button

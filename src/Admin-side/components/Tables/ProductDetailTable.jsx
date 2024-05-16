@@ -13,6 +13,7 @@ import { MdPreview } from "react-icons/md";
 import ViewSolution from "../Model/ViewSolution.jsx";
 import { Formik } from "formik";
 import { Formikselect } from "../../../Support-sys/components/Formikselect.jsx";
+import { IconButton, Tooltip } from "@mui/material";
 function ProductDetailTable({
   data,
   handleDeleteProduct,
@@ -161,28 +162,38 @@ function ProductDetailTable({
                           ) : column.id === "Solution" &&
                             column.label === "View Solution" ? (
                             <div className="w-full flex justify-between ">
-                              <MdPreview
-                                size={28}
-                                onClick={() => {
-                                  setView(!view);
-                                  setId(row.id);
-                                }}
-                              />
+                              <Tooltip title="View Solution" placement="top">
+                                <IconButton
+                                  style={{ color: "#056674", fontSize: "25px" }}
+                                  onClick={() => {
+                                    setView(!view);
+                                    setId(row.id);
+                                  }}
+                                >
+                                  <MdPreview />
+                                </IconButton>
+                              </Tooltip>
                             </div>
                           ) : value ? (
                             <p>{value}</p>
                           ) : (
                             <div className="w-full flex justify-between ">
-                              <FaRegEdit
-                                onClick={() => OpenUpdateModel(row.id)}
-                                size={28}
-                                className=""
-                              />
-                              <MdDelete
-                                onClick={() => handleDeleteProduct(row.id)}
-                                size={28}
-                                className="cursor-pointer"
-                              />
+                              <Tooltip title="Edit" placement="top">
+                                <IconButton
+                                  style={{ color: "#056674", fontSize: "25px" }}
+                                  onClick={() => OpenUpdateModel(row.id)}
+                                >
+                                  <FaRegEdit />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Delete" placement="top">
+                                <IconButton
+                                  style={{ color: "#056674", fontSize: "25px" }}
+                                  onClick={() => handleDeleteProduct(row.id)}
+                                >
+                                  <MdDelete />
+                                </IconButton>
+                              </Tooltip>
                             </div>
                           )}
                         </TableCell>
