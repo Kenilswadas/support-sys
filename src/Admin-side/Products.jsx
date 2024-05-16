@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar.jsx";
-import VericalNavbar from "./components/VericalNavbar.jsx";
+import VericalNavbar from "./components/VerticalNavbar.jsx";
 import SquareBtn from "../Support-sys/components/SquareBtn.jsx";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
 import {

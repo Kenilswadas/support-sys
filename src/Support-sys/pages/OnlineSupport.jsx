@@ -42,7 +42,7 @@ function OnlineSupport({
       console.log(categorys);
     });
   }, []);
-
+  const test = (s) => {};
   const [showAns, setShowAns] = useState(false);
   const [values, setValues] = useState([]);
   const [showText, setShowText] = useState(false);
@@ -179,19 +179,21 @@ function OnlineSupport({
                               name={"modelno"}
                               placeholder={"Enter Model No"}
                               value={values.modelno}
-                              data={products
-                                .filter(
-                                  (data) => data.ProductName === values.product
-                                )
-                                .map(
-                                  (e, index) => e.ModelDetails[index].Model_No
-                                )
-                                .flat()}
+                              data={
+                                products
+                                  .find((data) =>
+                                    data.Serial_No.includes(values.serialno)
+                                  )
+                                  ?.ModelDetails.map(
+                                    (modelDetail) => modelDetail.Model_No
+                                  ) || []
+                              }
                               onChange={(selectedProduct) => {
                                 setFieldValue("modelno", selectedProduct);
                               }}
                             />
                           </div>
+
                           {/* <div className="m-2">
                             <Formikselect
                               label={"Select Model No"}
@@ -311,19 +313,22 @@ function OnlineSupport({
                 <div className="bg-[#E0ECE4] w-11/12 flex items-start p-4 h-full mt-5">
                   <div>
                     {products
-                      .filter(
-                        (data, index) =>
-                          data.ModelDetails[index].Model_No === values.modelno
-                      )
-                      .map((e) => {
-                        return (
-                          <pre className="text-[#056674] text-xl whitespace-pre-wrap overflow-auto max-h-96">
-                            {e.Allissues.filter(
-                              (data) => data.issue === values.issue
-                            ).map((e) => e.text)}
-                          </pre>
+                      .filter((data) => {
+                        const modelDetails = data.ModelDetails.find(
+                          (detail) => detail.Model_No === values.modelno
                         );
-                      })}
+                        return modelDetails !== undefined;
+                      })
+                      .map((product) => (
+                        <pre
+                          key={product.id}
+                          className="text-[#056674] text-xl whitespace-pre-wrap overflow-auto max-h-96"
+                        >
+                          {product.Allissues.filter(
+                            (issue) => issue.issue === values.issue
+                          ).map((issue) => issue.text)}
+                        </pre>
+                      ))}
                   </div>
                 </div>
               </>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
-import VericalNavbar from "./components/VericalNavbar";
+import VericalNavbar from "./components/VerticalNavbar";
 import CustomerDetailTable from "./components/Tables/CustomerDetailTable";
 import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../FirebaseConfig";

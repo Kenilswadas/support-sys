@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
-import VericalNavbar from "./components/VericalNavbar";
+import VericalNavbar from "./components/VerticalNavbar";
 import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../FirebaseConfig";
 import TicketsTable from "./components/Tables/TicketTable";

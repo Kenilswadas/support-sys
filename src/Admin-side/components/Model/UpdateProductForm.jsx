@@ -397,7 +397,7 @@ function UpdateProductForm({
                   </div>
                 </div>
                 <div className="m-2 w-full flex items-start">
-                  <Button name={"Add Product"} type={"submit"} />
+                  <Button name={"Update Product"} type={"submit"} />
                 </div>
               </Form>
             )}
