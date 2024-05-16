@@ -33,6 +33,9 @@ function LoginModel({
       .then((result) => {
         toast.success("Sign In Successfully");
         handleCloseLogin();
+        if (values.email === "admin@gmail.com") {
+          navigate("/adminDashboard");
+        } else navigate("/UserDashboard");
         setUserName(null);
       })
       .catch((error) => {
@@ -117,18 +120,18 @@ function LoginModel({
                           toast.success("Sign In Successfully");
                           setIsloading(false);
                           handleCloseLogin();
+                          if (values.email === "admin@gmail.com") {
+                            navigate("/adminDashboard");
+                          } else navigate("/UserDashboard");
                         })
                         .catch((err) => {
                           console.log(err);
                           toast.error(err.message);
                           setIsloading(false);
                         });
-                      if (values.email === "admin@gmail.com") {
-                        navigate("/adminDashboard");
-                      }
                     }}
                   >
-                    {(values) => (
+                    {({ values, setFieldValue }) => (
                       <Form className="flex flex-col items-center justify-center">
                         <div className="mt-2 sm:mt-4 w-full p-2 ">
                           <div className="w-full">
@@ -138,6 +141,12 @@ function LoginModel({
                               type={"email"}
                               label={"Enter Your Email"}
                               value={values.email}
+                              onChange={(event) => {
+                                setFieldValue(
+                                  "email",
+                                  event.currentTarget.value
+                                );
+                              }}
                             />
                           </div>
                           <div>
@@ -147,6 +156,12 @@ function LoginModel({
                               type={"password"}
                               label={"Enter Your Password"}
                               value={values.password}
+                              onChange={(event) => {
+                                setFieldValue(
+                                  "password",
+                                  event.currentTarget.value
+                                );
+                              }}
                             />
                           </div>
                           <div>
@@ -231,6 +246,7 @@ function LoginModel({
                           localStorage.setItem("userName", values.name);
                           setIsloading(false);
                           handleCloseLogin();
+                          navigate("/UserDashboard");
                           addDoc(collection(db, "UserDetails"), {
                             Name: values.name,
                             Mobile: values.mobile,
@@ -252,7 +268,7 @@ function LoginModel({
                         });
                     }}
                   >
-                    {(values) => (
+                    {({ values, setFieldValue }) => (
                       <Form className="">
                         <div className="mt-2 sm:mt-4 w-full p-2 grid grid-cols-2">
                           <div className="m-2">
@@ -262,6 +278,12 @@ function LoginModel({
                               type={"name"}
                               label={"Enter Your Name"}
                               value={values.name}
+                              onChange={(event) => {
+                                setFieldValue(
+                                  "name",
+                                  event.currentTarget.value
+                                );
+                              }}
                             />
                           </div>
                           <div className="m-2">
@@ -271,6 +293,12 @@ function LoginModel({
                               type={"number"}
                               label={"Enter Mobile No."}
                               value={values.mobile}
+                              onChange={(event) => {
+                                setFieldValue(
+                                  "mobile",
+                                  event.currentTarget.value
+                                );
+                              }}
                             />
                           </div>
                           <div className="m-2">
@@ -280,6 +308,12 @@ function LoginModel({
                               type={"email"}
                               label={"Enter Your Email"}
                               value={values.email}
+                              onChange={(event) => {
+                                setFieldValue(
+                                  "email",
+                                  event.currentTarget.value
+                                );
+                              }}
                             />
                           </div>
                           <div className="m-2">
@@ -289,6 +323,12 @@ function LoginModel({
                               type={"password"}
                               label={"Enter Your Password"}
                               value={values.password}
+                              onChange={(event) => {
+                                setFieldValue(
+                                  "password",
+                                  event.currentTarget.value
+                                );
+                              }}
                             />
                           </div>
 

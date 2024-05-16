@@ -7,7 +7,7 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import { MdOutlineCategory } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 
-function VericalNavbar({ ToggleView, setToggleView }) {
+function VerticalNavbar({ ToggleView, setToggleView }) {
   return (
     <>
       <nav
@@ -140,4 +140,4 @@ function VericalNavbar({ ToggleView, setToggleView }) {
   );
 }
 
-export default VericalNavbar;
+export default VerticalNavbar;

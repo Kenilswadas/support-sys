@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../../../src/App.css";
 import { FaQuora } from "react-icons/fa6";
 import { MdMenuBook } from "react-icons/md";
 import { BiSupport } from "react-icons/bi";
 import Navbar from "../components/Navbar";
 import LoginModel from "../components/LoginModel";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import backimg from "../../helpers/images/jeshoots-com-sMKUYIasyDM-unsplash.jpg";
 import { TypeAnimation } from "react-type-animation";
 import { ToastContainer } from "react-toastify";
-import Loader from "../../helpers/Loader";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../FirebaseConfig";
 
 function LandingPage({
   viewLogin,
@@ -23,6 +24,16 @@ function LandingPage({
     setViewLogin(!viewLogin);
   };
   const CURSOR_CLASS_NAME = "custom-type-animation-cursor";
+  const navigate = useNavigate();
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        if (user.email === "admin@gmail.com") {
+          navigate("/adminDashboard");
+        }
+      }
+    });
+  }, [navigate]);
   return (
     <div className="max-sm:w-full max-md:w-full">
       <Navbar
