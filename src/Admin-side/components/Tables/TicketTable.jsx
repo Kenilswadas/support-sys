@@ -10,11 +10,16 @@ import TableRow from "@mui/material/TableRow";
 import { CiEdit } from "react-icons/ci";
 import { Formikselect } from "../../../Support-sys/components/Formikselect";
 import { Formik } from "formik";
-import { MdFilterAlt } from "react-icons/md";
+import {
+  MdFilterAlt,
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowRight,
+} from "react-icons/md";
 import { FaFilterCircleXmark } from "react-icons/fa6";
 import { ToastContainer } from "react-toastify";
 import { useContext } from "react";
 import { TicketStatusContext } from "../../../App";
+import { IconButton } from "@mui/material";
 function TicketsTable({
   Ticket,
   handleUpdateView,
@@ -65,7 +70,9 @@ function TicketsTable({
     <div>
       <ToastContainer />
       <div className="p-4 flex w-full justify-between">
-        <h1 className="text-3xl text-[#056674]">{"Tickets"}</h1>
+        <h1 className="text-3xl text-[#056674] dark:text-[#F39422]">
+          {"Tickets"}
+        </h1>
         <div className="flex">
           {viewFilter ? (
             <Formik
@@ -151,7 +158,7 @@ function TicketsTable({
                 ))}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#5C8374]">
               {Ticket.slice(
                 page * rowsPerPage,
                 page * rowsPerPage + rowsPerPage
@@ -166,9 +173,10 @@ function TicketsTable({
                           align={column.align}
                           style={{
                             textAlign: "justify",
-                            color: "#056674",
-                            font: "small-caption",
+                            // color: "#056674",
+                            // font: "small-caption",
                           }}
+                          className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#F39422] text-2xl"
                         >
                           {column.id === "Status" ? (
                             <span className="flex items-center justify-center w-full">
@@ -228,6 +236,27 @@ function TicketsTable({
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          className="dark:!bg-[#0f161b] text-[#003C4C] dark:text-[#5C8374]"
+          nextIconButton={
+            <IconButton
+              onClick={() => handleChangePage(page + 1)}
+              disabled={page >= Math.ceil(Ticket.length / rowsPerPage) - 1}
+              aria-label="next page"
+              sx={{ color: "#5C8374" }} // Change the color as per your requirement
+            >
+              <MdKeyboardArrowRight />
+            </IconButton>
+          }
+          prevIconButton={
+            <IconButton
+              onClick={() => handleChangePage(page - 1)}
+              disabled={page === 0}
+              aria-label="previous page"
+              sx={{ color: "#5C8374", margin: "5", backgroundColor: "white" }} // Change the color as per your requirement
+            >
+              <MdKeyboardArrowLeft />
+            </IconButton>
+          }
         />
       </Paper>
     </div>

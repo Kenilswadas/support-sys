@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import "../../../src/App.css";
 import { FaQuora } from "react-icons/fa6";
 import { MdMenuBook } from "react-icons/md";
-import { BiSupport } from "react-icons/bi";
-import Navbar from "../components/Navbar";
+import { BiChevronRight, BiSupport } from "react-icons/bi";
 import LoginModel from "../components/LoginModel";
 import { NavLink, useNavigate } from "react-router-dom";
 import backimg from "../../helpers/images/jeshoots-com-sMKUYIasyDM-unsplash.jpg";
@@ -11,15 +10,13 @@ import { TypeAnimation } from "react-type-animation";
 import { ToastContainer } from "react-toastify";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../FirebaseConfig";
+import Navbar from "../../helpers/Navbar";
+import { LoginContext, UserContext } from "../../App";
 
-function LandingPage({
-  viewLogin,
-  setViewLogin,
-  userName,
-  setUserName,
-  setIsloading,
-  isLoading,
-}) {
+function LandingPage({ setIsloading, isLoading }) {
+  const { userName, setUserName } = useContext(UserContext);
+  const { viewLogin, setViewLogin } = useContext(LoginContext);
+
   const handleCloseLogin = () => {
     setViewLogin(!viewLogin);
   };
@@ -44,20 +41,20 @@ function LandingPage({
       />
 
       <ToastContainer />
-      <div className="">
+      <div className="relative">
         <div>
-          <img src={backimg} alt="" className="" />
+          <img src={backimg} alt="Background" className="w-full" />
         </div>
-        <div className="">
-          <h1 className="absolute top-1/2 max-md:top-3/4 max-sm:top-1/2 max-[300px]:hidden left-3/4 transform -translate-x-1/2 -translate-y-1/2 text-[#E3FEF7] font-semibold shadow-2xl">
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-[#E3FEF7] font-semibold shadow-2xl">
+          <h1 className="text-5xl md:text-7xl max-md:text-lg">
             <TypeAnimation
-              className="text-7xl  font-semibold  w-full text-center mt-8 max-md:text-lg"
+              className="font-semibold"
               cursor={false}
               sequence={[
                 "Get help with the",
                 800,
-                "Get help with the Advanced Support",
-                (el) => el.classList.remove(CURSOR_CLASS_NAME), // A reference to the element gets passed as the first argument of a callback function
+                "Advanced Support",
+                (el) => el.classList.remove(CURSOR_CLASS_NAME),
                 6000,
                 (el) => el.classList.add(CURSOR_CLASS_NAME),
                 "",
@@ -67,36 +64,38 @@ function LandingPage({
           </h1>
         </div>
       </div>
+
       <div className=" relative w-auto mt-5 h-auto ">
         <h1 className="text-[#FF4B5C]  font-semibold text-5xl w-full text-center">
           Browse Help Topics
         </h1>
         <div className="flex items-center justify-around max-sm:flex-col ">
           <div className="w-3/12 max-md:w-3/4">
-            <NavLink to={"/Onlinesupport"}>
-              <div className="bg-white rounded-full w-fit relative top-10 left-32 p-8 z-10  max-md:left-40 max-sm:left-20">
+            <NavLink to={"/Onlinesupport"} className="block">
+              <div className="bg-white rounded-full w-fit relative top-10 left-32 p-8 z-10 max-md:left-40 max-sm:left-20">
                 <FaQuora size={28} className="text-[#FF4B5C]" />
               </div>
               <div className="bg-[#E0ECE4] w-full h-auto shadow-2xl rounded-2xl p-6  text-[#056674] hover:text-[#FF4B5C]   duration-300 hover:-translate-y-2">
                 <h1 className="text-3xl font-semibold  w-full text-center mt-8 mb-8">
                   Online Support
                 </h1>
-                <div>
-                  <p className="text-justify">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Totam ea nemo, fugit architecto nobis quasi fugiat ratione
-                    rerum repudiandae consequuntur sequi! Deleniti, dolores
-                    incidunt itaque voluptates eveniet veniam vero assumenda?
-                  </p>
-                  <p className="flex items-end mt-10 h-full text-2xl">
-                    Explore more{" >> "}
-                  </p>
+                <p className="text-justify">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam
+                  ea nemo, fugit architecto nobis quasi fugiat ratione rerum
+                  repudiandae consequuntur sequi! Deleniti, dolores incidunt
+                  itaque voluptates eveniet veniam vero assumenda?
+                </p>
+                <div className="flex justify-end items-center mt-6">
+                  <span className="text-[#056674] text-xl font-semibold">
+                    Explore more
+                  </span>
+                  <BiChevronRight className="ml-2 text-[#056674] text-xl" />
                 </div>
               </div>
             </NavLink>
           </div>
           <div className="w-3/12 max-md:w-3/4">
-            <NavLink to={"/Knowledgebased"}>
+            <NavLink to={"/Knowledgebased"} className="block">
               <div className="bg-white rounded-full w-fit relative top-10 left-32 p-8 z-10 max-md:left-40 max-sm:left-20">
                 <MdMenuBook size={28} className="text-[#FF4B5C]" />
               </div>
@@ -104,39 +103,41 @@ function LandingPage({
                 <h1 className="text-3xl font-semibold  w-full text-center mt-8 mb-8">
                   Knowledge based
                 </h1>
-                <div>
-                  <p className="text-justify">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Totam ea nemo, fugit architecto nobis quasi fugiat ratione
-                    rerum repudiandae consequuntur sequi! Deleniti, dolores
-                    incidunt itaque voluptates eveniet veniam vero assumenda?
-                  </p>
-                  <p className="flex items-end mt-10 h-full text-2xl">
-                    Explore more{" >> "}
-                  </p>
+                <p className="text-justify">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam
+                  ea nemo, fugit architecto nobis quasi fugiat ratione rerum
+                  repudiandae consequuntur sequi! Deleniti, dolores incidunt
+                  itaque voluptates eveniet veniam vero assumenda?
+                </p>
+                <div className="flex justify-end items-center mt-6">
+                  <span className="text-[#056674] text-xl font-semibold">
+                    Explore more
+                  </span>
+                  <BiChevronRight className="ml-2 text-[#056674] text-xl" />
                 </div>
               </div>
             </NavLink>
           </div>
           <div className="w-3/12 max-md:w-3/4">
-            <NavLink to={"SupportTicket"}>
+            <NavLink to={"SupportTicket"} className="block">
               <div className="bg-white rounded-full w-fit relative top-10 left-32 p-8 z-10 max-md:left-40 max-sm:left-20">
                 <BiSupport size={28} className="text-[#FF4B5C]" />
               </div>
-              <div className="bg-[#E0ECE4] w-full h-auto shadow-2xl rounded-2xl p-6 text-[#056674] hover:text-[#FF4B5C]   duration-300 hover:-translate-y-2">
-                <h1 className="text-3xl font-semibold  w-full text-center mt-8 mb-8">
+              <div className="bg-[#E0ECE4] w-full h-auto shadow-2xl rounded-2xl p-6 text-[#056674] hover:text-[#FF4B5C] duration-300 hover:-translate-y-2">
+                <h1 className="text-3xl font-semibold text-center mt-8 mb-8">
                   Support Ticket
                 </h1>
-                <div>
-                  <p className="text-justify">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Totam ea nemo, fugit architecto nobis quasi fugiat ratione
-                    rerum repudiandae consequuntur sequi! Deleniti, dolores
-                    incidunt itaque voluptates eveniet veniam vero assumenda?
-                  </p>
-                  <p className="flex items-end mt-10 h-full text-2xl">
-                    Explore more{" >> "}
-                  </p>
+                <p className="text-justify">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam
+                  ea nemo, fugit architecto nobis quasi fugiat ratione rerum
+                  repudiandae consequuntur sequi! Deleniti, dolores incidunt
+                  itaque voluptates eveniet veniam vero assumenda?
+                </p>
+                <div className="flex justify-end items-center mt-6">
+                  <span className="text-[#056674] text-xl font-semibold">
+                    Explore more
+                  </span>
+                  <BiChevronRight className="ml-2 text-[#056674] text-xl" />
                 </div>
               </div>
             </NavLink>

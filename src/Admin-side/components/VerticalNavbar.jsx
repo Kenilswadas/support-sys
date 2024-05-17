@@ -16,7 +16,7 @@ function VerticalNavbar({ ToggleView, setToggleView }) {
       <nav
         className={`absolute ${
           ToggleView ? `w-24` : `w-1/6`
-        } bg-white dark:bg-[#040D12] dark:text-[#5C8374] shadow-2xl h-screen text-[#003C43] flex flex-col  justify-between `}
+        } bg-white dark:bg-[#040D12]  dark:text-[#5C8374] shadow-2xl h-screen text-[#003C43] flex flex-col  justify-between `}
       >
         <ul className="flex flex-col w-full p-4">
           <div className="flex justify-end w-full mb-2">
@@ -42,7 +42,7 @@ function VerticalNavbar({ ToggleView, setToggleView }) {
               className={({ isActive }) =>
                 `flex w-full p-2 rounded-md ${
                   isActive
-                    ? "dark:bg-[#183D3D]  border-b-2 border-[#056674]"
+                    ? "dark:bg-[#183D3D] bg-[#E0ECE4] border-b-2 border-[#056674]"
                     : ""
                 }`
               }
@@ -61,7 +61,7 @@ function VerticalNavbar({ ToggleView, setToggleView }) {
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? `flex w-full dark:bg-[#183D3D] p-2  rounded-md border-b-2 border-[#056674] `
+                    ? `flex w-full dark:bg-[#183D3D] bg-[#E0ECE4] p-2  rounded-md border-b-2 border-[#056674] `
                     : `flex w-full p-2`
                 }`
               }
@@ -80,7 +80,7 @@ function VerticalNavbar({ ToggleView, setToggleView }) {
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? `flex w-full dark:bg-[#183D3D] p-2  rounded-md border-b-2 border-[#056674] `
+                    ? `flex w-full dark:bg-[#183D3D] bg-[#E0ECE4] p-2  rounded-md border-b-2 border-[#056674] `
                     : `flex w-full p-2`
                 }`
               }
@@ -99,7 +99,7 @@ function VerticalNavbar({ ToggleView, setToggleView }) {
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? `flex w-full dark:bg-[#183D3D] p-2  rounded-md border-b-2 border-[#056674] `
+                    ? `flex w-full dark:bg-[#183D3D] bg-[#E0ECE4] p-2  rounded-md border-b-2 border-[#056674] `
                     : `flex w-full p-2`
                 }`
               }
@@ -118,7 +118,7 @@ function VerticalNavbar({ ToggleView, setToggleView }) {
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? `flex w-full dark:bg-[#183D3D] p-2  rounded-md border-b-2 border-[#056674] `
+                    ? `flex w-full dark:bg-[#183D3D] bg-[#E0ECE4] p-2  rounded-md border-b-2 border-[#056674] `
                     : `flex w-full p-2`
                 }`
               }

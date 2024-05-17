@@ -1,126 +1,149 @@
-import { Form, Formik } from "formik";
 import React, { useContext } from "react";
+import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { FormikInput } from "./FormikInput.jsx";
-import { RxCross1 } from "react-icons/rx";
-import Button from "./Button.jsx";
 import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../FirebaseConfig.jsx";
+import { auth, db } from "../../FirebaseConfig.jsx";
 import { LoadderContext } from "../../App.js";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import { RxCross1 } from "react-icons/rx";
+import Button from "./Button.jsx";
+import { FormikInput } from "./FormikInput.jsx";
 import Loader from "../../helpers/Loader.jsx";
+
 function InfoModel({ handleClose, title, handlegetHelp, info }) {
   const { setIsloading, isLoading } = useContext(LoadderContext);
+  const location = useLocation();
+
+  const handleSubmit = async (values) => {
+    setIsloading(true);
+    try {
+      let formData = {};
+      if (location.pathname === "/SupportTicket") {
+        console.log(location.pathname);
+        formData = {
+          ...info,
+          userEmail: auth.currentUser?.email || values.email,
+          userName: auth.currentUser?.displayName || values.name,
+          userUid: auth.currentUser?.uid || "",
+          ticketId: uuidv4(),
+        };
+        await addDoc(collection(db, "Tickets"), {
+          Category: formData.category,
+          Issue: formData.issue,
+          Model_No: formData.modelno,
+          OnlineSupport: formData.haveyougonethrough,
+          OtherIssue: formData.other,
+          ProductName: formData.product,
+          Serial_No: formData.serialno,
+          TicketId: formData.ticketId,
+          UserEmail: formData.userEmail,
+          UserName: formData.userName,
+          UserUid: formData.userUid,
+          Status: "Pending",
+        });
+      } else if (location.pathname === "/Onlinesupport") {
+        console.log(location.pathname);
+        const onlineSupportData = {
+          email: values.email,
+          name: values.name,
+          mobile: values.mobile,
+          product: info.product,
+          category: info.category,
+          modelno: info.modelno,
+          serialno: info.serialno,
+          issue: info.issue,
+        };
+        await addDoc(collection(db, "OnlineSupportData"), onlineSupportData);
+      }
+      toast.success("Submission successful.");
+      handleClose();
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(error.message);
+    } finally {
+      setIsloading(false);
+      handlegetHelp();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-cover bg-center flex items-center justify-center bg-black bg-opacity-70 z-50">
-      <div className="flex items-center justify-center z-50 mt-auto sm:mt-auto sm:mb-auto mb-auto ">
-        {isLoading ? <Loader /> : null}
-        <div className="bg-white p-4 sm:p-8 rounded shadow-md max-w-md w-full ">
-          <div className="flex items-end justify-end ">
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70">
+      <div className="bg-white rounded shadow-lg max-w-md w-full">
+        <div className="p-4 sm:p-8">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg sm:text-2xl font-semibold text-[#FF4B5C]">
+              {title}
+            </h2>
             <button
-              className="bg-[#66BFBF] hover:bg-[#135D66] p-2 text-lg text-[#fbffff] rounded-full "
+              className="p-2 text-lg text-[#fbffff] bg-[#66BFBF] hover:bg-[#135D66] rounded-full"
               onClick={handleClose}
             >
               <RxCross1 />
             </button>
           </div>
-          <h2 className="text-lg sm:text-2xl font-semibold mb-2 sm:mb-4 text-[#FF4B5C]">
-            {title}
-          </h2>
-          <div>
-            <Formik
-              initialValues={{
-                name: "",
-                email: "",
-                mobile: null,
-              }}
-              validationSchema={Yup.object({
-                name: Yup.string().required("*required"),
-                email: Yup.string()
-                  .email("Invalid email address")
-                  .required("*required"),
-                mobile: Yup.string()
-                  .matches(/^[0-9]{10}$/, "Must be exactly 10 digits")
-                  .required("*required"),
-              })}
-              onSubmit={async (values) => {
-                setIsloading(true);
-                // var formdata = new FormData();
-                // alert(formdata.values);
-                var alldata = {
-                  email: values.email,
-                  name: values.name,
-                  mobile: values.mobile,
-                  product: info.product,
-                  category: info.category,
-                  modelno: info.modelno,
-                  serialno: info.serialno,
-                  issue: info.issue,
-                };
-                var data = JSON.stringify(alldata);
-                alert(data);
-                // localStorage.setItem("userInfo", data);
-                await addDoc(collection(db, "OnlineSupportData"), alldata)
-                  .then((res) => {
-                    setIsloading(false);
-                    handlegetHelp();
-                    handleClose();
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                    toast.error(err.message);
-                    setIsloading(false);
-                    handlegetHelp();
-                    handleClose();
-                  });
-              }}
-            >
-              {({ values, setFieldValue }) => (
-                <Form className="flex flex-col items-center justify-center w-96">
-                  <div className="mt-2 sm:mt-4 w-full p-2 ">
-                    <div className="w-full">
-                      <FormikInput
-                        name={"name"}
-                        placeholder={"Name"}
-                        type={"name"}
-                        label={"Enter Your Name"}
-                        onChange={(event) => {
-                          setFieldValue("name", event.currentTarget.value);
-                        }}
-                      />
-                    </div>
-                    <div className="w-full">
-                      <FormikInput
-                        name={"email"}
-                        placeholder={"Email"}
-                        type={"email"}
-                        label={"Enter Your Email"}
-                        onChange={(event) => {
-                          setFieldValue("email", event.currentTarget.value);
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <FormikInput
-                        name={"mobile"}
-                        placeholder={"Mobile No."}
-                        type={"number"}
-                        label={"Enter Mobile No."}
-                        onChange={(event) => {
-                          setFieldValue("mobile", event.currentTarget.value);
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <Button name={"Submit"} type={"submit"} />
-                    </div>
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          </div>
+          <Formik
+            initialValues={{
+              name: "",
+              email: "",
+              mobile: "",
+            }}
+            validationSchema={Yup.object({
+              name: Yup.string().required("*required"),
+              email: Yup.string()
+                .email("Invalid email address")
+                .required("*required"),
+              mobile: Yup.string()
+                .matches(/^[0-9]{10}$/, "Must be exactly 10 digits")
+                .required("*required"),
+            })}
+            onSubmit={(value) => {
+              console.log(value);
+              handleSubmit(value);
+            }}
+          >
+            {({ values, setFieldValue }) => (
+              <Form className="mt-4">
+                <div className="space-y-6">
+                  <FormikInput
+                    name="name"
+                    placeholder="Name"
+                    type="text"
+                    label="Enter Your Name"
+                    value={values.name}
+                    onChange={(event) => {
+                      setFieldValue("name", event.currentTarget.value);
+                    }}
+                  />
+                  <FormikInput
+                    name="email"
+                    placeholder="Email"
+                    type="email"
+                    label="Enter Your Email"
+                    value={values.email}
+                    onChange={(event) => {
+                      setFieldValue("email", event.currentTarget.value);
+                    }}
+                  />
+                  <FormikInput
+                    name="mobile"
+                    placeholder="Mobile No."
+                    type="text"
+                    label="Enter Mobile No."
+                    value={values.mobile}
+                    onChange={(event) => {
+                      setFieldValue("mobile", event.currentTarget.value);
+                    }}
+                  />
+                  <Button name="Submit" type="submit" />
+                </div>
+              </Form>
+            )}
+          </Formik>
         </div>
       </div>
+      {isLoading && <Loader />}
     </div>
   );
 }

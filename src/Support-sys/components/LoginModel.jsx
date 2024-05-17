@@ -48,7 +48,7 @@ function LoginModel({
     <div className="fixed inset-0 bg-cover bg-center flex items-center justify-center bg-black bg-opacity-70 z-50">
       {isLoading ? <Loader /> : null}
       <div className="flex items-center justify-center mt-auto sm:mt-auto sm:mb-auto mb-auto w-2/4">
-        <div className="bg-[#E0ECE4] p-4 sm:p-8 rounded shadow-md  w-full">
+        <div className="bg-white  p-4 sm:p-8 rounded shadow-lg shadow-slate-500 w-full">
           <div className="flex items-end justify-end ">
             <button
               className="bg-[#66BFBF] hover:bg-[#135D66] p-2 text-lg text-[#fbffff] rounded-full "
@@ -132,7 +132,7 @@ function LoginModel({
                     }}
                   >
                     {({ values, setFieldValue }) => (
-                      <Form className="flex flex-col items-center justify-center">
+                      <Form className="flex flex-col items-center justify-center ">
                         <div className="mt-2 sm:mt-4 w-full p-2 ">
                           <div className="w-full">
                             <FormikInput

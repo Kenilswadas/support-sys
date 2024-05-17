@@ -1,8 +1,12 @@
 import React from "react";
-import Navbar from "../components/Navbar";
 import VideoCard from "../components/VideoCard";
+import Navbar from "../../helpers/Navbar";
+import { useContext } from "react";
+import { LoginContext, UserContext } from "../../App";
 
-function Knowledgebased({ viewLogin, setViewLogin, userName, setUserName }) {
+function Knowledgebased() {
+  const { viewLogin, setViewLogin } = useContext(LoginContext);
+  const { userName, setUserName } = useContext(UserContext);
   return (
     <div className="max-sm:w-full max-md:w-full">
       <Navbar

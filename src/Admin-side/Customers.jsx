@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
-import Navbar from "./components/Navbar";
+import React, { useContext, useEffect, useState } from "react";
 import VericalNavbar from "./components/VerticalNavbar";
 import CustomerDetailTable from "./components/Tables/CustomerDetailTable";
 import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../FirebaseConfig";
-import ProductDetailTable from "./components/Tables/ProductDetailTable";
+import Navbar from "../helpers/Navbar";
+import { LoginContext, UserContext } from "../App";
 
 function Customers() {
+  const { userName, setUserName } = useContext(UserContext);
+  const { viewLogin, setViewLogin } = useContext(LoginContext);
   const [allusers, setAllusers] = useState([]);
   const [ToggleView, setToggleView] = useState(false);
   useEffect(() => {
@@ -24,7 +26,12 @@ function Customers() {
   };
   return (
     <div className="max-sm:w-full max-md:w-full  dark:bg-[#0f161b]">
-      <Navbar />
+      <Navbar
+        viewLogin={viewLogin}
+        setViewLogin={setViewLogin}
+        userName={userName}
+        setUserName={setUserName}
+      />
       <VericalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
       <div className="flex w-full h-screen p-4 overflow-auto ">
         <div

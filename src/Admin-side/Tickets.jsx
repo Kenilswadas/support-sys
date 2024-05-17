@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import Navbar from "./components/Navbar";
 import VericalNavbar from "./components/VerticalNavbar";
 import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../FirebaseConfig";
 import TicketsTable from "./components/Tables/TicketTable";
 import { toast } from "react-toastify";
-import { TicketStatusContext } from "../App";
+import { LoginContext, TicketStatusContext, UserContext } from "../App";
+import Navbar from "../helpers/Navbar";
 function Tickets() {
+  const { userName, setUserName } = useContext(UserContext);
+  const { viewLogin, setViewLogin } = useContext(LoginContext);
   const [allTickets, setAllTickets] = useState([]);
   const [ToggleView, setToggleView] = useState(false);
   const [openupdate, setOpenupdate] = useState(false);
@@ -68,7 +70,12 @@ function Tickets() {
 
   return (
     <div className="max-sm:w-full max-md:w-full dark:bg-[#0f161b]">
-      <Navbar />
+      <Navbar
+        viewLogin={viewLogin}
+        setViewLogin={setViewLogin}
+        userName={userName}
+        setUserName={setUserName}
+      />
       <VericalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
       <div className="flex w-full h-screen p-4 overflow-auto ">
         <div

@@ -18,6 +18,8 @@ export const LoadderContext = createContext(null);
 export const TicketStatusContext = createContext(null);
 export const ThemeContext = createContext();
 
+export const LoginContext = createContext(null);
+
 function App() {
   const [userName, setUserName] = useState(null);
   const [isLoading, setIsloading] = useState(false);
@@ -41,64 +43,59 @@ function App() {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <TicketStatusContext.Provider value={{ setTicketStatus, TicketStatus }}>
-        <LoadderContext.Provider value={{ setIsloading, isLoading }}>
-          <UserContext.Provider value={setUserName}>
-            <div className={theme === "light" ? "" : "dark"}>
-              <BrowserRouter>
-                <Routes>
-                  <Route
-                    path="/"
-                    element={
-                      <Landingpage
-                        viewLogin={viewLogin}
-                        setViewLogin={setViewLogin}
-                        userName={userName}
-                        setUserName={setUserName}
-                        setIsloading={setIsloading}
-                        isLoading={isLoading}
-                      />
-                    }
-                  />
-                  <Route path="/AdminDashboard" element={<AdminDashboard />} />
-                  <Route path="/UserDashboard" element={<UserDashboard />} />
-                  <Route path="/UserProfile" element={<UserProfile />} />
-                  <Route path="/Ticket" element={<Tickets />} />
-                  <Route path="/Products" element={<Products />} />
-                  <Route path="/Customers" element={<Customers />} />
-                  <Route
-                    path="/OnlineSupport"
-                    element={
-                      <OnlineSupport
-                        viewLogin={viewLogin}
-                        setViewLogin={setViewLogin}
-                        userName={userName}
-                        setUserName={setUserName}
-                        view={view}
-                        setView={setView}
-                        setIsloading={setIsloading}
-                        isLoading={isLoading}
-                      />
-                    }
-                  />
-                  <Route path="/Knowledgebased" element={<Knowledgebased />} />
-                  <Route
-                    path="/SupportTicket"
-                    element={
-                      <SupportTicket
-                        viewLogin={viewLogin}
-                        setViewLogin={setViewLogin}
-                      />
-                    }
-                  />
-                </Routes>
-              </BrowserRouter>
-            </div>
-          </UserContext.Provider>
-        </LoadderContext.Provider>
-      </TicketStatusContext.Provider>
-    </ThemeContext.Provider>
+    <LoginContext.Provider value={{ viewLogin, setViewLogin }}>
+      <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <TicketStatusContext.Provider value={{ setTicketStatus, TicketStatus }}>
+          <LoadderContext.Provider value={{ setIsloading, isLoading }}>
+            <UserContext.Provider value={{ userName, setUserName }}>
+              <div className={theme === "light" ? "" : "dark"}>
+                <BrowserRouter>
+                  <Routes>
+                    <Route
+                      path="/"
+                      element={
+                        <Landingpage
+                          setIsloading={setIsloading}
+                          isLoading={isLoading}
+                        />
+                      }
+                    />
+                    <Route
+                      path="/AdminDashboard"
+                      element={<AdminDashboard />}
+                    />
+                    <Route path="/UserDashboard" element={<UserDashboard />} />
+                    <Route path="/UserProfile" element={<UserProfile />} />
+                    <Route path="/Ticket" element={<Tickets />} />
+                    <Route path="/Products" element={<Products />} />
+                    <Route path="/Customers" element={<Customers />} />
+                    <Route
+                      path="/OnlineSupport"
+                      element={
+                        <OnlineSupport
+                          view={view}
+                          setView={setView}
+                          setIsloading={setIsloading}
+                          isLoading={isLoading}
+                        />
+                      }
+                    />
+                    <Route
+                      path="/Knowledgebased"
+                      element={<Knowledgebased />}
+                    />
+                    <Route
+                      path="/SupportTicket"
+                      element={<SupportTicket view={view} setView={setView} />}
+                    />
+                  </Routes>
+                </BrowserRouter>
+              </div>
+            </UserContext.Provider>
+          </LoadderContext.Provider>
+        </TicketStatusContext.Provider>
+      </ThemeContext.Provider>
+    </LoginContext.Provider>
   );
 }
 

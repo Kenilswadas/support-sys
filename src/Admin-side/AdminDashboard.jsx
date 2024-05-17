@@ -1,14 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
-import Navbar from "./components/Navbar.jsx";
 import { collection, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../FirebaseConfig.jsx";
 import { onAuthStateChanged } from "firebase/auth";
 import { NavLink, useNavigate } from "react-router-dom";
-import { TicketStatusContext } from "../App.js";
+import { LoginContext, TicketStatusContext, UserContext } from "../App.js";
 import VerticalNavbar from "./components/VerticalNavbar.jsx";
-function AdminDashboard({ Ticket }) {
+import Navbar from "../helpers/Navbar.jsx";
+
+function AdminDashboard() {
   const navigate = useNavigate();
   const { setTicketStatus } = useContext(TicketStatusContext);
+  const { viewLogin, setViewLogin } = useContext(LoginContext);
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -19,70 +22,72 @@ function AdminDashboard({ Ticket }) {
     });
   }, [navigate]);
 
+  const { userName, setUserName } = useContext(UserContext);
   const [ToggleView, setToggleView] = useState(false);
-  const [allusers, setAllusers] = useState([]);
-  // const [allTickets, setAllTickets] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [activeTickets, setActiveTickets] = useState([]);
   const [pendingTickets, setPendingTickets] = useState([]);
   const [completedTickets, setCompletedTickets] = useState([]);
 
   useEffect(() => {
     onSnapshot(collection(db, "UserDetails"), (snap) => {
-      const alldata = snap.docs.map((e) => ({
-        id: e.id,
-        ...e.data(),
+      const allData = snap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
       }));
-      setAllusers(alldata);
+      setAllUsers(allData);
     });
+
     onSnapshot(collection(db, "Tickets"), (snap) => {
-      const alldata = snap.docs.map((e) => ({
-        id: e.id,
-        ...e.data(),
+      const allData = snap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
       }));
-      // setAllTickets(alldata);
-      const allpendingickets = alldata.filter(
-        (data) => data.Status === "Pending"
+
+      setPendingTickets(allData.filter((data) => data.Status === "Pending"));
+      setActiveTickets(allData.filter((data) => data.Status === "Active"));
+      setCompletedTickets(
+        allData.filter((data) => data.Status === "Completed")
       );
-      setPendingTickets(allpendingickets);
-      const allactivetickets = alldata.filter(
-        (data) => data.Status === "Active"
-      );
-      setActiveTickets(allactivetickets);
-      const allcompletedtickets = alldata.filter(
-        (data) => data.Status === "Completed"
-      );
-      setCompletedTickets(allcompletedtickets);
     });
   }, []);
-  const TotalUsers = allusers.length;
-  return (
-    <div className={`max-sm:w-full max-md:w-full  dark:bg-[#0f161b]`}>
-      <Navbar />
 
+  const totalUsers = allUsers.length;
+
+  return (
+    <div
+      className={`max-sm:w-full max-md:w-full dark:bg-[#0f161b] min-h-screen`}
+    >
+      <Navbar
+        viewLogin={viewLogin}
+        setViewLogin={setViewLogin}
+        userName={userName}
+        setUserName={setUserName}
+      />
       <VerticalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
-      <div className="flex w-full h-screen p-4 overflow-auto ">
+      <div className={`flex flex-col lg:flex-row p-4 h-screen overflow-auto`}>
         <div
-          className={`bg-[#E0ECE4] dark:bg-[#040D12]  w-full p-4 ${
-            ToggleView ? `ml-24` : `ml-64`
+          className={`bg-[#E0ECE4] dark:bg-[#040D12] w-full lg:w-5/6 p-4  transition-all duration-300 ${
+            ToggleView ? "lg:ml-24" : "lg:ml-64"
           }`}
         >
-          <div className="grid grid-cols-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <NavLink to={"/Ticket"} onClick={() => setTicketStatus("Active")}>
-              <div className="bg-white shadow-xl hover:translate-y-1 hover:duration-150  dark:bg-[#183D3D] dark:shadow-lg dark:shadow-[#152D35] rounded-lg h-28 m-2 p-4">
-                <h1 className="w-full text-2xl text-[#056674]  dark:text-[#5C8374] ">
+              <div className="bg-white dark:bg-[#183D3D] shadow-lg dark:shadow-[#152D35] rounded-lg h-28 m-2 p-4 hover:shadow-xl transform hover:scale-105 transition duration-200">
+                <h1 className="text-2xl text-[#056674] dark:text-[#F39422]">
                   Active Tickets
                 </h1>
-                <div className="w-full text-4xl font-bold text-[#056674] dark:text-[#5C8374]  mt-4 flex items-center justify-center ">
+                <div className="text-4xl font-bold text-[#056674] dark:text-[#F39422] mt-4 flex items-center justify-center">
                   {activeTickets.length}
                 </div>
               </div>
             </NavLink>
             <NavLink to={"/Ticket"} onClick={() => setTicketStatus("Pending")}>
-              <div className="bg-white shadow-xl hover:translate-y-1 hover:duration-150 dark:bg-[#183D3D]  dark:shadow-lg dark:shadow-[#152D35]  rounded-lg h-28 m-2 p-4">
-                <h1 className="w-full text-2xl text-[#056674] dark:text-[#5C8374]  ">
+              <div className="bg-white dark:bg-[#183D3D] shadow-lg dark:shadow-[#152D35] rounded-lg h-28 m-2 p-4 hover:shadow-xl transform hover:scale-105 transition duration-200">
+                <h1 className="text-2xl text-[#056674] dark:text-[#F39422]">
                   Pending Tickets
                 </h1>
-                <div className="w-full text-4xl font-bold text-[#056674] dark:text-[#5C8374]  mt-4 flex items-center justify-center ">
+                <div className="text-4xl font-bold text-[#056674] dark:text-[#F39422] mt-4 flex items-center justify-center">
                   {pendingTickets.length}
                 </div>
               </div>
@@ -91,22 +96,22 @@ function AdminDashboard({ Ticket }) {
               to={"/Ticket"}
               onClick={() => setTicketStatus("Completed")}
             >
-              <div className="bg-white shadow-xl hover:translate-y-1 hover:duration-150 dark:bg-[#183D3D]  dark:shadow-lg dark:shadow-[#152D35]  rounded-lg h-28 m-2 p-4">
-                <h1 className="w-full text-2xl text-[#056674] dark:text-[#5C8374]  ">
+              <div className="bg-white dark:bg-[#183D3D] shadow-lg dark:shadow-[#152D35] rounded-lg h-28 m-2 p-4 hover:shadow-xl transform hover:scale-105 transition duration-200">
+                <h1 className="text-2xl text-[#056674] dark:text-[#F39422]">
                   Completed Tickets
                 </h1>
-                <div className="w-full text-4xl font-bold text-[#056674] dark:text-[#5C8374]  mt-4 flex items-center justify-center ">
+                <div className="text-4xl font-bold text-[#056674] dark:text-[#F39422] mt-4 flex items-center justify-center">
                   {completedTickets.length}
                 </div>
               </div>
             </NavLink>
             <NavLink to={"/Customers"}>
-              <div className="bg-white shadow-xl hover:translate-y-1 hover:duration-150 dark:bg-[#183D3D]  dark:shadow-lg dark:shadow-[#152D35]   rounded-lg h-28 m-2 p-4">
-                <h1 className="w-full text-2xl text-[#056674] dark:text-[#5C8374]  ">
+              <div className="bg-white dark:bg-[#183D3D] shadow-lg dark:shadow-[#152D35] rounded-lg h-28 m-2 p-4 hover:shadow-xl transform hover:scale-105 transition duration-200">
+                <h1 className="text-2xl text-[#056674] dark:text-[#F39422]">
                   Customers
                 </h1>
-                <div className="w-full text-4xl font-bold text-[#056674] dark:text-[#5C8374]  mt-4 flex items-center justify-center ">
-                  {TotalUsers}
+                <div className="text-4xl font-bold text-[#056674] dark:text-[#F39422] mt-4 flex items-center justify-center">
+                  {totalUsers}
                 </div>
               </div>
             </NavLink>

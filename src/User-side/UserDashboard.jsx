@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import VerticalNavbar from "./components/VerticalNavbar";
 import { collection, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../FirebaseConfig";
-import Navbar from "./components/Navbar";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../helpers/Navbar";
 
 function UserDashboard() {
   const [ToggleView, setToggleView] = useState(false);
