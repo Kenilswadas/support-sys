@@ -121,9 +121,16 @@ function TicketsTable({
           ) : null}
         </div>
       </div>
-      <Paper sx={{ width: "100%", overflow: "auto" }}>
+      <Paper
+        sx={{ width: "100%", overflow: "auto" }}
+        className="dark:!bg-[#0f161b] dark:text-[#5C8374] text-[#003C4C]"
+      >
         <TableContainer sx={{ maxHeight: 440 }}>
-          <Table stickyHeader aria-label="sticky table">
+          <Table
+            stickyHeader
+            aria-label="sticky table"
+            className="dark:!bg-[#0f161b] dark:text-[#5C8374] overflow-auto"
+          >
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
@@ -133,10 +140,11 @@ function TicketsTable({
                     style={{
                       minWidth: column.minWidth,
                       fontFamily: "revert",
-                      color: "#003C4C",
+                      // color: "#003C4C",
                       fontSize: "16px",
                       // fontWeight: "700",
                     }}
+                    className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#5C8374]"
                   >
                     {column.label}
                   </TableCell>

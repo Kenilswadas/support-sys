@@ -30,7 +30,7 @@ function AddProductsForm({ CategoryForm, setShowCategoryForm }) {
   return (
     <div className="bg-black flex flex-col overflow-auto items-center   w-full fixed inset-0  bg-cover bg-center bg-opacity-50 z-50 ">
       {isLoading === true ? <Loader /> : null}
-      <div className="bg-white shadow-2xl p-4 sm:p-8 rounded flex flex-col items-center justify-center w-11/12 mx-autosrc/Support-sys/pages/Leandingpage.jsx src/Support-sys/pages/components ">
+      <div className="bg-white !text-[#056674] dark:bg-[#0f161b] dark:!text-[#5C8374] shadow-2xl p-4 sm:p-8 rounded flex flex-col items-center justify-center w-11/12 mx-autosrc/Support-sys/pages/Leandingpage.jsx src/Support-sys/pages/components ">
         <div className="flex items-end justify-end w-full ">
           <button
             className="bg-[#66BFBF] hover:bg-[#135D66] p-2 text-lg text-[#fbffff] rounded-full "
