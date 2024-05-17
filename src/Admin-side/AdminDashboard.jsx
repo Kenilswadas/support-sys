@@ -5,7 +5,6 @@ import { auth, db } from "../FirebaseConfig.jsx";
 import { onAuthStateChanged } from "firebase/auth";
 import { NavLink, useNavigate } from "react-router-dom";
 import { TicketStatusContext } from "../App.js";
-import { ThemeContext } from "../App.js";
 import VerticalNavbar from "./components/VerticalNavbar.jsx";
 function AdminDashboard({ Ticket }) {
   const navigate = useNavigate();
@@ -19,7 +18,6 @@ function AdminDashboard({ Ticket }) {
       } else navigate("/");
     });
   }, [navigate]);
-  const { theme, toggleTheme } = useContext(ThemeContext);
 
   const [ToggleView, setToggleView] = useState(false);
   const [allusers, setAllusers] = useState([]);
@@ -58,33 +56,33 @@ function AdminDashboard({ Ticket }) {
   }, []);
   const TotalUsers = allusers.length;
   return (
-    <div className={`max-sm:w-full max-md:w-full  dark:bg-gray-900`}>
+    <div className={`max-sm:w-full max-md:w-full  dark:bg-[#0f161b]`}>
       <Navbar />
 
       <VerticalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
       <div className="flex w-full h-screen p-4 overflow-auto ">
         <div
-          className={`bg-[#E0ECE4] dark:bg-gray-900 dark:text-white w-full p-4 ${
+          className={`bg-[#E0ECE4] dark:bg-[#040D12]  w-full p-4 ${
             ToggleView ? `ml-24` : `ml-64`
           }`}
         >
           <div className="grid grid-cols-3">
             <NavLink to={"/Ticket"} onClick={() => setTicketStatus("Active")}>
-              <div className="bg-white shadow-xl hover:translate-y-1 hover:duration-150 dark:text-white dark:bg-gray-900 dark:shadow-lg dark:shadow-slate-500 rounded-lg h-28 m-2 p-4">
-                <h1 className="w-full text-2xl text-[#056674] dark:text-white">
+              <div className="bg-white shadow-xl hover:translate-y-1 hover:duration-150  dark:bg-[#183D3D] dark:shadow-lg dark:shadow-[#152D35] rounded-lg h-28 m-2 p-4">
+                <h1 className="w-full text-2xl text-[#056674]  dark:text-[#5C8374] ">
                   Active Tickets
                 </h1>
-                <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
+                <div className="w-full text-4xl font-bold text-[#056674] dark:text-[#5C8374]  mt-4 flex items-center justify-center ">
                   {activeTickets.length}
                 </div>
               </div>
             </NavLink>
             <NavLink to={"/Ticket"} onClick={() => setTicketStatus("Pending")}>
-              <div className="bg-white shadow-xl hover:translate-y-1 hover:duration-150 dark:bg-gray-900 dark:text-white dark:shadow-lg dark:shadow-slate-500  rounded-lg h-28 m-2 p-4">
-                <h1 className="w-full text-2xl text-[#056674] dark:text-white">
+              <div className="bg-white shadow-xl hover:translate-y-1 hover:duration-150 dark:bg-[#183D3D]  dark:shadow-lg dark:shadow-[#152D35]  rounded-lg h-28 m-2 p-4">
+                <h1 className="w-full text-2xl text-[#056674] dark:text-[#5C8374]  ">
                   Pending Tickets
                 </h1>
-                <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
+                <div className="w-full text-4xl font-bold text-[#056674] dark:text-[#5C8374]  mt-4 flex items-center justify-center ">
                   {pendingTickets.length}
                 </div>
               </div>
@@ -93,28 +91,25 @@ function AdminDashboard({ Ticket }) {
               to={"/Ticket"}
               onClick={() => setTicketStatus("Completed")}
             >
-              <div className="bg-white shadow-xl hover:translate-y-1 hover:duration-150 dark:bg-gray-900 dark:text-white dark:shadow-lg dark:shadow-slate-500  rounded-lg h-28 m-2 p-4">
-                <h1 className="w-full text-2xl text-[#056674] dark:text-white">
+              <div className="bg-white shadow-xl hover:translate-y-1 hover:duration-150 dark:bg-[#183D3D]  dark:shadow-lg dark:shadow-[#152D35]  rounded-lg h-28 m-2 p-4">
+                <h1 className="w-full text-2xl text-[#056674] dark:text-[#5C8374]  ">
                   Completed Tickets
                 </h1>
-                <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
+                <div className="w-full text-4xl font-bold text-[#056674] dark:text-[#5C8374]  mt-4 flex items-center justify-center ">
                   {completedTickets.length}
                 </div>
               </div>
             </NavLink>
             <NavLink to={"/Customers"}>
-              <div className="bg-white shadow-xl hover:translate-y-1 hover:duration-150 dark:bg-gray-900 dark:text-white dark:shadow-lg dark:shadow-slate-500   rounded-lg h-28 m-2 p-4">
-                <h1 className="w-full text-2xl text-[#056674] dark:text-white">
+              <div className="bg-white shadow-xl hover:translate-y-1 hover:duration-150 dark:bg-[#183D3D]  dark:shadow-lg dark:shadow-[#152D35]   rounded-lg h-28 m-2 p-4">
+                <h1 className="w-full text-2xl text-[#056674] dark:text-[#5C8374]  ">
                   Customers
                 </h1>
-                <div className="w-full text-4xl font-bold text-[#056674] mt-4 flex items-center justify-center ">
+                <div className="w-full text-4xl font-bold text-[#056674] dark:text-[#5C8374]  mt-4 flex items-center justify-center ">
                   {TotalUsers}
                 </div>
               </div>
             </NavLink>
-            <button onClick={toggleTheme}>
-              Toggle to {theme === "light" ? "Dark" : "Light"} Mode
-            </button>
           </div>
         </div>
       </div>

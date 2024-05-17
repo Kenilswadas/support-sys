@@ -54,13 +54,13 @@ function Products() {
     setId(id);
   };
   return (
-    <div className="max-sm:w-full max-md:w-full">
+    <div className="max-sm:w-full max-md:w-full dark:bg-[#0f161b]">
       <Navbar />
-      <ToastContainer />
       <VericalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
+      <ToastContainer />
       <div className="flex w-full h-screen p-4 overflow-auto ">
         <div
-          className={`bg-[#E0ECE4] w-full p-4 ${
+          className={`bg-[#E0ECE4] dark:bg-[#040D12]   w-full p-4 ${
             ToggleView ? `ml-24` : `ml-64 `
           }`}
         >
@@ -82,7 +82,7 @@ function Products() {
           ) : null}
           <div className="flex p-4 overflow-auto ">
             <div
-              className={`bg-[#E0ECE4] w-full flex items-center justify-center p-4 `}
+              className={`bg-[#E0ECE4] dark:bg-[#040D12] w-full flex items-center justify-center p-4 `}
             >
               <ProductDetailTable
                 setId={setId}

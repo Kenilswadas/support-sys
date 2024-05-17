@@ -29,9 +29,16 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
     { id: "Mobile", label: "Mobile", minWidth: 50 },
   ];
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden" }}>
+    <Paper
+      sx={{ width: "100%", overflow: "hidden" }}
+      className="dark:!bg-[#0f161b] dark:text-[#5C8374] text-[#003C4C]"
+    >
       <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
+        <Table
+          stickyHeader
+          aria-label="sticky table"
+          className="dark:!bg-[#0f161b] dark:text-[#5C8374] overflow-auto"
+        >
           <TableHead>
             <TableRow className="">
               {columns.map((column) => (
@@ -41,17 +48,17 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
                   style={{
                     minWidth: column.minWidth,
                     fontFamily: "revert",
-                    color: "#003C4C",
                     fontSize: "16px",
                     // fontWeight: "700",
                   }}
+                  className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#5C8374]"
                 >
                   {column.label}
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#5C8374]">
             {data
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
@@ -102,6 +109,7 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        className="dark:!bg-[#0f161b] text-[#003C4C] dark:text-[#5C8374]"
       />
     </Paper>
   );

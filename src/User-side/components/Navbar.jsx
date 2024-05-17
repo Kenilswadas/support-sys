@@ -1,13 +1,16 @@
 import { signOut } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { auth } from "../../FirebaseConfig";
 import logo from "../../helpers/images/logo.png";
 import { FaUser } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { IoLogOut } from "react-icons/io5";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
+import { ThemeContext } from "../../App";
 
 function Navbar() {
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const navigate = useNavigate();
   const handleProfileHover = () => {
@@ -49,6 +52,27 @@ function Navbar() {
             >
               <FaUser size={20} className="mr-1" />
               {auth?.currentUser?.displayName || "Profile"}
+            </button>{" "}
+            <button className="flex items-center justify-around">
+              <MdDarkMode size={20} className="mr-1" />
+              {auth?.currentUser?.displayName || "Profile"}
+            </button>
+            <button className="flex items-center justify-around">
+              {theme === "light" ? (
+                <>
+                  <MdDarkMode
+                    size={20}
+                    className="mr-1"
+                    onClick={toggleTheme}
+                  />
+                  <span>{"Dark Mode"}</span>
+                </>
+              ) : (
+                <>
+                  <MdLightMode size={28} onClick={toggleTheme} />
+                  <span>{"Light Mode"}</span>
+                </>
+              )}
             </button>
             {isDropdownVisible && (
               <div

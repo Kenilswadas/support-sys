@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import VerticalNavbar from "./components/VerticalNavbar";
-import logo from "../helpers/images/thisisengineering-raeng-Kzx7m3JwkcQ-unsplash.jpg";
 import { collection, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../FirebaseConfig";
 import Navbar from "./components/Navbar";
@@ -13,14 +12,13 @@ function UserDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log(user);
-        if (user.email === "admin@gmail.com") {
-          navigate("/adminDashboard");
-        } else navigate("/UserDashboard");
-      } else navigate("/UserDashboard");
-    });
+    // onAuthStateChanged(auth, (user) => {
+    //   if (user) {
+    //     if (user.email === "admin@gmail.com") {
+    //       navigate("/adminDashboard");
+    //     } else navigate("/UserDashboard");
+    //   } else navigate("/UserDashboard");
+    // });
   }, [navigate]);
   useEffect(() => {
     onSnapshot(collection(db, "Products"), (snap) => {
@@ -48,7 +46,7 @@ function UserDashboard() {
                   <div class="">
                     <img
                       class="w-full h-fit"
-                      src={product.ModelDetails[index].Model_Image}
+                      // src={product.ModelDetails[index].Model_Image}
                       alt="ProductImage"
                     />
                     {/* <div className="absolute top-1/2 right-0 bg-red-500 text-white px-2 py-1 m-2 rounded-md text-sm font-medium">
@@ -61,7 +59,7 @@ function UserDashboard() {
                     </h3>
                     <h3 class="text-lg font-Calibri">
                       {"Model_No : "}
-                      {e.Model_No}
+                      {/* {e.Model_No} */}
                     </h3>
                     <h3 class="text-lg font-Calibri">
                       {"Category : "}

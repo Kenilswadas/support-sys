@@ -18,7 +18,7 @@ function Formikselect({ label, name, data, onChange }) {
         as="select"
         name={name}
         onChange={(e) => onChange(e.target.value)}
-        className="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-[#77B0AA] rounded-md  focus:border-[#77B0AA]  focus:ring-[#66BFBF] focus:outline-none focus:ring focus:ring-opacity-40"
+        className="block dark:bg-[#0f161b] text-[#056674] w-full px-4 py-2 mt-2 placeholder-gray-400 bg-white border border-[#77B0AA] rounded-md  focus:border-[#77B0AA]  focus:ring-[#66BFBF] focus:outline-none focus:ring focus:ring-opacity-40"
       >
         <option value="">{`please select option`}</option>
 

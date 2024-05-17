@@ -13,6 +13,7 @@ import { MdPreview } from "react-icons/md";
 import ViewSolution from "../Model/ViewSolution.jsx";
 import { Formik } from "formik";
 import { Formikselect } from "../../../Support-sys/components/Formikselect.jsx";
+import { IconButton, Tooltip } from "@mui/material";
 function ProductDetailTable({
   data,
   handleDeleteProduct,
@@ -47,12 +48,15 @@ function ProductDetailTable({
 
   return (
     <div>
-      <Paper sx={{}}>
+      <Paper
+        sx={{}}
+        className="dark:!bg-[#0f161b] dark:text-[#5C8374] text-[#003C4C]"
+      >
         <TableContainer sx={{ maxHeight: 440, maxWidth: 1100 }}>
           <Table
             stickyHeader
             aria-label="sticky table"
-            className="overflow-auto"
+            className="dark:!bg-[#0f161b] dark:text-[#5C8374] overflow-auto"
           >
             <TableHead>
               <TableRow>
@@ -63,16 +67,17 @@ function ProductDetailTable({
                     style={{
                       minWidth: column.minWidth,
                       fontFamily: "revert",
-                      color: "#003C4C",
                       fontSize: "16px",
+                      textAlign: "center",
                     }}
+                    className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#5C8374]"
                   >
                     {column.label}
                   </TableCell>
                 ))}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#5C8374]">
               {data
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => (
@@ -84,10 +89,11 @@ function ProductDetailTable({
                           key={column.id}
                           align="left"
                           style={{
-                            color: "#056674",
                             font: "small-caption",
-                            fontSize: "10px",
+                            fontSize: "14px",
+                            textAlign: "center",
                           }}
+                          className="!text-[#056674] dark:!bg-[#0f161b] "
                         >
                           {column.id === "Srno" ? (
                             <span className="font-semibold text-xl ">
@@ -104,7 +110,7 @@ function ProductDetailTable({
                                       key={e.Model_No}
                                       src={e.Model_Image}
                                       alt="ProductImage"
-                                      className="w-20 h-20 border-2 border-[#E0ECE4] "
+                                      className="w-20 h-20 "
                                     />
                                   );
                                 })}
@@ -151,7 +157,7 @@ function ProductDetailTable({
                             <>
                               {value.map((e) => {
                                 return (
-                                  <p className="p-2 border-2 border-[#E0ECE4] flex items-center justify-center ">
+                                  <p className="p-2 flex items-center justify-center ">
                                     {e}
                                     {","}
                                   </p>
@@ -161,28 +167,40 @@ function ProductDetailTable({
                           ) : column.id === "Solution" &&
                             column.label === "View Solution" ? (
                             <div className="w-full flex justify-between ">
-                              <MdPreview
-                                size={28}
-                                onClick={() => {
-                                  setView(!view);
-                                  setId(row.id);
-                                }}
-                              />
+                              <Tooltip title="View Solution" placement="top">
+                                <IconButton
+                                  className="!text-[#056674] dark:!bg-[#183D3D] dark:!text-[#5C8374]"
+                                  onClick={() => {
+                                    setView(!view);
+                                    setId(row.id);
+                                  }}
+                                >
+                                  <MdPreview />
+                                </IconButton>
+                              </Tooltip>
                             </div>
                           ) : value ? (
                             <p>{value}</p>
                           ) : (
-                            <div className="w-full flex justify-between ">
-                              <FaRegEdit
-                                onClick={() => OpenUpdateModel(row.id)}
-                                size={28}
-                                className=""
-                              />
-                              <MdDelete
-                                onClick={() => handleDeleteProduct(row.id)}
-                                size={28}
-                                className="cursor-pointer"
-                              />
+                            <div className="w-full flex justify-between m-2  ">
+                              <Tooltip title="Edit" placement="top">
+                                <IconButton
+                                  className="!text-[#056674] dark:!bg-[#183D3D] dark:!text-[#5C8374]"
+                                  style={{ fontSize: "20px" }}
+                                  onClick={() => OpenUpdateModel(row.id)}
+                                >
+                                  <FaRegEdit />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Delete" placement="top">
+                                <IconButton
+                                  className="!text-[#056674] dark:!bg-[#183D3D] dark:!text-[#5C8374]"
+                                  style={{ fontSize: "20px" }}
+                                  onClick={() => handleDeleteProduct(row.id)}
+                                >
+                                  <MdDelete />
+                                </IconButton>
+                              </Tooltip>
                             </div>
                           )}
                         </TableCell>
@@ -201,6 +219,7 @@ function ProductDetailTable({
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          className="dark:!bg-[#0f161b] text-[#003C4C] dark:text-[#5C8374]"
         />
       </Paper>
       {view ? (
