@@ -7,11 +7,22 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { MdDelete } from "react-icons/md";
+import {
+  MdDelete,
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowRight,
+} from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import IconButton from "@mui/material/IconButton";
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-function CustomerDetailTable({ data, handleDeleteCustomer }) {
+import Tooltip from "@mui/material/Tooltip";
+
+function CustomerDetailTable({
+  data,
+  handleDeleteCustomer,
+  openupdate,
+  setOpenupdate,
+  handleUpdateCustomer,
+}) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -23,17 +34,25 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  const OpenUpdateModel = (id) => {
+    setOpenupdate(!openupdate);
+    handleUpdateCustomer(id);
+  };
+
   const columns = [
-    { id: "id", label: "Id", minWidth: 50 },
-    { id: "Name", label: "Name", minWidth: 50 },
-    { id: "Email", label: "Email Id", minWidth: 50 },
-    { id: "Mobile", label: "Mobile", minWidth: 50 },
+    { id: "Name", label: "Name", minWidth: 100 },
+    { id: "Email", label: "Email Id", minWidth: 150 },
+    { id: "Mobile", label: "Mobile", minWidth: 100 },
+    { id: "ProductDetails", label: "Product Details", minWidth: 300 },
+    { id: "action", label: "Action", minWidth: 100 },
   ];
+
   return (
     <>
       <div className="p-4 flex w-full justify-between">
-        <h1 className="text-3xl text-[#056674] dark:text-[#F39422]">
-          {"Tickets"}
+        <h1 className="text-3xl font-bold text-[#056674] dark:text-[#F39422]">
+          Customers
         </h1>
       </div>
       <Paper
@@ -47,7 +66,7 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
             className="dark:!bg-[#0f161b] dark:text-[#5C8374] overflow-auto"
           >
             <TableHead>
-              <TableRow className="">
+              <TableRow>
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
@@ -56,7 +75,7 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
                       minWidth: column.minWidth,
                       fontFamily: "revert",
                       fontSize: "16px",
-                      // fontWeight: "700",
+                      fontWeight: "bold",
                     }}
                     className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#5C8374]"
                   >
@@ -68,49 +87,96 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
             <TableBody className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#5C8374]">
               {data
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.code}
-                    >
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            style={{
-                              textAlign: "justify",
-                              // color: "#056674",
-                              // font: "small-caption",
-                            }}
-                            className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#F39422] text-2xl"
-                          >
-                            {value ? (
-                              value
-                            ) : (
-                              <div className="w-full flex justify-between">
-                                <FaRegEdit
-                                  onClick={() => alert(row.id)}
-                                  size={28}
-                                  className=""
-                                />
-                                <MdDelete
-                                  onClick={() => handleDeleteCustomer(row.id)}
-                                  size={28}
-                                  className="cursor-pointer"
-                                />
+                .map((row, index) => (
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    tabIndex={-1}
+                    key={row.id}
+                    className="transition duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    {columns.map((column) => {
+                      const value = row[column.id];
+                      return (
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{ textAlign: "justify" }}
+                          className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#F39422] text-xl"
+                        >
+                          {column.id === "ProductDetails" ? (
+                            value.length !== 0 ? (
+                              <div className="overflow-auto max-h-36 p-4">
+                                <table className="w-full border-collapse">
+                                  <thead>
+                                    <tr>
+                                      <th className="border-2 p-2">
+                                        Product Category
+                                      </th>
+                                      <th className="border-2 p-2">
+                                        Product Name
+                                      </th>
+                                      <th className="border-2 p-2">
+                                        Product Serial_No
+                                      </th>
+                                      <th className="border-2 p-2">
+                                        Product Model_No
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {value.map((e, idx) => (
+                                      <tr key={idx}>
+                                        <td className="border-2 p-2">
+                                          {e.Category}
+                                        </td>
+                                        <td className="border-2 p-2">
+                                          {e.ProductName}
+                                        </td>
+                                        <td className="border-2 p-2">
+                                          {e.Serial_No}
+                                        </td>
+                                        <td className="border-2 p-2">
+                                          {e.Model_No}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
                               </div>
-                            )}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
+                            ) : (
+                              "---"
+                            )
+                          ) : column.id !== "ProductDetails" &&
+                            column.id !== "action" ? (
+                            value
+                          ) : column.id === "action" ? (
+                            <div className="w-full flex justify-between">
+                              <Tooltip title="Edit" placement="top">
+                                <IconButton
+                                  className="!text-[#056674] dark:!bg-[#183D3D] !bg-[#E0ECE4] dark:!text-[#5C8374]"
+                                  style={{ fontSize: "25px" }}
+                                  onClick={() => OpenUpdateModel(row.id)}
+                                >
+                                  <FaRegEdit />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Delete" placement="top">
+                                <IconButton
+                                  className="!text-[#056674] dark:!bg-[#183D3D] !bg-[#E0ECE4] dark:!text-[#5C8374]"
+                                  style={{ fontSize: "25px" }}
+                                  onClick={() => handleDeleteCustomer(row.id)}
+                                >
+                                  <MdDelete />
+                                </IconButton>
+                              </Tooltip>
+                            </div>
+                          ) : null}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -123,26 +189,26 @@ function CustomerDetailTable({ data, handleDeleteCustomer }) {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           className="dark:!bg-[#0f161b] text-[#003C4C] dark:text-[#5C8374]"
-          nextIconButton={
-            <IconButton
-              onClick={() => handleChangePage(page + 1)}
-              disabled={page >= Math.ceil(data.length / rowsPerPage) - 1}
-              aria-label="next page"
-              sx={{ color: "#5C8374" }} // Change the color as per your requirement
-            >
-              <MdKeyboardArrowRight />
-            </IconButton>
-          }
-          prevIconButton={
-            <IconButton
-              onClick={() => handleChangePage(page - 1)}
-              disabled={page === 0}
-              aria-label="previous page"
-              sx={{ color: "#5C8374", margin: "5", backgroundColor: "white" }} // Change the color as per your requirement
-            >
-              <MdKeyboardArrowLeft />
-            </IconButton>
-          }
+          ActionsComponent={() => (
+            <div className="flex items-center">
+              <IconButton
+                onClick={() => handleChangePage(null, page - 1)}
+                disabled={page === 0}
+                aria-label="previous page"
+                sx={{ color: "#5C8374" }}
+              >
+                <MdKeyboardArrowLeft />
+              </IconButton>
+              <IconButton
+                onClick={() => handleChangePage(null, page + 1)}
+                disabled={page >= Math.ceil(data.length / rowsPerPage) - 1}
+                aria-label="next page"
+                sx={{ color: "#5C8374" }}
+              >
+                <MdKeyboardArrowRight />
+              </IconButton>
+            </div>
+          )}
         />
       </Paper>
     </>

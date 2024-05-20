@@ -8,7 +8,7 @@ import { FaPlus } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
 import { doc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../../FirebaseConfig.jsx";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import "react-toastify/dist/ReactToastify.css";
 import { LoadderContext } from "../../../App.js";
@@ -29,6 +29,7 @@ function UpdateProductForm({
   };
 
   async function uploadFile(file) {
+    if (typeof file === "string") return null;
     if (file.length === 0) return null;
     const storageRef = ref(storage, `${file.name}`);
     await uploadBytes(storageRef, file);
@@ -58,6 +59,7 @@ function UpdateProductForm({
               modeldetails: selectedProduct.ModelDetails || [],
               serialno: selectedProduct.Serial_No || [],
               allissues: selectedProduct.Allissues || [],
+              customers: selectedProduct.Customers || [],
             }}
             validationSchema={Yup.object({
               name: Yup.string().required("*required"),
@@ -65,6 +67,14 @@ function UpdateProductForm({
               allissues: Yup.array().of(
                 Yup.object().shape({
                   video: Yup.string().url("Invalid URL format"),
+                })
+              ),
+              customers: Yup.array().of(
+                Yup.object().shape({
+                  Buyer_Mobile_No: Yup.string()
+                    .matches(/^[0-9]{10}$/, "Must be exactly 10 digits")
+                    .required("*required"),
+                  Assigned_Model_No: Yup.string().required("*required"),
                 })
               ),
             })}
@@ -81,7 +91,9 @@ function UpdateProductForm({
                 );
                 // Upload PDFs
                 const pdfUrls = await Promise.all(
-                  values.allissues.map(async (issue) => {
+                  values.allissues.map(async (issue, index) => {
+                    console.log(`typr ${index}`, typeof issue);
+                    console.log(`issue ${index}`, issue);
                     if (issue.pdf) {
                       return await uploadFile(issue.pdf);
                     }
@@ -108,6 +120,7 @@ function UpdateProductForm({
                         : pdfUrls[index] || [],
                     video: values.allissues[index].video,
                   })),
+                  Customers: values.customers,
                 });
                 toast.success("Added Successfully");
                 setIsloading(false);
@@ -231,9 +244,6 @@ function UpdateProductForm({
                               <div key={index} className=" border-b pb-4">
                                 <div className=" flex items-center justify-center">
                                   <div className="mr-1 w-1/3">
-                                    {/* <label className="block text-lg font-semibold text-[#056674] mb-2">
-                                      Model No. {index + 1}
-                                    </label> */}
                                     <FormikInput
                                       name={`modeldetails[${index}].Model_No`}
                                       type="text"
@@ -448,6 +458,75 @@ function UpdateProductForm({
                             <span className="ml-2 text-[#056674]">
                               Add Related Issue
                             </span>
+                          </div>
+                        </div>
+                      )}
+                    </FieldArray>
+                  </div>
+                  <div className="w-full pl-2">
+                    <FieldArray name="customers">
+                      {({ push, remove }) => (
+                        <div className="mt-4 p-4 border rounded  bg-[#E0ECE4] overflow-auto max-h-80">
+                          <label className="block text-lg font-semibold text-[#056674] mb-2 border-b-2 border-[#056674]">
+                            Enter Customers (if any)
+                          </label>
+                          {values.customers.map((e, index) => (
+                            <div className="flex items-center mb-4">
+                              <div key={index} className="mr-4">
+                                <FormikInput
+                                  label={`Buyer ${index + 1}  Mobile No`}
+                                  name={`customers[${index}].Buyer_Mobile_No`}
+                                  type="number"
+                                  value={
+                                    values.customers[index].Buyer_Mobile_No
+                                  }
+                                  onChange={(event) => {
+                                    setFieldValue(
+                                      `customers[${index}].Buyer_Mobile_No`,
+                                      event.currentTarget.value
+                                    );
+                                  }}
+                                />
+                              </div>
+                              <div className="col-span-2">
+                                <Formikselect
+                                  label={`Assign Model_No`}
+                                  name={`customers[${index}].Assigned_Model_No`}
+                                  type={"text"}
+                                  data={values.modeldetails.map((e) => {
+                                    return e.Model_No;
+                                  })}
+                                  onChange={(event) => {
+                                    setFieldValue(
+                                      `customers[${index}].Assigned_Model_No`,
+                                      event
+                                    );
+                                  }}
+                                />
+                              </div>
+                              <button
+                                className="text-[#FF4B5C] hover:text-red-500 focus:outline-none"
+                                type="button"
+                                onClick={() => remove(index)}
+                              >
+                                <MdDelete size={28} />
+                              </button>
+                            </div>
+                          ))}
+                          <div className="flex items-center text-[#056674]">
+                            <button
+                              className="p-2 rounded-full bg-[#056674] bg-opacity-15 focus:ring-[#f95555] focus:outline-none focus:ring focus:ring-opacity-40 mr-2"
+                              type="button"
+                              onClick={() =>
+                                push({
+                                  Assigned_Model_No: "",
+                                  Buyer_Mobile_No: "",
+                                })
+                              }
+                            >
+                              <FaPlus size={28} className="text-[#056674] " />
+                            </button>
+                            <span>Add Buyer</span>
                           </div>
                         </div>
                       )}

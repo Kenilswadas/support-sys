@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -36,6 +36,7 @@ function ProductDetailTable({ data, setView, view, id }) {
     { id: "Allissues", label: "Text Solution", minWidth: 450 },
     { id: "Allissues", label: "Video Solution" },
     { id: "Allissues", label: "Pdf Solution" },
+    // { id: "Customers", label: "Buyer_Mobile_No" },
   ];
 
   return (
