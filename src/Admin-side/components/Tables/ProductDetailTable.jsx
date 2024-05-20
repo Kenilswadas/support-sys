@@ -7,7 +7,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { MdDelete } from "react-icons/md";
+import {
+  MdDelete,
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowRight,
+} from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import { MdPreview } from "react-icons/md";
 import ViewSolution from "../Model/ViewSolution.jsx";
@@ -24,7 +28,7 @@ function ProductDetailTable({
   id,
 }) {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(1);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -35,7 +39,7 @@ function ProductDetailTable({
   };
   const [Model_No, setModel_No] = useState(null);
   const columns = [
-    { id: "Srno", label: "Sr no." },
+    { id: "Srno", label: "Sr no.", minWidth: 50 },
     { id: "id", label: "Id", maxWidth: 50 },
     { id: "ProductName", label: "ProductName" },
     { id: "Category", label: "Category" },
@@ -49,10 +53,10 @@ function ProductDetailTable({
   return (
     <div>
       <Paper
-        sx={{}}
-        className="dark:!bg-[#0f161b] dark:text-[#5C8374] text-[#003C4C]"
+        sx={{ width: "100%", overflow: "auto" }}
+        className="dark:!bg-[#0f161b] dark:text-[#5C8374] text-[#003C4C] overflow-auto mt-5"
       >
-        <TableContainer sx={{ maxHeight: 440, maxWidth: 1100 }}>
+        <TableContainer sx={{ maxHeight: 440 }}>
           <Table
             stickyHeader
             aria-label="sticky table"
@@ -89,11 +93,11 @@ function ProductDetailTable({
                           key={column.id}
                           align="left"
                           style={{
-                            font: "small-caption",
-                            fontSize: "14px",
+                            // font: "small-caption",
+                            // fontSize: "14px",
                             textAlign: "center",
                           }}
-                          className="!text-[#056674] dark:!bg-[#0f161b] "
+                          className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#F39422] text-2xl"
                         >
                           {column.id === "Srno" ? (
                             <span className="font-semibold text-xl ">
@@ -169,7 +173,8 @@ function ProductDetailTable({
                             <div className="w-full flex justify-between ">
                               <Tooltip title="View Solution" placement="top">
                                 <IconButton
-                                  className="!text-[#056674] dark:!bg-[#183D3D] dark:!text-[#5C8374]"
+                                  style={{ fontSize: "25px" }}
+                                  className="!text-[#056674] dark:!bg-[#183D3D] !bg-[#E0ECE4] dark:!text-[#5C8374]"
                                   onClick={() => {
                                     setView(!view);
                                     setId(row.id);
@@ -185,8 +190,8 @@ function ProductDetailTable({
                             <div className="w-full flex justify-between m-2  ">
                               <Tooltip title="Edit" placement="top">
                                 <IconButton
-                                  className="!text-[#056674] dark:!bg-[#183D3D] dark:!text-[#5C8374]"
-                                  style={{ fontSize: "20px" }}
+                                  className="!text-[#056674] dark:!bg-[#183D3D] !bg-[#E0ECE4] dark:!text-[#5C8374] "
+                                  style={{ fontSize: "25px" }}
                                   onClick={() => OpenUpdateModel(row.id)}
                                 >
                                   <FaRegEdit />
@@ -194,8 +199,8 @@ function ProductDetailTable({
                               </Tooltip>
                               <Tooltip title="Delete" placement="top">
                                 <IconButton
-                                  className="!text-[#056674] dark:!bg-[#183D3D] dark:!text-[#5C8374]"
-                                  style={{ fontSize: "20px" }}
+                                  className="!text-[#056674] dark:!bg-[#183D3D] !bg-[#E0ECE4] dark:!text-[#5C8374]"
+                                  style={{ fontSize: "25px" }}
                                   onClick={() => handleDeleteProduct(row.id)}
                                 >
                                   <MdDelete />
@@ -220,6 +225,26 @@ function ProductDetailTable({
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           className="dark:!bg-[#0f161b] text-[#003C4C] dark:text-[#5C8374]"
+          nextIconButton={
+            <IconButton
+              onClick={() => handleChangePage(page + 1)}
+              disabled={page >= Math.ceil(data.length / rowsPerPage) - 1}
+              aria-label="next page"
+              sx={{ color: "#5C8374" }} // Change the color as per your requirement
+            >
+              <MdKeyboardArrowRight />
+            </IconButton>
+          }
+          prevIconButton={
+            <IconButton
+              onClick={() => handleChangePage(page - 1)}
+              disabled={page === 0}
+              aria-label="previous page"
+              sx={{ color: "#5C8374", margin: "5", backgroundColor: "white" }} // Change the color as per your requirement
+            >
+              <MdKeyboardArrowLeft />
+            </IconButton>
+          }
         />
       </Paper>
       {view ? (

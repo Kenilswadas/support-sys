@@ -3,8 +3,8 @@ import { collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../FirebaseConfig";
 import VerticalNavbar from "./components/VerticalNavbar";
-import Navbar from "./components/Navbar";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../helpers/Navbar";
 
 function UserProfile() {
   const [user, setUser] = useState(null);
