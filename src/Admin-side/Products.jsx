@@ -2,16 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 import VericalNavbar from "./components/VerticalNavbar.jsx";
 import SquareBtn from "../Support-sys/components/SquareBtn.jsx";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../FirebaseConfig.jsx";
 import ProductDetailTable from "./components/Tables/ProductDetailTable.jsx";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import UpdateProductForm from "./components/Model/UpdateProductForm.jsx";
 import AddProductsForm from "./components/Form/AddProductsForm.jsx";
 import Navbar from "../helpers/Navbar.jsx";
@@ -38,29 +32,12 @@ function Products() {
   const handleDeleteProduct = (id) => {
     deleteDoc(doc(db, "Products", id));
   };
-  // const handleUpadteProduct = (id) => {
-  //   alert(id);
-  //   // updateDoc(doc(db, "Products", id), {})
-  //   //   .then((res) => {
-  //   //     toast.success("Product is Updated");
-  //   //   })
-  //   //   .catch((err) => {
-  //   //     console.log(err);
-  //   //     toast.error(err.message);
-  //   //   });
-  // };
 
   const OpenUpdateModel = (id) => {
     const handleSelectedProduct = allusers.find((data) => data.id === id);
     setSelectedProduct(handleSelectedProduct);
     setOpenupdate(!openupdate);
     setId(id);
-    <SquareBtn
-      name={"Add Product"}
-      faicon={<HiOutlineViewGridAdd size={22} />}
-      type={"button"}
-      clickFunction={() => setShowCategoryForm(!CategoryForm)}
-    />;
   };
   return (
     <div className="max-sm:w-full max-md:w-full dark:bg-[#0f161b]">
@@ -84,7 +61,14 @@ function Products() {
               setShowCategoryForm={setShowCategoryForm}
             />
           ) : null}
-
+          <div>
+            <SquareBtn
+              name={"Add Product"}
+              faicon={<HiOutlineViewGridAdd size={22} />}
+              type={"button"}
+              clickFunction={() => setShowCategoryForm(!CategoryForm)}
+            />
+          </div>
           <ProductDetailTable
             setId={setId}
             id={id}

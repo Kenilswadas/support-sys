@@ -252,6 +252,7 @@ function LoginModel({
                             Mobile: values.mobile,
                             Email: values.email,
                             Password: values.password,
+                            ProductDetails: [],
                             Uid: auth?.currentUser?.uid,
                           })
                             .then((res) => {
