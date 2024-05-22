@@ -29,6 +29,7 @@ function LandingPage({ setIsloading, isLoading }) {
           navigate("/adminDashboard");
         }
       }
+      navigate("/UserDashboard");
     });
   }, [navigate]);
   return (

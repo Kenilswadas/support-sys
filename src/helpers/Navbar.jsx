@@ -44,7 +44,16 @@ function Navbar({ viewLogin, setViewLogin, userName, setUserName }) {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth?.currentUser, userName]);
-  const Adminside = ["/adminDashboard", "/Ticket"];
+  const paths = [
+    "/adminDashboard",
+    "/Ticket",
+    "/Products",
+    "/Customers",
+    "/UserDashboard",
+    "/UserProfile",
+    "/UserTickets",
+    "/ImmediateUserSupport",
+  ];
   return (
     <>
       <nav
@@ -60,7 +69,7 @@ function Navbar({ viewLogin, setViewLogin, userName, setUserName }) {
               />
             </li>
           </div>
-          {!Adminside.includes(location.pathname) ? (
+          {!paths.includes(location.pathname) ? (
             <div className="flex items-center justify-around w-4/12 max-md:flex-col">
               <li>
                 <NavLink
@@ -147,7 +156,10 @@ function Navbar({ viewLogin, setViewLogin, userName, setUserName }) {
                 <ul className="flex flex-col items-center justify-center text-center">
                   {userName || auth?.currentUser ? (
                     <>
-                      <li className=" w-full p-2 hover:bg-[#E0ECE4]">
+                      <li
+                        className=" w-full p-2 hover:bg-[#E0ECE4]"
+                        onClick={() => navigate("/UserProfile")}
+                      >
                         View Profile
                       </li>
                       <div className="border-t-2 border-[#056674] w-full p-2 flex items-start justify-start">

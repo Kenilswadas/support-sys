@@ -72,12 +72,14 @@ function CustomerDetailTable({
                     key={column.id}
                     align={column.align}
                     style={{
+                      backgroundColor: "#056674",
+                      color: "white",
                       minWidth: column.minWidth,
                       fontFamily: "revert",
                       fontSize: "16px",
                       fontWeight: "bold",
                     }}
-                    className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#5C8374]"
+                    className="dark:!bg-[#0f161b] dark:!text-[#5C8374] !text-center"
                   >
                     {column.label}
                   </TableCell>
@@ -85,98 +87,125 @@ function CustomerDetailTable({
               </TableRow>
             </TableHead>
             <TableBody className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#5C8374]">
-              {data
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={row.id}
-                    className="transition duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{ textAlign: "justify" }}
-                          className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#F39422] text-xl"
-                        >
-                          {column.id === "ProductDetails" ? (
-                            value.length !== 0 ? (
-                              <div className="overflow-auto max-h-36 p-4">
-                                <table className="w-full border-collapse">
-                                  <thead>
-                                    <tr>
-                                      <th className="border-2 p-2">
-                                        Product Category
-                                      </th>
-                                      <th className="border-2 p-2">
-                                        Product Name
-                                      </th>
-                                      <th className="border-2 p-2">
-                                        Product Serial_No
-                                      </th>
-                                      <th className="border-2 p-2">
-                                        Product Model_No
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {value.map((e, idx) => (
-                                      <tr key={idx}>
-                                        <td className="border-2 p-2">
-                                          {e.Category}
-                                        </td>
-                                        <td className="border-2 p-2">
-                                          {e.ProductName}
-                                        </td>
-                                        <td className="border-2 p-2">
-                                          {e.Serial_No}
-                                        </td>
-                                        <td className="border-2 p-2">
-                                          {e.Model_No}
-                                        </td>
+              {data.length === 0 ? (
+                <TableRow>
+                  <TableCell className="text-center ">
+                    No data found.....
+                  </TableCell>
+                </TableRow>
+              ) : (
+                data
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.id}
+                      className="transition duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      {columns.map((column) => {
+                        const value = row[column.id];
+                        return (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{ textAlign: "justify" }}
+                            className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#F39422] text-xl !text-center"
+                          >
+                            {column.id === "ProductDetails" ? (
+                              value.length !== 0 ? (
+                                <div className="overflow-auto max-h-36 p-4">
+                                  <table className="!border-2 !border-[#056674]">
+                                    <thead>
+                                      <tr className="!border-2 !border-[#056674]">
+                                        <th className="border-2 border-[#056674] p-2 text-center  text-[#056674]">
+                                          Sr No.
+                                        </th>{" "}
+                                        <th className="border-2 border-[#056674] p-2 text-center  text-[#056674]">
+                                          Product Category
+                                        </th>
+                                        <th className="border-2 border-[#056674] p-2 text-center  text-[#056674]">
+                                          Product Name
+                                        </th>
+                                        <th className="border-2 border-[#056674] p-2 text-center  text-[#056674]">
+                                          Product Serial_No
+                                        </th>
+                                        <th className="border-2 border-[#056674] p-2 text-center  text-[#056674]">
+                                          Product Model_No
+                                        </th>
+                                        <th className="border-2 border-[#056674] p-2 text-center  text-[#056674]">
+                                          Image
+                                        </th>
                                       </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
+                                    </thead>
+                                    <tbody>
+                                      {value.map((e, idx) => (
+                                        <tr key={idx}>
+                                          <td className="border-2 border-[#056674] p-2 text-justify">
+                                            {idx + 1}
+                                          </td>
+                                          <td className="border-2 border-[#056674] p-2 text-justify">
+                                            {e.Category}
+                                          </td>
+                                          <td className="border-2 border-[#056674] p-2 text-justify">
+                                            {e.ProductName}
+                                          </td>
+                                          <td className="border-2 border-[#056674] p-2 text-justify">
+                                            {e.Serial_No}
+                                          </td>
+                                          <td className="border-2 border-[#056674] p-2 text-justify">
+                                            {e.Model_No ? e.Model_No : "--"}
+                                          </td>{" "}
+                                          <td className="border-2 border-[#056674] p-2 text-justify">
+                                            {e.Model_Image ? (
+                                              <img
+                                                src={e.Model_Image}
+                                                alt="Model_Image"
+                                              />
+                                            ) : (
+                                              "--"
+                                            )}
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              ) : (
+                                "---"
+                              )
+                            ) : column.id !== "ProductDetails" &&
+                              column.id !== "action" ? (
+                              value
+                            ) : column.id === "action" ? (
+                              <div className="w-full flex justify-between">
+                                <Tooltip title="Edit" placement="top">
+                                  <IconButton
+                                    className="!text-[#056674] dark:!bg-[#183D3D] !bg-[#E0ECE4] dark:!text-[#5C8374]"
+                                    style={{ fontSize: "25px" }}
+                                    onClick={() => OpenUpdateModel(row.id)}
+                                  >
+                                    <FaRegEdit />
+                                  </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Delete" placement="top">
+                                  <IconButton
+                                    className="!text-[#056674] dark:!bg-[#183D3D] !bg-[#E0ECE4] dark:!text-[#5C8374]"
+                                    style={{ fontSize: "25px" }}
+                                    onClick={() => handleDeleteCustomer(row.id)}
+                                  >
+                                    <MdDelete />
+                                  </IconButton>
+                                </Tooltip>
                               </div>
-                            ) : (
-                              "---"
-                            )
-                          ) : column.id !== "ProductDetails" &&
-                            column.id !== "action" ? (
-                            value
-                          ) : column.id === "action" ? (
-                            <div className="w-full flex justify-between">
-                              <Tooltip title="Edit" placement="top">
-                                <IconButton
-                                  className="!text-[#056674] dark:!bg-[#183D3D] !bg-[#E0ECE4] dark:!text-[#5C8374]"
-                                  style={{ fontSize: "25px" }}
-                                  onClick={() => OpenUpdateModel(row.id)}
-                                >
-                                  <FaRegEdit />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip title="Delete" placement="top">
-                                <IconButton
-                                  className="!text-[#056674] dark:!bg-[#183D3D] !bg-[#E0ECE4] dark:!text-[#5C8374]"
-                                  style={{ fontSize: "25px" }}
-                                  onClick={() => handleDeleteCustomer(row.id)}
-                                >
-                                  <MdDelete />
-                                </IconButton>
-                              </Tooltip>
-                            </div>
-                          ) : null}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
+                            ) : null}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

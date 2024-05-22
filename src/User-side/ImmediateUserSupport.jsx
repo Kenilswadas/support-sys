@@ -3,21 +3,20 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { ToastContainer } from "react-toastify";
 import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../../FirebaseConfig.jsx";
-import Button from "../components/Button.jsx";
-import { Formikselect } from "../components/Formikselect.jsx";
-import InfoModel from "../components/InfoModel.jsx";
-import LoginModel from "../components/LoginModel.jsx";
-import SquareBtn from "../components/SquareBtn.jsx";
 import { CiTextAlignCenter } from "react-icons/ci";
 import { IoDocumentText, IoVideocam } from "react-icons/io5";
-import { LoginContext, UserContext } from "../../App.js";
 import { pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import Navbar from "../../helpers/Navbar.jsx";
+import { LoginContext, UserContext } from "../App";
+import { db } from "../FirebaseConfig";
+import Navbar from "../helpers/Navbar";
+import VerticalNavbar from "./components/VerticalNavbar";
+import { Formikselect } from "../Support-sys/components/Formikselect";
+import Button from "../Support-sys/components/Button";
+import SquareBtn from "../Support-sys/components/SquareBtn";
 
-function OnlineSupport({ view, setView, setIsloading, isLoading }) {
+function ImmediateUserSupport({ view, setView, setIsloading, isLoading }) {
   const { viewLogin, setViewLogin } = useContext(LoginContext);
   const { userName, setUserName } = useContext(UserContext);
   const [products, setProducts] = useState([]);
@@ -38,6 +37,7 @@ function OnlineSupport({ view, setView, setIsloading, isLoading }) {
   const [showText, setShowText] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [showPdf, setShowPdf] = useState(false);
+  const [ToggleView, setToggleView] = useState(false);
 
   const handleClose = () => {
     setView(!view);
@@ -64,6 +64,8 @@ function OnlineSupport({ view, setView, setIsloading, isLoading }) {
         userName={userName}
         setUserName={setUserName}
       />
+      <VerticalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
+
       <ToastContainer />
       <div className="flex flex-col items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
         {!showAns ? (
@@ -84,8 +86,9 @@ function OnlineSupport({ view, setView, setIsloading, isLoading }) {
                 issue: Yup.string().required("*required"),
               })}
               onSubmit={(values) => {
-                setView(!view);
+                // setView(!view);
                 setValues(values);
+                handlegetHelp();
               }}
             >
               {({ values, setFieldValue }) => (
@@ -182,7 +185,7 @@ function OnlineSupport({ view, setView, setIsloading, isLoading }) {
           </div>
         )}
       </div>
-      {view && (
+      {/* {view && (
         <InfoModel
           handleClose={handleClose}
           handlegetHelp={handlegetHelp}
@@ -199,7 +202,7 @@ function OnlineSupport({ view, setView, setIsloading, isLoading }) {
           isLoading={isLoading}
           setIsloading={setIsloading}
         />
-      )}
+      )} */}
       {showAns && (
         <div className="flex flex-col items-center justify-start w-full h-screen">
           <h1 className="text-[#FF4B5C] font-semibold text-5xl w-full text-center mb-2">
@@ -332,4 +335,4 @@ function OnlineSupport({ view, setView, setIsloading, isLoading }) {
   );
 }
 
-export default OnlineSupport;
+export default ImmediateUserSupport;

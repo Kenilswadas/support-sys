@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { BsPeopleFill } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
@@ -6,11 +6,8 @@ import { IoTicket } from "react-icons/io5";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { MdOutlineCategory } from "react-icons/md";
 import { NavLink } from "react-router-dom";
-import { ThemeContext } from "../../App";
 
 function VerticalNavbar({ ToggleView, setToggleView }) {
-  const { theme, toggleTheme } = useContext(ThemeContext);
-
   return (
     <>
       <nav
@@ -51,7 +48,7 @@ function VerticalNavbar({ ToggleView, setToggleView }) {
               {ToggleView ? null : "Dashboard"}
             </NavLink>
           </li>
-          <li
+          {/* <li
             className={`w-full flex items-start rounded-md hover:bg-[#E0ECE4] dark:hover:bg-[#183D3D]  ${
               ToggleView ? "" : "hover:border hover:border-[#056674]"
             }`}
@@ -69,7 +66,7 @@ function VerticalNavbar({ ToggleView, setToggleView }) {
               <CgProfile className="mr-4" size={20} />{" "}
               {ToggleView ? null : "Profile"}
             </NavLink>
-          </li>
+          </li> */}
           <li
             className={`w-full flex items-start rounded-md hover:bg-[#E0ECE4] dark:hover:bg-[#183D3D]  ${
               ToggleView ? "" : "hover:border hover:border-[#056674]"
