@@ -11,6 +11,7 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const { setTicketStatus } = useContext(TicketStatusContext);
   const { viewLogin, setViewLogin } = useContext(LoginContext);
+  const { userName, setUserName } = useContext(UserContext);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -22,7 +23,6 @@ function AdminDashboard() {
     });
   }, [navigate]);
 
-  const { userName, setUserName } = useContext(UserContext);
   const [ToggleView, setToggleView] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
   const [activeTickets, setActiveTickets] = useState([]);

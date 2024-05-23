@@ -57,6 +57,18 @@ function AddUserForm({ setShowAddUserForm, ShowAddUserForm }) {
   document.addEventListener("contextmenu", (event) => {
     event.preventDefault();
   });
+  const getModelImage = (productName, serialNo, modelNo) => {
+    const model = products
+      .filter((product) => product.ProductName === productName)
+      .flatMap((product) =>
+        product.ModelDetails.filter(
+          (model) =>
+            model.Assigned_Serial_No === serialNo && model.Model_No === modelNo
+        )
+      )[0]; // Assuming there is only one match
+
+    return model ? model.Model_Image : "";
+  };
 
   return (
     <div className="bg-black flex flex-col overflow-auto items-center w-full fixed inset-0 bg-opacity-50 z-50">
@@ -82,6 +94,7 @@ function AddUserForm({ setShowAddUserForm, ShowAddUserForm }) {
                   ProductName: "",
                   Serial_No: "",
                   Model_No: "",
+                  Model_Image: "",
                 },
               ],
               name: "",
@@ -109,7 +122,6 @@ function AddUserForm({ setShowAddUserForm, ShowAddUserForm }) {
                 Mobile: values.mobile,
                 Email: values.email,
                 ProductDetails: values.productdetails,
-                Uid: auth?.currentUser?.uid,
               })
                 .then((res) => {
                   toast.success("User Added Successfully");
@@ -243,14 +255,42 @@ function AddUserForm({ setShowAddUserForm, ShowAddUserForm }) {
                                         values.productdetails[index].Serial_No
                                     )
                                   )
-                                  .map((model) => model.Model_No)}
+                                  .map((model) => {
+                                    return model.Model_No;
+                                  })}
                                 onChange={(selectedModelNo) => {
                                   setFieldValue(
                                     `productdetails[${index}].Model_No`,
                                     selectedModelNo
                                   );
+                                  const productName =
+                                    values.productdetails[index].ProductName;
+                                  const serialNo =
+                                    values.productdetails[index].Serial_No;
+                                  const imageUrl = getModelImage(
+                                    productName,
+                                    serialNo,
+                                    selectedModelNo
+                                  );
+                                  setFieldValue(
+                                    `productdetails[${index}].Model_Image`,
+                                    imageUrl
+                                  );
                                 }}
                               />
+                              <FormikInput
+                                hidden={"hidden"}
+                                name={`productdetails[${index}].Model_Image`}
+                                type={"text"}
+                                readOnly={true}
+                                value={values.productdetails[index].Model_Image}
+                              />
+                              {values.productdetails[index].Model_Image ? (
+                                <img
+                                  src={values.productdetails[index].Model_Image}
+                                  alt="Model_Image"
+                                />
+                              ) : null}
                               <button
                                 className="mt-0 text-red-600 flex items-center"
                                 type="button"
@@ -272,6 +312,7 @@ function AddUserForm({ setShowAddUserForm, ShowAddUserForm }) {
                                 ProductName: "",
                                 Serial_No: "",
                                 Model_No: "",
+                                Model_Image: "",
                               })
                             }
                           >

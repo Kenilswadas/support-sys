@@ -20,7 +20,7 @@ import { ToastContainer } from "react-toastify";
 import { useContext } from "react";
 import { TicketStatusContext } from "../../../App";
 import { IconButton } from "@mui/material";
-function TicketsTable({
+function UserTicketsTable({
   Ticket,
   handleUpdateView,
   handleStatusChange,
@@ -47,15 +47,14 @@ function TicketsTable({
 
   const columns = [
     { id: "TicketId", label: "Ticket Id" },
-    { id: "UserName", label: "Name" },
-    { id: "UserEmail", label: "Email Id" },
+    // { id: "UserName", label: "Name" },
+    // { id: "UserEmail", label: "Email Id" },
     { id: "ProductName", label: "ProductName" },
     { id: "Category", label: "Category" },
     { id: "Model_No", label: "Model No" },
     { id: "Serial_No", label: "Serial No" },
     { id: "OtherIssue", label: "Issue" },
     { id: "Status", label: "Status" },
-    { id: "Action", label: "Action" },
   ];
   const handleViewFilter = () => {
     setViewFilter(true);
@@ -277,4 +276,4 @@ function TicketsTable({
   );
 }
 
-export default TicketsTable;
+export default UserTicketsTable;

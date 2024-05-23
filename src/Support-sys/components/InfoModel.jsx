@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../../FirebaseConfig.jsx";
 import { LoadderContext } from "../../App.js";
 import { toast } from "react-toastify";
@@ -15,56 +15,84 @@ import Loader from "../../helpers/Loader.jsx";
 function InfoModel({ handleClose, title, handlegetHelp, info }) {
   const { setIsloading, isLoading } = useContext(LoadderContext);
   const location = useLocation();
-
+  const [allusers, setAllusers] = useState([]);
+  useEffect(() => {
+    onSnapshot(collection(db, "UserDetails"), (snap) => {
+      const allusers = snap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setAllusers(allusers);
+    });
+  }, []);
+  const validateEmail = (email) => {
+    const userWithEmail = allusers.find((user) => user.Email === email);
+    if (userWithEmail) {
+      return <p>{"Email already exists."}</p>;
+    }
+    return undefined;
+  };
   const handleSubmit = async (values) => {
     setIsloading(true);
-    try {
-      let formData = {};
-      if (location.pathname === "/SupportTicket") {
-        console.log(location.pathname);
-        formData = {
-          ...info,
-          userEmail: auth.currentUser?.email || values.email,
-          userName: auth.currentUser?.displayName || values.name,
-          userUid: auth.currentUser?.uid || "",
-          ticketId: uuidv4(),
-        };
-        await addDoc(collection(db, "Tickets"), {
-          Category: formData.category,
-          Issue: formData.issue,
-          Model_No: formData.modelno,
-          OnlineSupport: formData.haveyougonethrough,
-          OtherIssue: formData.other,
-          ProductName: formData.product,
-          Serial_No: formData.serialno,
-          TicketId: formData.ticketId,
-          UserEmail: formData.userEmail,
-          UserName: formData.userName,
-          UserUid: formData.userUid,
-          Status: "Pending",
+    let formData = {};
+    if (location.pathname === "/SupportTicket") {
+      console.log(location.pathname);
+      formData = {
+        ...info,
+        userEmail: auth.currentUser?.email || values.email,
+        userName: auth.currentUser?.displayName || values.name,
+        userUid: auth.currentUser?.uid || "",
+        ticketId: uuidv4(),
+      };
+      await addDoc(collection(db, "Tickets"), {
+        Category: formData.category,
+        Issue: formData.issue,
+        Model_No: formData.modelno,
+        Model_Image: formData.modelimage,
+        OnlineSupport: formData.haveyougonethrough,
+        OtherIssue: formData.other,
+        ProductName: formData.product,
+        Serial_No: formData.serialno,
+        TicketId: formData.ticketId,
+        UserEmail: formData.userEmail,
+        UserName: formData.userName,
+        UserUid: formData.userUid,
+        Status: "Pending",
+      })
+        .then((res) => {
+          handlegetHelp(values, formData.ticketId);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          toast.error(error.message);
+          setIsloading(false);
+          handleClose();
         });
-      } else if (location.pathname === "/Onlinesupport") {
-        console.log(location.pathname);
-        const onlineSupportData = {
-          email: values.email,
-          name: values.name,
-          mobile: values.mobile,
-          product: info.product,
-          category: info.category,
-          modelno: info.modelno,
-          serialno: info.serialno,
-          issue: info.issue,
-        };
-        await addDoc(collection(db, "OnlineSupportData"), onlineSupportData);
-      }
-      toast.success("Submission successful.");
-      handleClose();
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error(error.message);
-    } finally {
-      setIsloading(false);
-      handlegetHelp();
+    } else if (location.pathname === "/Onlinesupport") {
+      console.log(location.pathname);
+      const onlineSupportData = {
+        email: values.email,
+        name: values.name,
+        mobile: values.mobile,
+        product: info.product,
+        category: info.category,
+        modelno: info.modelno,
+        serialno: info.serialno,
+        issue: info.issue,
+      };
+      await addDoc(collection(db, "OnlineSupportData"), onlineSupportData)
+        .then((res) => {
+          toast.success("Submission successful.");
+          setIsloading(false);
+          handleClose();
+          handlegetHelp();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          toast.error(error.message);
+          setIsloading(false);
+          handleClose();
+        });
     }
   };
 
@@ -91,9 +119,22 @@ function InfoModel({ handleClose, title, handlegetHelp, info }) {
             }}
             validationSchema={Yup.object({
               name: Yup.string().required("*required"),
-              email: Yup.string()
-                .email("Invalid email address")
-                .required("*required"),
+              email:
+                location.pathname === "/SupportTicket"
+                  ? Yup.string()
+                      .email("Invalid email address")
+                      .test(
+                        "checkDuplicateEmail",
+                        <div>
+                          <p>{"Email already exists."}</p>
+                          <p className="text-md">{"Please, Login First"}</p>
+                        </div>,
+                        (value) => !validateEmail(value)
+                      )
+                      .required("*required")
+                  : Yup.string()
+                      .email("Invalid email address")
+                      .required("*required"),
               mobile: Yup.string()
                 .matches(/^[0-9]{10}$/, "Must be exactly 10 digits")
                 .required("*required"),

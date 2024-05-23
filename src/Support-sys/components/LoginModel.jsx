@@ -17,6 +17,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { auth, db } from "../../FirebaseConfig.jsx";
 import { toast } from "react-toastify";
 import Loader from "../../helpers/Loader.jsx";
+
 function LoginModel({
   handleCloseLogin,
   title,
@@ -28,25 +29,29 @@ function LoginModel({
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState();
   const provider = new GoogleAuthProvider();
+
   const handleSignInWithGoogle = (values) => {
     signInWithPopup(auth, provider)
       .then((result) => {
         toast.success("Sign In Successfully");
         handleCloseLogin();
-        if (values.email === "admin@gmail.com") {
-          navigate("/adminDashboard");
-        } else navigate("/UserDashboard");
+        navigate(
+          values.email === "admin@gmail.com"
+            ? "/adminDashboard"
+            : "/UserDashboard"
+        );
         setUserName(null);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         toast.error(error.message);
         handleCloseLogin();
       });
   };
+
   return (
-    <div className="fixed inset-0 bg-cover bg-center flex items-center justify-center bg-black bg-opacity-70 z-50">
-      {isLoading ? <Loader /> : null}
+    <div className="fixed inset-0 bg-cover bg-center flex items-center justify-center bg-black bg-opacity-70 z-50 font-Calibri">
+      {isLoading && <Loader />}
       <div className="flex items-center justify-center mt-auto sm:mt-auto sm:mb-auto mb-auto w-2/4">
         <div className="bg-white  p-4 sm:p-8 rounded shadow-lg shadow-slate-500 w-full">
           <div className="flex items-end justify-end ">
@@ -64,9 +69,7 @@ function LoginModel({
                   ? `border-b-4  border-[#056674] text-[#FF4B5C]`
                   : `opacity-50`
               }`}
-              onClick={() => {
-                setShowLogin(true);
-              }}
+              onClick={() => setShowLogin(true)}
             >
               {"Login"}
             </h2>
@@ -76,14 +79,12 @@ function LoginModel({
                   ? `border-b-4  border-[#056674] text-[#FF4B5C]`
                   : `opacity-50`
               }`}
-              onClick={() => {
-                setShowLogin(false);
-              }}
+              onClick={() => setShowLogin(false)}
             >
               {"Sign Up"}
             </h2>
           </div>
-          <div className=" rounded-lg p-4">
+          <div className="rounded-lg p-4">
             {showLogin ? (
               <AnimatePresence mode="wait">
                 <motion.div
@@ -105,12 +106,12 @@ function LoginModel({
                       password: Yup.string()
                         .matches(
                           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                          "password must contains Upper case letter , one special charater ,degits"
+                          "password must contains Upper case letter, one special character, digits"
                         )
                         .required("*required"),
                     })}
                     onSubmit={(values) => {
-                      setIsloading(!isLoading);
+                      setIsloading(true);
                       signInWithEmailAndPassword(
                         auth,
                         values.email,
@@ -118,20 +119,21 @@ function LoginModel({
                       )
                         .then((res) => {
                           toast.success("Sign In Successfully");
-                          setIsloading(false);
                           handleCloseLogin();
-                          if (values.email === "admin@gmail.com") {
-                            navigate("/adminDashboard");
-                          } else navigate("/UserDashboard");
+                          navigate(
+                            values.email === "admin@gmail.com"
+                              ? "/adminDashboard"
+                              : "/UserDashboard"
+                          );
                         })
                         .catch((err) => {
-                          console.log(err);
+                          console.error(err);
                           toast.error(err.message);
-                          setIsloading(false);
-                        });
+                        })
+                        .finally(() => setIsloading(false));
                     }}
                   >
-                    {({ values, setFieldValue }) => (
+                    {({ values, setFieldValue, errors, touched }) => (
                       <Form className="flex flex-col items-center justify-center ">
                         <div className="mt-2 sm:mt-4 w-full p-2 ">
                           <div className="w-full">
@@ -153,7 +155,7 @@ function LoginModel({
                             <FormikInput
                               name={"password"}
                               placeholder={"Password"}
-                              type={"password"}
+                              type={"text"}
                               label={"Enter Your Password"}
                               value={values.password}
                               onChange={(event) => {
@@ -170,7 +172,7 @@ function LoginModel({
                           <div className="border-t-2 mt-2">
                             <div className="p-2">
                               <p className="flex  items-center justify-start  text-lg font-semibold text-[#056674] ">
-                                Login with google --{" "}
+                                Login with Google --{" "}
                                 <FcGoogle
                                   className="ml-4"
                                   size={28}
@@ -203,7 +205,6 @@ function LoginModel({
             ) : (
               <AnimatePresence mode="wait">
                 <motion.div
-                  // key={selectedTab ? selectedTab.label : "empty"}
                   initial={{ x: -10, opacity: 1 }}
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: 50, opacity: 0 }}
@@ -224,7 +225,7 @@ function LoginModel({
                       password: Yup.string()
                         .matches(
                           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                          "password must contains Upper case letter , one special charater ,degits"
+                          "password must contains Upper case letter, one special character, digits"
                         )
                         .required("*required"),
                       mobile: Yup.string()
@@ -232,7 +233,7 @@ function LoginModel({
                         .required("*required"),
                     })}
                     onSubmit={(values) => {
-                      setIsloading(!isLoading);
+                      setIsloading(true);
                       createUserWithEmailAndPassword(
                         auth,
                         values.email,
@@ -259,17 +260,17 @@ function LoginModel({
                               toast.success("User Added Successfully");
                             })
                             .catch((err) => {
-                              console.log(err);
+                              console.error(err);
                             });
                         })
                         .catch((err) => {
-                          console.log(err);
+                          console.error(err);
                           toast.error(err.message);
                           setIsloading(false);
                         });
                     }}
                   >
-                    {({ values, setFieldValue }) => (
+                    {({ values, setFieldValue, errors, touched }) => (
                       <Form className="">
                         <div className="mt-2 sm:mt-4 w-full p-2 grid grid-cols-2">
                           <div className="m-2">

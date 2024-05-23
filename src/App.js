@@ -13,6 +13,8 @@ import Products from "./Admin-side/Products.jsx";
 import AdminDashboard from "./Admin-side/AdminDashboard.jsx";
 import UserDashboard from "./User-side/UserDashboard.jsx";
 import UserProfile from "./User-side/UserProfile.jsx";
+import UserTickets from "./User-side/UserTickets.jsx";
+import ImmediateUserSupport from "./User-side/ImmediateUserSupport.jsx";
 export const UserContext = createContext(null);
 export const LoadderContext = createContext(null);
 export const TicketStatusContext = createContext(null);
@@ -64,11 +66,16 @@ function App() {
                       path="/AdminDashboard"
                       element={<AdminDashboard />}
                     />
-                    <Route path="/UserDashboard" element={<UserDashboard />} />
-                    <Route path="/UserProfile" element={<UserProfile />} />
                     <Route path="/Ticket" element={<Tickets />} />
                     <Route path="/Products" element={<Products />} />
                     <Route path="/Customers" element={<Customers />} />
+                    <Route path="/UserDashboard" element={<UserDashboard />} />
+                    <Route path="/UserProfile" element={<UserProfile />} />
+                    <Route path="/UserTickets" element={<UserTickets />} />
+                    <Route
+                      path="/ImmediateUserSupport"
+                      element={<ImmediateUserSupport />}
+                    />
                     <Route
                       path="/OnlineSupport"
                       element={
