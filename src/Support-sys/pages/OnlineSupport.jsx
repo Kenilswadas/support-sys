@@ -271,7 +271,7 @@ function OnlineSupport({ view, setView, setIsloading, isLoading }) {
                         data.issue === values.issue
                     ).map((issue, index) => {
                       const videoId =
-                        issue.video.length !== 0
+                        issue.video !== ""
                           ? issue.video.split("/").slice(-1)[0].split("?")[0]
                           : null;
 
@@ -288,7 +288,7 @@ function OnlineSupport({ view, setView, setIsloading, isLoading }) {
                         />
                       ) : (
                         <p className="text-[#056674] text-xl font-semibold mb-4">
-                          No Pdf Solution Available....
+                          No Video Solution Available....
                         </p>
                       );
                     })

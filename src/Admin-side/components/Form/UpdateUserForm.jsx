@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
@@ -13,10 +13,13 @@ import { RxCross1 } from "react-icons/rx";
 import { FormikInput } from "../../../Support-sys/components/FormikInput.jsx";
 import { FaPlus } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { LoadderContext } from "../../../App.js";
+import Loader from "../../../helpers/Loader.jsx";
 
 function UpdateUserForm({ setOpenupdate, openupdate, selectedUser }) {
   const [products, setProducts] = useState([]);
   const [categorys, setCategorys] = useState([]);
+  const { isLoading, setIsloading } = useContext(LoadderContext);
 
   useEffect(() => {
     onSnapshot(collection(db, "Products"), (snap) => {
@@ -53,6 +56,7 @@ function UpdateUserForm({ setOpenupdate, openupdate, selectedUser }) {
   return (
     <div className="bg-black flex flex-col overflow-auto items-center w-full fixed inset-0 bg-opacity-50 z-50">
       <ToastContainer />
+      {isLoading && <Loader />}
       <div className="flex flex-col items-center justify-center py-10 px-4 sm:px-6 lg:px-8 w-full max-w-4xl">
         <div className="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 sm:p-10 w-full transition-transform transform hover:scale-105 duration-300">
           <div className="flex items-end justify-end">
@@ -64,7 +68,7 @@ function UpdateUserForm({ setOpenupdate, openupdate, selectedUser }) {
             </button>
           </div>
           <h2 className="text-2xl sm:text-4xl font-semibold mb-6 text-center text-red-600">
-            Add User Details
+            Update User Details
           </h2>
           <Formik
             initialValues={{
@@ -83,21 +87,23 @@ function UpdateUserForm({ setOpenupdate, openupdate, selectedUser }) {
                 .required("*required"),
             })}
             onSubmit={(values) => {
-              alert(JSON.stringify(values, null, 2));
-              console.log(selectedUser.id);
+              //loader start
+              setIsloading(true);
               updateDoc(doc(db, "UserDetails", selectedUser.id), {
                 Name: values.name,
                 Mobile: values.mobile,
                 Email: values.email,
                 ProductDetails: values.productdetails,
-                Uid: auth?.currentUser?.uid,
+                Uid: selectedUser.Uid,
               })
                 .then((res) => {
                   toast.success("User Added Successfully");
+                  setIsloading(false);
                   handleClose();
                 })
                 .catch((err) => {
                   console.log(err);
+                  setIsloading(false);
                   handleClose();
                 });
             }}
@@ -295,7 +301,7 @@ function UpdateUserForm({ setOpenupdate, openupdate, selectedUser }) {
                   </FieldArray>
                 </div>
                 <div className="mt-6 flex justify-center">
-                  <Button name="Add User" type="submit" />
+                  <Button name="Update" type="submit" />
                 </div>
               </Form>
             )}

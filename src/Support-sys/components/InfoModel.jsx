@@ -36,12 +36,11 @@ function InfoModel({ handleClose, title, handlegetHelp, info }) {
     setIsloading(true);
     let formData = {};
     if (location.pathname === "/SupportTicket") {
-      console.log(location.pathname);
       formData = {
         ...info,
         userEmail: auth.currentUser?.email || values.email,
         userName: auth.currentUser?.displayName || values.name,
-        userUid: auth.currentUser?.uid || "",
+        // userUid: auth.currentUser?.uid || "",
         ticketId: uuidv4(),
       };
       await addDoc(collection(db, "Tickets"), {
@@ -56,7 +55,7 @@ function InfoModel({ handleClose, title, handlegetHelp, info }) {
         TicketId: formData.ticketId,
         UserEmail: formData.userEmail,
         UserName: formData.userName,
-        UserUid: formData.userUid,
+        // UserUid: formData.userUid,
         Status: "Pending",
       })
         .then((res) => {

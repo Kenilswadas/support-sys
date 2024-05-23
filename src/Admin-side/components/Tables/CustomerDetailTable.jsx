@@ -11,10 +11,12 @@ import {
   MdDelete,
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
+  MdPreview,
 } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import ViewCustomersAllProducts from "../../../User-side/components/Models/ViewCustomersAllProducts";
 
 function CustomerDetailTable({
   data,
@@ -22,6 +24,10 @@ function CustomerDetailTable({
   openupdate,
   setOpenupdate,
   handleUpdateCustomer,
+  view,
+  setView,
+  id,
+  setId,
 }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -115,62 +121,22 @@ function CustomerDetailTable({
                           >
                             {column.id === "ProductDetails" ? (
                               value.length !== 0 ? (
-                                <div className="overflow-auto max-h-36 p-4">
-                                  <table className="!border-2 !border-[#056674]">
-                                    <thead>
-                                      <tr className="!border-2 !border-[#056674]">
-                                        <th className="border-2 border-[#056674] p-2 text-center  text-[#056674]">
-                                          Sr No.
-                                        </th>{" "}
-                                        <th className="border-2 border-[#056674] p-2 text-center  text-[#056674]">
-                                          Product Category
-                                        </th>
-                                        <th className="border-2 border-[#056674] p-2 text-center  text-[#056674]">
-                                          Product Name
-                                        </th>
-                                        <th className="border-2 border-[#056674] p-2 text-center  text-[#056674]">
-                                          Product Serial_No
-                                        </th>
-                                        <th className="border-2 border-[#056674] p-2 text-center  text-[#056674]">
-                                          Product Model_No
-                                        </th>
-                                        <th className="border-2 border-[#056674] p-2 text-center  text-[#056674]">
-                                          Image
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {value.map((e, idx) => (
-                                        <tr key={idx}>
-                                          <td className="border-2 border-[#056674] p-2 text-justify">
-                                            {idx + 1}
-                                          </td>
-                                          <td className="border-2 border-[#056674] p-2 text-justify">
-                                            {e.Category}
-                                          </td>
-                                          <td className="border-2 border-[#056674] p-2 text-justify">
-                                            {e.ProductName}
-                                          </td>
-                                          <td className="border-2 border-[#056674] p-2 text-justify">
-                                            {e.Serial_No}
-                                          </td>
-                                          <td className="border-2 border-[#056674] p-2 text-justify">
-                                            {e.Model_No ? e.Model_No : "--"}
-                                          </td>{" "}
-                                          <td className="border-2 border-[#056674] p-2 text-justify">
-                                            {e.Model_Image ? (
-                                              <img
-                                                src={e.Model_Image}
-                                                alt="Model_Image"
-                                              />
-                                            ) : (
-                                              "--"
-                                            )}
-                                          </td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
+                                <div className="">
+                                  <Tooltip
+                                    title="View All Products"
+                                    placement="top"
+                                  >
+                                    <IconButton
+                                      style={{ fontSize: "25px" }}
+                                      className="!text-[#056674] dark:!bg-[#183D3D] !bg-[#E0ECE4] dark:!text-[#5C8374]"
+                                      onClick={() => {
+                                        setView(!view);
+                                        setId(row.id);
+                                      }}
+                                    >
+                                      <MdPreview />
+                                    </IconButton>
+                                  </Tooltip>
                                 </div>
                               ) : (
                                 "---"
@@ -240,6 +206,15 @@ function CustomerDetailTable({
           )}
         />
       </Paper>
+      {view ? (
+        <ViewCustomersAllProducts
+          data={data}
+          setView={setView}
+          view={view}
+          id={id}
+          setId={setId}
+        />
+      ) : null}
     </>
   );
 }

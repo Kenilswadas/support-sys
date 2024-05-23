@@ -28,8 +28,8 @@ function LandingPage({ setIsloading, isLoading }) {
         if (user.email === "admin@gmail.com") {
           navigate("/adminDashboard");
         }
-      }
-      navigate("/UserDashboard");
+        navigate("/UserDashboard");
+      } else navigate("/");
     });
   }, [navigate]);
   return (
@@ -40,7 +40,6 @@ function LandingPage({ setIsloading, isLoading }) {
         userName={userName}
         setUserName={setUserName}
       />
-
       <ToastContainer />
       <div className="relative">
         <div>

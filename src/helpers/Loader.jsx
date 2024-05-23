@@ -11,7 +11,7 @@ function Loader() {
     },
   };
   return (
-    <div className="fixed flex items-center justify-center inset-0 bg-cover bg-center bg-[#E0ECE4] bg-opacity-50 z-50">
+    <div className="fixed flex items-center justify-center inset-0 bg-cover bg-center bg-[#ffffff] bg-opacity-90 z-50">
       <Lottie
         options={defaultOptions}
         height={300}

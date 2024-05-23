@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
@@ -13,9 +13,20 @@ import { RxCross1 } from "react-icons/rx";
 import { FormikInput } from "../../../Support-sys/components/FormikInput.jsx";
 import { FaPlus } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { LoadderContext } from "../../../App.js";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
+import emailjs from "@emailjs/browser";
+import Loader from "../../../helpers/Loader.jsx";
+import { useNavigate } from "react-router-dom";
 
 function AddUserForm({ setShowAddUserForm, ShowAddUserForm }) {
   const [allusers, setAllusers] = useState([]);
+  const { isLoading, setIsloading } = useContext(LoadderContext);
 
   useEffect(() => {
     onSnapshot(collection(db, "UserDetails"), (snap) => {
@@ -33,6 +44,7 @@ function AddUserForm({ setShowAddUserForm, ShowAddUserForm }) {
     }
     return undefined;
   };
+  const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
   const [categorys, setCategorys] = useState([]);
@@ -69,10 +81,52 @@ function AddUserForm({ setShowAddUserForm, ShowAddUserForm }) {
 
     return model ? model.Model_Image : "";
   };
+  //generate password
+  var finalPass = "";
+  function generateRandomPassword() {
+    const uppercase = "IJKL";
+    const lowercase = "al";
+    const digits = "0123456789";
+    const special = "@$!%*?&";
+    const allChars = uppercase + lowercase + digits + special;
 
+    function getRandomCharFromSet(set) {
+      return set[Math.floor(Math.random() * set.length)];
+    }
+
+    // Ensure at least one character from each set is included
+    let password = [
+      getRandomCharFromSet(uppercase),
+      getRandomCharFromSet(lowercase),
+      getRandomCharFromSet(digits),
+      getRandomCharFromSet(special),
+    ];
+
+    // Fill the rest of the password length with random characters from all sets
+    for (let i = password.length; i < 8; i++) {
+      password.push(getRandomCharFromSet(allChars));
+    }
+
+    // Shuffle the password array to ensure random order
+    password = password.sort(() => Math.random() - 0.5).join("");
+    finalPass = password;
+    return password;
+  }
+  const handleLogout = () => {
+    signOut(auth)
+      .then((res) => {
+        toast.success("Sign-out Successfully.");
+        localStorage.clear();
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.message);
+      });
+  };
   return (
     <div className="bg-black flex flex-col overflow-auto items-center w-full fixed inset-0 bg-opacity-50 z-50">
       <ToastContainer />
+      {isLoading && <Loader />}
       <div className="flex flex-col items-center justify-center py-10 px-4 sm:px-6 lg:px-8 w-full max-w-4xl">
         <div className="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 sm:p-10 w-full transition-transform transform hover:scale-105 duration-300">
           <div className="flex items-end justify-end">
@@ -116,20 +170,83 @@ function AddUserForm({ setShowAddUserForm, ShowAddUserForm }) {
                 .required("*required"),
             })}
             onSubmit={(values) => {
-              alert(JSON.stringify(values, null, 2));
-              addDoc(collection(db, "UserDetails"), {
-                Name: values.name,
-                Mobile: values.mobile,
-                Email: values.email,
-                ProductDetails: values.productdetails,
-              })
+              //loader start
+              setIsloading(true);
+              //user creattion
+              createUserWithEmailAndPassword(
+                auth,
+                values.email,
+                generateRandomPassword()
+              )
                 .then((res) => {
-                  toast.success("User Added Successfully");
-                  handleClose();
+                  updateProfile(auth?.currentUser, {
+                    displayName: values.name,
+                  });
+                  //user logged out
+                  //add doc
+                  addDoc(collection(db, "UserDetails"), {
+                    Name: values.name,
+                    Mobile: values.mobile || "",
+                    Email: values.email,
+                    Password: finalPass,
+                    ProductDetails: values.productdetails,
+                    Uid: auth?.currentUser?.uid || "",
+                  })
+                    .then((res) => {
+                      toast.success("User Is Created Successfully.");
+                      // handleLogout();
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      setIsloading(false);
+                      toast.error("Opps ! Error Occurs... .");
+                      handleClose();
+                    });
                 })
                 .catch((err) => {
                   console.log(err);
+                  toast.error("Opps ! Error Occurs... .");
+                  setIsloading(false);
                   handleClose();
+                })
+                .finally((final) => {
+                  signInWithEmailAndPassword(
+                    auth,
+                    "admin@gmail.com",
+                    "Pa$$w0rd!"
+                  )
+                    .then((res) => {
+                      console.log("signInWithEmailAndPassword");
+                      // toast.success("Sign In Successfully");
+                      navigate("/Customers");
+                    })
+                    .catch((err) => {
+                      console.error(err);
+                      toast.error(err.message);
+                    })
+                    .finally(() => {
+                      setIsloading(false);
+                      handleClose();
+                      emailjs.init("tS5TqSZ15pz07_1Rd");
+                      emailjs
+                        .send("service_4rxbzye", "template_s787nca", {
+                          from_name: "VeerElectronics Team",
+                          m1: "Welcome to VeerElectronics.",
+                          team: "VeerElectronics Team",
+                          user_email: values.email,
+                          password: finalPass,
+                          email: values.email, // Recipient's email
+                          reply_to: "veerelectronics122@gmail.com",
+                        })
+                        .then(
+                          () => {
+                            console.log("SUCCESS!");
+                          },
+                          (error) => {
+                            console.log("FAILED...", error.text);
+                          }
+                        );
+                    });
                 });
             }}
           >
