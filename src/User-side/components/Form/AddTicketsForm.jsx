@@ -29,37 +29,7 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [values, setValues] = useState([]);
-  //generate password
-  var finalPass = "";
-  function generateRandomPassword() {
-    const uppercase = "IJKL";
-    const lowercase = "al";
-    const digits = "0123456789";
-    const special = "@$!%*?&";
-    const allChars = uppercase + lowercase + digits + special;
 
-    function getRandomCharFromSet(set) {
-      return set[Math.floor(Math.random() * set.length)];
-    }
-
-    // Ensure at least one character from each set is included
-    let password = [
-      getRandomCharFromSet(uppercase),
-      getRandomCharFromSet(lowercase),
-      getRandomCharFromSet(digits),
-      getRandomCharFromSet(special),
-    ];
-
-    // Fill the rest of the password length with random characters from all sets
-    for (let i = password.length; i < 8; i++) {
-      password.push(getRandomCharFromSet(allChars));
-    }
-
-    // Shuffle the password array to ensure random order
-    password = password.sort(() => Math.random() - 0.5).join("");
-    finalPass = password;
-    return password;
-  }
   // //handleLogout
   // const handleLogout = () => {
   //   signOut(auth)
@@ -86,7 +56,6 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
       userUid: auth.currentUser?.uid,
       ticketId: uuidv4(),
     };
-    alert(JSON.stringify(formData, null, 2));
     addDoc(collection(db, "Tickets"), {
       Category: formData.category,
       Issue: formData.issue,
@@ -104,26 +73,26 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
     })
       .then((res) => {
         toast.success("Ticket Is Genrated.");
-        // emailjs.init("tS5TqSZ15pz07_1Rd");
-        // emailjs
-        //   .send("service_4rxbzye", "template_oamnw7a", {
-        //     from_name: "VeerElectronics Team",
-        //     m1: "Your Ticket is generated.",
-        //     ticketid: formData.ticketid,
-        //     team: "VeerElectronics Team",
-        //     user_email: auth?.currentUser?.email,
-        //     password: generateRandomPassword(),
-        //     email: auth?.currentUser?.email, // Recipient's email
-        //     reply_to: "veerelectronics122@gmail.com",
-        //   })
-        //   .then(
-        //     () => {
-        //       console.log("SUCCESS!");
-        //     },
-        //     (error) => {
-        //       console.log("FAILED...", error.text);
-        //     }
-        //   );
+        emailjs.init("tS5TqSZ15pz07_1Rd");
+        emailjs
+          .send("service_4rxbzye", "template_oamnw7a", {
+            from_name: "VeerElectronics Team",
+            m1: "Your New Ticket is generated.",
+            ticketid: formData.ticketId,
+            team: "VeerElectronics Team",
+            user_email: auth?.currentUser?.email,
+            password: users[0].Password,
+            email: auth?.currentUser?.email, // Recipient's email
+            reply_to: "veerelectronics122@gmail.com",
+          })
+          .then(
+            () => {
+              console.log("SUCCESS!");
+            },
+            (error) => {
+              console.log("FAILED...", error.text);
+            }
+          );
         setIsloading(false);
         handleClose();
       })
@@ -135,28 +104,49 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
       });
   };
   useEffect(() => {
-    onSnapshot(collection(db, "UserDetails"), (snapshot) => {
-      const allUsers = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      // const filtereddata = allProducts.filter((data)=>data.Category === )
-      setUsers(allUsers);
-    });
-  }, []);
-  useEffect(() => {
-    onSnapshot(collection(db, "Products"), (snapshot) => {
-      const allProducts = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      console.log(allProducts);
-      // const filtereddata = allProducts.filter((data)=>data.Category === )
-      setProducts(allProducts);
-      setCategories([...new Set(allProducts.map((e) => e.Category))]);
-    });
+    const unsubscribeUsers = onSnapshot(
+      collection(db, "UserDetails"),
+      (snapshot) => {
+        const allUsers = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        const currentUser = allUsers.filter(
+          (data) => data.Email === auth?.currentUser?.email
+        );
+        setUsers(currentUser);
+      }
+    );
+
+    return () => unsubscribeUsers();
   }, []);
 
+  useEffect(() => {
+    const unsubscribeProducts = onSnapshot(
+      collection(db, "Products"),
+      (snapshot) => {
+        const allProducts = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        // Assuming users state has been updated before this effect runs
+        if (users.length > 0) {
+          const userCategories = users.flatMap((user) =>
+            user.ProductDetails.map((detail) => detail.Category)
+          );
+          const filteredData = allProducts.filter((product) =>
+            userCategories.includes(product.Category)
+          );
+          console.log(filteredData);
+          setProducts(filteredData);
+          setCategories([...new Set(filteredData.map((e) => e.Category))]);
+        }
+      }
+    );
+
+    return () => unsubscribeProducts();
+  }, [users]); // Add users as a dependency
   const getModelImage = (productName, serialNo, modelNo) => {
     const model = products
       .filter((product) => product.ProductName === productName)
@@ -169,7 +159,18 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
 
     return model ? model.Model_Image : "";
   };
-
+  const filteredProductNames = (values) => {
+    console.log("hi");
+    return products
+      .filter((product) => product.Category === values.category)
+      .filter((product) =>
+        users.some(
+          (user, index) =>
+            user.ProductDetails[index].ProductName === product.ProductName
+        )
+      )
+      .map((product) => product.ProductName);
+  };
   return (
     <div className="fixed flex flex-col items-center overflow-auto py-10 px-4 sm:px-6 lg:px-8 bg-black bg-center bg-cover inset-0 bg-opacity-70 z-50">
       <ToastContainer />
@@ -223,9 +224,7 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
                 <Formikselect
                   label="Select Product"
                   name="product"
-                  data={products
-                    .filter((data) => data.Category === values.category)
-                    .map((e) => e.ProductName)}
+                  data={filteredProductNames(values)}
                   onChange={(selectedProduct) => {
                     setFieldValue("product", selectedProduct);
                     setFieldValue("issue", "");

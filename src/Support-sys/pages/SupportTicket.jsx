@@ -71,7 +71,6 @@ function SupportTicket({ view, setView }) {
     signOut(auth)
       .then((res) => {
         // toast.success("Sign-out Successfully.");
-        localStorage.clear();
         // navigate("/");
       })
       .catch((error) => {
@@ -81,15 +80,15 @@ function SupportTicket({ view, setView }) {
   };
   //handleClose
   const handleClose = () => setView(!view);
-  //email sending
+  //handlegetHelp
   const handlegetHelp = (value, ticketid) => {
     createUserWithEmailAndPassword(auth, value.email, generateRandomPassword())
       .then((res) => {
         updateProfile(auth?.currentUser, {
           displayName: value.name,
         });
-        // localStorage.setItem("userName", value.name);
-        setIsloading(false);
+        localStorage.setItem("Uid", auth?.currentUser?.uid);
+        handleLogout();
         addDoc(collection(db, "UserDetails"), {
           Name: value.name,
           Mobile: value.mobile || "",
@@ -104,16 +103,14 @@ function SupportTicket({ view, setView }) {
               Model_Image: values.modelimage,
             },
           ],
-          Uid: auth?.currentUser?.uid || "",
+          Uid: localStorage.getItem("Uid") || "",
         })
           .then((res) => {
             toast.success("Ticket Is Genrated.");
-            handleLogout();
-            handleClose();
-            setIsloading(false);
           })
           .catch((err) => {
             console.log(err);
+            toast.error("Opps ! Error Occurs... .");
             handleClose();
             setIsloading(false);
           });
@@ -123,27 +120,32 @@ function SupportTicket({ view, setView }) {
         toast.error("Opps ! Error Occurs... .");
         handleClose();
         setIsloading(false);
-      });
-    emailjs.init("tS5TqSZ15pz07_1Rd");
-    emailjs
-      .send("service_4rxbzye", "template_oamnw7a", {
-        from_name: "VeerElectronics Team",
-        m1: "Your Ticket is generated.",
-        ticketid: ticketid,
-        team: "VeerElectronics Team",
-        user_email: value.email,
-        password: finalPass,
-        email: value.email, // Recipient's email
-        reply_to: "veerelectronics122@gmail.com",
       })
-      .then(
-        () => {
-          console.log("SUCCESS!");
-        },
-        (error) => {
-          console.log("FAILED...", error.text);
-        }
-      );
+      .finally((final) => {
+        handleClose();
+        setIsloading(false);
+        //email sending
+        emailjs.init("tS5TqSZ15pz07_1Rd");
+        emailjs
+          .send("service_4rxbzye", "template_oamnw7a", {
+            from_name: "VeerElectronics Team",
+            m1: "Your Ticket is generated.",
+            ticketid: ticketid,
+            team: "VeerElectronics Team",
+            user_email: value.email,
+            password: finalPass,
+            email: value.email, // Recipient's email
+            reply_to: "veerelectronics122@gmail.com",
+          })
+          .then(
+            () => {
+              console.log("SUCCESS!");
+            },
+            (error) => {
+              console.log("FAILED...", error.text);
+            }
+          );
+      });
   };
   useEffect(() => {
     onSnapshot(collection(db, "Products"), (snapshot) => {

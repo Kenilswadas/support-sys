@@ -92,7 +92,7 @@ function AddProductsForm({ CategoryForm, setShowCategoryForm }) {
                   Allissues: values.allissues.map((issue, index) => ({
                     ...issue,
                     pdf: pdfUrls[index] || [],
-                    video: values.allissues[index].video || [],
+                    video: values.allissues[index].video || "",
                   })),
                 })
                   .then((res) => {

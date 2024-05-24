@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { LoginContext, TicketStatusContext, UserContext } from "../App";
 import { auth, db } from "../FirebaseConfig";
 import Navbar from "../helpers/Navbar";
@@ -85,6 +85,7 @@ function UserTickets() {
         setUserName={setUserName}
       />
       <VerticalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
+      <ToastContainer />
       <div className="flex w-full h-screen p-4 overflow-auto ">
         <div
           className={`bg-[#E0ECE4] dark:bg-[#040D12] w-full p-4 ${

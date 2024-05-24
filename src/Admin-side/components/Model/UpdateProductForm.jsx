@@ -110,10 +110,10 @@ function UpdateProductForm({
                       typeof values.allissues[index].pdf !== "object"
                         ? values.allissues[index].pdf
                         : pdfUrls[index] || [],
-                    video: values.allissues[index].video || [],
+                    video: values.allissues[index].video || "",
                   })),
                 });
-                toast.success("Added Successfully");
+                toast.success("Updated Successfully");
                 setIsloading(false);
                 handleCloseLogin();
               } catch (error) {
@@ -369,7 +369,12 @@ function UpdateProductForm({
                                       label={`Video Solution ${index + 1}`}
                                       name={`allissues[${index}].video`}
                                       type={"text"}
-                                      value={values.allissues[index].video}
+                                      value={
+                                        values.allissues[index].video.length ===
+                                        0
+                                          ? " "
+                                          : values.allissues[index].video
+                                      }
                                       onChange={(event) => {
                                         setFieldValue(
                                           `allissues[${index}].video`,
@@ -440,7 +445,7 @@ function UpdateProductForm({
                                     Assigned_Model_No: "",
                                     issue: "",
                                     text: "",
-                                    video: [],
+                                    video: "",
                                     pdf: [],
                                   })
                                 }

@@ -2,22 +2,32 @@ import React, { useContext, useEffect, useState } from "react";
 import VericalNavbar from "./components/VerticalNavbar";
 import CustomerDetailTable from "./components/Tables/CustomerDetailTable";
 import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
-import { db } from "../FirebaseConfig";
+import { auth, db } from "../FirebaseConfig";
 import Navbar from "../helpers/Navbar";
-import { LoginContext, UserContext } from "../App";
+import { LoadderContext, LoginContext, UserContext } from "../App";
 import SquareBtn from "../Support-sys/components/SquareBtn";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
 import AddUserForm from "./components/Form/AddUserForm";
 import UpdateUserForm from "./components/Form/UpdateUserForm";
+import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import Loader from "../helpers/Loader";
 
 function Customers() {
   const { userName, setUserName } = useContext(UserContext);
   const { viewLogin, setViewLogin } = useContext(LoginContext);
+  const { isLoading, setIsloading } = useContext(LoadderContext);
+
   const [allusers, setAllusers] = useState([]);
   const [ToggleView, setToggleView] = useState(false);
   const [ShowAddUserForm, setShowAddUserForm] = useState(false);
   const [openupdate, setOpenupdate] = useState(false);
   const [selectedUser, setSelectedUser] = useState([]);
+  const [view, setView] = useState(false);
+  const [id, setId] = useState(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
     onSnapshot(collection(db, "UserDetails"), (snap) => {
       const alldata = snap.docs.map((doc) => ({
@@ -43,6 +53,8 @@ function Customers() {
         setUserName={setUserName}
       />
       <VericalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
+      <ToastContainer />
+      {isLoading ? <Loader /> : null}
       <div className="flex w-full h-screen p-4 overflow-auto ">
         <div
           className={`bg-[#E0ECE4]  dark:bg-[#040D12]  w-full p-4 ${
@@ -63,6 +75,10 @@ function Customers() {
             handleUpdateCustomer={handleUpdateCustomer}
             openupdate={openupdate}
             setOpenupdate={setOpenupdate}
+            view={view}
+            setView={setView}
+            id={id}
+            setId={setId}
           />
           {ShowAddUserForm ? (
             <AddUserForm

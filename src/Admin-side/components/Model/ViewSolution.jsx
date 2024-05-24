@@ -8,6 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { IoIosCloseCircle } from "react-icons/io";
+import { RxCross1 } from "react-icons/rx";
 
 function ProductDetailTable({ data, setView, view, id }) {
   const [page, setPage] = useState(0);
@@ -40,26 +41,26 @@ function ProductDetailTable({ data, setView, view, id }) {
   ];
 
   return (
-    <div className="fixed inset-0 bg-cover bg-center flex flex-col items-center justify-center h-screen bg-black bg-opacity-50 z-50">
-      <div className=" w-11/12 bg-white p-4">
-        <div className=" w-full flex items-center justify-end ">
-          <IoIosCloseCircle
-            size={40}
-            className="text-[#056674] cursor-pointer"
-            onClick={() => handleClose()}
-          />
+    <div className="bg-black bg-center bg-cover fixed inset-0 bg-opacity-60 z-50 p-10 flex flex-col items-center justify-center">
+      <div className="bg-white p-10 rounded-lg shadow-lg w-full max-w-10xl">
+        <div className="flex justify-end">
+          <button
+            className="bg-[#66BFBF] hover:bg-[#135D66] p-2 text-lg text-white rounded-full"
+            onClick={handleClose}
+          >
+            <RxCross1 />
+          </button>
         </div>
         <div className=" w-full flex items-center justify-center text-3xl text-[#056674] mb-2">
           Full Details
         </div>
 
-        <Paper sx={{}}>
-          <TableContainer sx={{ maxHeight: 440 }}>
-            <Table
-              stickyHeader
-              aria-label="sticky table"
-              className="overflow-auto"
-            >
+        <Paper
+          sx={{}}
+          className="dark:bg-[#0f161b] dark:text-[#5C8374] text-[#003C4C] mt-4"
+        >
+          <TableContainer sx={{ maxHeight: "60vh" }}>
+            <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
                   {columns.map((column) => (
@@ -67,12 +68,14 @@ function ProductDetailTable({ data, setView, view, id }) {
                       key={column.id}
                       align="left"
                       style={{
+                        backgroundColor: "#056674",
+                        color: "white",
                         minWidth: column.minWidth,
                         fontFamily: "revert",
-                        color: "#003C4C",
                         fontSize: "16px",
-                        backgroundColor: "#E0ECE4",
+                        fontWeight: "bold",
                       }}
+                      className="dark:bg-[#0f161b] dark:text-[#5C8374]"
                     >
                       {column.label}
                     </TableCell>
@@ -98,9 +101,7 @@ function ProductDetailTable({ data, setView, view, id }) {
                             }}
                           >
                             {column.id === "Sr No." ? (
-                              <>
-                                <p className="text-2xl">{index}</p>
-                              </>
+                              <p className="text-2xl">{index}</p>
                             ) : column.id === "ModelDetails" &&
                               column.label === "Image" ? (
                               <>
