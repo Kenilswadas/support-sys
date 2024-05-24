@@ -1,11 +1,12 @@
 import { getAuth, onAuthStateChanged, updateProfile } from "firebase/auth";
 import { collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
-import { db } from "../FirebaseConfig";
+import { db, storage } from "../FirebaseConfig";
 import VerticalNavbar from "./components/VerticalNavbar";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../helpers/Navbar";
 import { LoginContext, UserContext } from "../App";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 function UserProfile() {
   const { viewLogin, setViewLogin } = useContext(LoginContext);
@@ -16,6 +17,7 @@ function UserProfile() {
   const [ToggleView, setToggleView] = useState(false);
   const auth = getAuth();
   const navigate = useNavigate();
+  const [image, setImage] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = () => {
@@ -36,9 +38,33 @@ function UserProfile() {
 
     fetchUserProfile();
   }, [auth.currentUser]);
-
+  const handleImageChange = async (file) => {
+    const imageUrl = await uploadImage(file);
+    console.log(imageUrl);
+    setUpdatedUser((prevUser) => ({
+      ...prevUser,
+      image: imageUrl,
+    }));
+  };
+  const uploadImage = async (file) => {
+    const storageRef = ref(storage, `userProfilePhoto/${file.name}`);
+    await uploadBytes(storageRef, file);
+    const imageUrl = await getDownloadURL(storageRef);
+    if (imageUrl) {
+      setImage(false);
+    }
+    return imageUrl;
+  };
   const handleInputChange = (e) => {
-    setUpdatedUser({ ...updatedUser, [e.target.name]: e.target.value });
+    const { name, value, files } = e.target;
+    if (name === "image" && files[0]) {
+      handleImageChange(files[0]);
+    } else {
+      setUpdatedUser((prevUser) => ({
+        ...prevUser,
+        [name]: value,
+      }));
+    }
   };
 
   const handleEditClick = () => {
@@ -89,9 +115,7 @@ function UserProfile() {
                     <div className="flex items-center justify-between mb-8">
                       <div className="flex items-center">
                         <img
-                          src={
-                            user.photoURL || "https://via.placeholder.com/150"
-                          }
+                          src={user.image || "https://via.placeholder.com/150"}
                           alt="Profile"
                           className="w-24 h-24 rounded-full object-cover mr-4"
                         />
@@ -106,7 +130,10 @@ function UserProfile() {
                         <div className="flex">
                           <button
                             type="submit"
-                            className="bg-blue-500 text-white rounded-md py-2 px-4 mr-2"
+                            className={`bg-blue-500 text-white rounded-md py-2 px-4 mr-2 ${
+                              image ? `cursor-not-allowed` : null
+                            } `}
+                            disabled={image}
                           >
                             Save
                           </button>
@@ -175,15 +202,18 @@ function UserProfile() {
                           />
                         </div>
                         <div className="flex flex-col">
-                          <label htmlFor="address" className="text-gray-600">
-                            Address
+                          <label htmlFor="image" className="text-gray-600">
+                            Image
                           </label>
                           <input
-                            type="text"
-                            id="address"
-                            name="address"
-                            value={updatedUser?.address || ""}
-                            onChange={handleInputChange}
+                            type="file"
+                            id="image"
+                            name="image"
+                            // value={updatedUser?.image || ""}
+                            onChange={(e) => {
+                              handleInputChange(e);
+                              setImage(true);
+                            }}
                             disabled={!isEditing}
                             className="border border-gray-300 rounded-md px-3 py-2 mt-1 w-full"
                           />

@@ -160,17 +160,59 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
     return model ? model.Model_Image : "";
   };
   const filteredProductNames = (values) => {
-    console.log("hi");
-    return products
-      .filter((product) => product.Category === values.category)
-      .filter((product) =>
-        users.some(
-          (user, index) =>
-            user.ProductDetails[index].ProductName === product.ProductName
+    const categoryFilteredProducts = products.filter(
+      (product) => product.Category === values.category
+    );
+
+    const filteredProductNames = categoryFilteredProducts.filter((product) =>
+      users.some((user) =>
+        user.ProductDetails.some(
+          (detail) => detail.ProductName === product.ProductName
         )
       )
-      .map((product) => product.ProductName);
+    );
+
+    return filteredProductNames.map((product) => product.ProductName);
   };
+  const filteredProductSerialNo = (values) => {
+    const categoryFilteredProducts = products.filter(
+      (product) => product.Category === values.category
+    );
+
+    const filteredSerialNumbers = categoryFilteredProducts.flatMap((product) =>
+      product.ModelDetails.filter((issue) =>
+        users.some((user) =>
+          user.ProductDetails.some(
+            (detail) => detail.Serial_No === issue.Assigned_Serial_No
+          )
+        )
+      ).map((issue) => issue.Assigned_Serial_No)
+    );
+
+    return filteredSerialNumbers;
+  };
+  const filteredProductModelNo = (values) => {
+    const categoryFilteredProducts = products.filter(
+      (product) => product.Category === values.category
+    );
+    const productwiseFilteredProducts = categoryFilteredProducts.filter(
+      (product) => product.ProductName === values.product
+    );
+
+    if (values.serialno) {
+      const filteredModelNo = productwiseFilteredProducts.flatMap((product) =>
+        product.ModelDetails.filter((model) =>
+          users.some((user) =>
+            user.ProductDetails.some(
+              (detail) => detail.Model_No === model.Model_No
+            )
+          )
+        ).map((e) => e.Model_No)
+      );
+      return filteredModelNo;
+    }
+  };
+
   return (
     <div className="fixed flex flex-col items-center overflow-auto py-10 px-4 sm:px-6 lg:px-8 bg-black bg-center bg-cover inset-0 bg-opacity-70 z-50">
       <ToastContainer />
@@ -235,9 +277,7 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
                 <Formikselect
                   label="Serial No"
                   name="serialno"
-                  data={products
-                    .filter((data) => data.ProductName === values.product)
-                    .flatMap((product) => product.Serial_No)}
+                  data={filteredProductSerialNo(values)}
                   value={values.serialno}
                   onChange={(selectedSerialNo) => {
                     setFieldValue("serialno", selectedSerialNo);
@@ -250,14 +290,7 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
                   name="modelno"
                   placeholder="Enter Model No"
                   value={values.modelno}
-                  data={products
-                    .filter((product) => product.ProductName === values.product)
-                    .flatMap((product) =>
-                      product.ModelDetails.filter(
-                        (model) => model.Assigned_Serial_No === values.serialno
-                      )
-                    )
-                    .map((model) => model.Model_No)}
+                  data={filteredProductModelNo(values)}
                   onChange={(selectedModelNo) => {
                     setFieldValue("modelno", selectedModelNo);
                     const productName = values.product;

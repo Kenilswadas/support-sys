@@ -1,11 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
 import VericalNavbar from "./components/VerticalNavbar";
-import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../FirebaseConfig";
 import TicketsTable from "./components/Tables/TicketTable";
 import { toast } from "react-toastify";
 import { LoginContext, TicketStatusContext, UserContext } from "../App";
 import Navbar from "../helpers/Navbar";
+import Swal from "sweetalert2";
 function Tickets() {
   const { userName, setUserName } = useContext(UserContext);
   const { viewLogin, setViewLogin } = useContext(LoginContext);
@@ -67,7 +74,26 @@ function Tickets() {
       }
     });
   };
-
+  const handleDeleteTicket = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteDoc(doc(db, "Tickets", id));
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your Ticket has been deleted.",
+          icon: "success",
+        });
+      }
+    });
+  };
   return (
     <div className="max-sm:w-full max-md:w-full dark:bg-[#0f161b]">
       <Navbar
@@ -94,6 +120,7 @@ function Tickets() {
             id={id}
             setViewFilter={setViewFilter}
             viewFilter={viewFilter}
+            handleDeleteTicket={handleDeleteTicket}
           />
         </div>
       </div>

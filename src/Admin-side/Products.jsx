@@ -10,6 +10,7 @@ import UpdateProductForm from "./components/Model/UpdateProductForm.jsx";
 import AddProductsForm from "./components/Form/AddProductsForm.jsx";
 import Navbar from "../helpers/Navbar.jsx";
 import { LoginContext, UserContext } from "../App.js";
+import Swal from "sweetalert2";
 function Products() {
   const { userName, setUserName } = useContext(UserContext);
   const { viewLogin, setViewLogin } = useContext(LoginContext);
@@ -30,7 +31,24 @@ function Products() {
     });
   }, []);
   const handleDeleteProduct = (id) => {
-    deleteDoc(doc(db, "Products", id));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteDoc(doc(db, "Products", id));
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your Product has been deleted.",
+          icon: "success",
+        });
+      }
+    });
   };
 
   const OpenUpdateModel = (id) => {

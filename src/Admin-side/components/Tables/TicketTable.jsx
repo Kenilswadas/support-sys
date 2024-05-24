@@ -11,6 +11,7 @@ import { CiEdit } from "react-icons/ci";
 import { Formikselect } from "../../../Support-sys/components/Formikselect";
 import { Formik } from "formik";
 import {
+  MdDelete,
   MdFilterAlt,
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
@@ -19,11 +20,13 @@ import { FaFilterCircleXmark } from "react-icons/fa6";
 import { ToastContainer } from "react-toastify";
 import { useContext } from "react";
 import { TicketStatusContext } from "../../../App";
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
+import { FaRegEdit } from "react-icons/fa";
 function TicketsTable({
   Ticket,
   handleUpdateView,
   handleStatusChange,
+  handleDeleteTicket,
   openupdate,
   setOpenupdate,
   selectedProduct,
@@ -47,7 +50,7 @@ function TicketsTable({
 
   const columns = [
     { id: "TicketId", label: "Ticket Id" },
-    { id: "UserName", label: "Name" },
+    // { id: "UserName", label: "Name" },
     { id: "UserEmail", label: "Email Id" },
     { id: "ProductName", label: "ProductName" },
     { id: "Category", label: "Category" },
@@ -55,7 +58,8 @@ function TicketsTable({
     { id: "Serial_No", label: "Serial No" },
     { id: "OtherIssue", label: "Issue" },
     { id: "Status", label: "Status" },
-    { id: "Action", label: "Action" },
+    { id: "Status", label: "Action" },
+    { id: "Status", label: "Delete" },
   ];
   const handleViewFilter = () => {
     setViewFilter(true);
@@ -191,7 +195,8 @@ function TicketsTable({
                             }}
                             className="!text-[#056674] dark:!bg-[#0f161b] dark:!text-[#F39422] text-2xl"
                           >
-                            {column.id === "Status" ? (
+                            {column.id === "Status" &&
+                            column.label === "Status" ? (
                               <span className="flex items-center justify-center w-full">
                                 {openupdate && row.id === id ? null : (
                                   <span className="pr-2">{value}</span>
@@ -221,16 +226,34 @@ function TicketsTable({
                                   </Formik>
                                 )}
                               </span>
-                            ) : column.id === "Action" ? (
-                              value !== "Completed" && (
-                                <CiEdit
-                                  size={20}
-                                  className="cursor-pointer"
-                                  onClick={() => handleUpdateView(row.id)}
-                                />
-                              )
+                            ) : column.id === "Status" &&
+                              column.label === "Action" ? (
+                              value !== "Completed" ? (
+                                <Tooltip title="Edit" placement="top">
+                                  <IconButton
+                                    className="!text-[#056674] dark:!bg-[#183D3D] !bg-[#E0ECE4] dark:!text-[#5C8374]"
+                                    style={{ fontSize: "25px" }}
+                                    onClick={() => handleUpdateView(row.id)}
+                                  >
+                                    <FaRegEdit />
+                                  </IconButton>
+                                </Tooltip>
+                              ) : null
+                            ) : column.id === "Status" &&
+                              column.label === "Delete" ? (
+                              <Tooltip title="Delete" placement="top">
+                                <IconButton
+                                  className="!text-[#056674] dark:!bg-[#183D3D] !bg-[#E0ECE4] dark:!text-[#5C8374]"
+                                  style={{ fontSize: "25px" }}
+                                  onClick={() => handleDeleteTicket(row.id)}
+                                >
+                                  <MdDelete />
+                                </IconButton>
+                              </Tooltip>
                             ) : (
-                              <span>{value}</span>
+                              <>
+                                <span>{value}</span>
+                              </>
                             )}
                           </TableCell>
                         );
