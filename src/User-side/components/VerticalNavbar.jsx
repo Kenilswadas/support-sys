@@ -47,11 +47,11 @@ function VerticalNavbar({ ToggleView, setToggleView }) {
               icon: <MdOutlineCategory size={20} />,
               label: "Immediate Support",
             },
-            // {
-            //   to: "/Customers",
-            //   icon: <BsPeopleFill size={20} />,
-            //   label: "Customers",
-            // },
+            {
+              to: "/UserVideoSolutions",
+              icon: <BsPeopleFill size={20} />,
+              label: "Video Solutions",
+            },
           ].map((item, index) => (
             <li key={index} className="w-full">
               <NavLink

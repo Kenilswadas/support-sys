@@ -160,14 +160,15 @@ function ProductDetailTable({ data, setView, view, id }) {
                               ))
                             ) : column.id === "Allissues" &&
                               column.label === "Video Solution" ? (
-                              value.map((e, i) => {
-                                // Extract videoId from the YouTube URL
-                                const videoId = e.video
-                                  .split("/")
-                                  .slice(-1)[0]
-                                  .split("?")[0];
-                                console.log("Video ID:", videoId); // Add this line
-                                return (
+                              value.map((issue, i) => {
+                                const videoId =
+                                  issue.video !== ""
+                                    ? issue.video
+                                        .split("/")
+                                        .slice(-1)[0]
+                                        .split("?")[0]
+                                    : null;
+                                return videoId ? (
                                   <div className="w-64 h-48 p-2 m-2 border-2 border-[#056674]">
                                     <iframe
                                       key={i}
@@ -179,20 +180,29 @@ function ProductDetailTable({ data, setView, view, id }) {
                                       allowfullscreen
                                     />
                                   </div>
+                                ) : (
+                                  <p className="w-64 h-48 p-2 m-2 border-2 border-[#056674] justify-center flex items-center">
+                                    {" "}
+                                    No Video Solution Available....
+                                  </p>
                                 );
                               })
                             ) : column.id === "Allissues" &&
                               column.label === "Pdf Solution" ? (
-                              value.map((e, i) => {
-                                console.log(e.pdf);
-                                return (
+                              value.map((issue, i) => {
+                                return issue.pdf.length !== 0 ? (
                                   <div className="w-96 h-full p-4 m-2 border border-teal-600 rounded-lg">
                                     <iframe
-                                      src={e.pdf}
+                                      src={issue.pdf}
                                       className="w-full h-full"
                                       title="PDF Viewer"
                                     />
                                   </div>
+                                ) : (
+                                  <p className="w-64 h-48 p-2 m-2 border-2 border-[#056674] justify-center flex items-center">
+                                    {" "}
+                                    No Pdf Solution Available....
+                                  </p>
                                 );
                               })
                             ) : (

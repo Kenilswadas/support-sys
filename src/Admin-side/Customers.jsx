@@ -13,6 +13,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Loader from "../helpers/Loader";
+import Swal from "sweetalert2";
 
 function Customers() {
   const { userName, setUserName } = useContext(UserContext);
@@ -38,7 +39,24 @@ function Customers() {
     });
   }, []);
   const handleDeleteCustomer = (id) => {
-    deleteDoc(doc(db, "UserDetails", id));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteDoc(doc(db, "UserDetails", id));
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your Customer has been deleted.",
+          icon: "success",
+        });
+      }
+    });
   };
   const handleUpdateCustomer = (id) => {
     const selectedUser = allusers.find((some) => some.id === id);

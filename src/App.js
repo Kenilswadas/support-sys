@@ -15,6 +15,7 @@ import UserDashboard from "./User-side/UserDashboard.jsx";
 import UserProfile from "./User-side/UserProfile.jsx";
 import UserTickets from "./User-side/UserTickets.jsx";
 import ImmediateUserSupport from "./User-side/ImmediateUserSupport.jsx";
+import UserVideoSolutions from "./User-side/UserVideoSolutions.jsx";
 export const UserContext = createContext(null);
 export const LoadderContext = createContext(null);
 export const TicketStatusContext = createContext(null);
@@ -72,6 +73,10 @@ function App() {
                     <Route path="/UserDashboard" element={<UserDashboard />} />
                     <Route path="/UserProfile" element={<UserProfile />} />
                     <Route path="/UserTickets" element={<UserTickets />} />
+                    <Route
+                      path="/UserVideoSolutions"
+                      element={<UserVideoSolutions />}
+                    />
                     <Route
                       path="/ImmediateUserSupport"
                       element={<ImmediateUserSupport />}
