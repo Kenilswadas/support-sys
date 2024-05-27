@@ -85,7 +85,6 @@ function UserTickets() {
         setUserName={setUserName}
       />
       <VerticalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
-      <ToastContainer />
       <div className="flex w-full h-screen p-4 overflow-auto ">
         <div
           className={`bg-[#E0ECE4] dark:bg-[#040D12] w-full p-4 ${

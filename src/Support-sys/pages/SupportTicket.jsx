@@ -81,15 +81,19 @@ function SupportTicket({ view, setView }) {
   //handleClose
   const handleClose = () => setView(!view);
   //handlegetHelp
-  const handlegetHelp = (value, ticketid) => {
-    createUserWithEmailAndPassword(auth, value.email, generateRandomPassword())
-      .then((res) => {
+  const handlegetHelp = async (value, ticketid) => {
+    await createUserWithEmailAndPassword(
+      auth,
+      value.email,
+      generateRandomPassword()
+    )
+      .then(async (res) => {
         updateProfile(auth?.currentUser, {
           displayName: value.name,
         });
         localStorage.setItem("Uid", auth?.currentUser?.uid);
-        handleLogout();
-        addDoc(collection(db, "UserDetails"), {
+
+        await addDoc(collection(db, "UserDetails"), {
           Name: value.name,
           Mobile: value.mobile || "",
           Email: value.email,
@@ -106,6 +110,7 @@ function SupportTicket({ view, setView }) {
           Uid: localStorage.getItem("Uid") || "",
         })
           .then((res) => {
+            console.log(res);
             toast.success("Ticket Is Genrated.");
           })
           .catch((err) => {
@@ -122,6 +127,7 @@ function SupportTicket({ view, setView }) {
         setIsloading(false);
       })
       .finally((final) => {
+        handleLogout();
         handleClose();
         setIsloading(false);
         //email sending
@@ -140,6 +146,9 @@ function SupportTicket({ view, setView }) {
           .then(
             () => {
               console.log("SUCCESS!");
+              toast.success(
+                "We have sent your email ID and password to your email address."
+              );
             },
             (error) => {
               console.log("FAILED...", error.text);
@@ -180,7 +189,6 @@ function SupportTicket({ view, setView }) {
         setUserName={setUserName}
       />
       <div className="flex flex-col items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
-        <ToastContainer />
         {isLoading && <Loader />}
         <div className="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 sm:p-10 w-full max-w-4xl transition-transform transform hover:scale-105 duration-300">
           <h2 className="text-2xl sm:text-4xl font-semibold mb-6 text-center text-red-600">

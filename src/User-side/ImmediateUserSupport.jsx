@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { ToastContainer } from "react-toastify";
 import { collection, onSnapshot } from "firebase/firestore";
 import { CiTextAlignCenter } from "react-icons/ci";
 import { IoDocumentText, IoVideocam } from "react-icons/io5";
@@ -154,7 +153,6 @@ function ImmediateUserSupport({ view, setView, setIsloading, isLoading }) {
       />
       <VerticalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
 
-      <ToastContainer />
       <div className="flex w-full p-4 overflow-auto ">
         <div
           className={`bg-[#E0ECE4] dark:bg-[#040D12] w-full p-4 ${

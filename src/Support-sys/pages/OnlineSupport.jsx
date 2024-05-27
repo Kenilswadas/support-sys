@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { ToastContainer } from "react-toastify";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../FirebaseConfig.jsx";
 import Button from "../components/Button.jsx";
@@ -64,7 +63,6 @@ function OnlineSupport({ view, setView, setIsloading, isLoading }) {
         userName={userName}
         setUserName={setUserName}
       />
-      <ToastContainer />
       <div className="flex flex-col items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
         {!showAns ? (
           <div className="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 sm:p-10 w-full max-w-4xl transition-transform transform hover:scale-105 duration-300">

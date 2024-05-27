@@ -55,7 +55,6 @@ function UpdateUserForm({ setOpenupdate, openupdate, selectedUser }) {
   };
   return (
     <div className="bg-black flex flex-col overflow-auto items-center w-full fixed inset-0 bg-opacity-50 z-50">
-      <ToastContainer />
       {isLoading && <Loader />}
       <div className="flex flex-col items-center justify-center py-10 px-4 sm:px-6 lg:px-8 w-full max-w-4xl">
         <div className="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 sm:p-10 w-full transition-transform transform hover:scale-105 duration-300">
