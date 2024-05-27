@@ -7,7 +7,6 @@ import LoginModel from "../components/LoginModel";
 import { NavLink, useNavigate } from "react-router-dom";
 import backimg from "../../helpers/images/jeshoots-com-sMKUYIasyDM-unsplash.jpg";
 import { TypeAnimation } from "react-type-animation";
-import { ToastContainer } from "react-toastify";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../FirebaseConfig";
 import Navbar from "../../helpers/Navbar";
@@ -40,7 +39,6 @@ function LandingPage({ setIsloading, isLoading }) {
         userName={userName}
         setUserName={setUserName}
       />
-      <ToastContainer />
       <div className="relative">
         <div>
           <img src={backimg} alt="Background" className="w-full" />

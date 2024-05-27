@@ -1,12 +1,13 @@
-import { getAuth, onAuthStateChanged, updateProfile } from "firebase/auth";
+import { getAuth, updateProfile } from "firebase/auth";
 import { collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { db, storage } from "../FirebaseConfig";
 import VerticalNavbar from "./components/VerticalNavbar";
-import { useNavigate } from "react-router-dom";
 import Navbar from "../helpers/Navbar";
 import { LoginContext, UserContext } from "../App";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import Loader from "../helpers/Loader";
+import { toast } from "react-toastify";
 
 function UserProfile() {
   const { viewLogin, setViewLogin } = useContext(LoginContext);
@@ -16,7 +17,6 @@ function UserProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [ToggleView, setToggleView] = useState(false);
   const auth = getAuth();
-  const navigate = useNavigate();
   const [image, setImage] = useState(false);
 
   useEffect(() => {
@@ -52,6 +52,7 @@ function UserProfile() {
     const imageUrl = await getDownloadURL(storageRef);
     if (imageUrl) {
       setImage(false);
+      toast.info("Save Your Profile");
     }
     return imageUrl;
   };
@@ -98,6 +99,8 @@ function UserProfile() {
         setUserName={setUserName}
       />
       <VerticalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
+
+      {image ? <Loader imageUrl={image} /> : null}
       <div className="flex w-full h-screen p-4 overflow-auto ">
         <div
           className={`bg-[#E0ECE4] dark:bg-[#040D12] w-full p-4 ${

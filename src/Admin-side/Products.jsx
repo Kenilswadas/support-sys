@@ -5,7 +5,6 @@ import { HiOutlineViewGridAdd } from "react-icons/hi";
 import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../FirebaseConfig.jsx";
 import ProductDetailTable from "./components/Tables/ProductDetailTable.jsx";
-import { ToastContainer } from "react-toastify";
 import UpdateProductForm from "./components/Model/UpdateProductForm.jsx";
 import AddProductsForm from "./components/Form/AddProductsForm.jsx";
 import Navbar from "../helpers/Navbar.jsx";
@@ -66,7 +65,7 @@ function Products() {
         setUserName={setUserName}
       />
       <VericalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
-      <ToastContainer />
+
       <div className="flex w-full h-screen p-4 overflow-auto ">
         <div
           className={`bg-[#E0ECE4] dark:bg-[#040D12]   w-full p-4 ${

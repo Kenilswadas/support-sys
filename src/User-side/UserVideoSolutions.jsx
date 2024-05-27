@@ -10,7 +10,6 @@ import { Formikselect } from "../Support-sys/components/Formikselect";
 import { auth, db } from "../FirebaseConfig";
 import VerticalNavbar from "./components/VerticalNavbar";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 function UserVideoSolutions() {
   const { viewLogin, setViewLogin } = useContext(LoginContext);
@@ -92,7 +91,6 @@ function UserVideoSolutions() {
         setUserName={setUserName}
       />
       <VerticalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
-      <ToastContainer />
       <div className="flex w-full p-4 overflow-auto">
         <div
           className={`bg-[#E0ECE4] dark:bg-[#040D12] w-full p-4 ${

@@ -25,9 +25,9 @@ function Navbar({ viewLogin, setViewLogin, userName, setUserName }) {
   const handleLogout = () => {
     signOut(auth)
       .then((res) => {
-        toast.success("Sign-out Successfully.");
-        localStorage.clear();
         navigate("/");
+        localStorage.clear();
+        toast.success("Sign-out Successfully.");
       })
       .catch((error) => {
         console.log(error);

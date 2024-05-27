@@ -10,7 +10,6 @@ import { addDoc, collection } from "firebase/firestore";
 import { db, storage } from "../../../FirebaseConfig.jsx";
 import { toast } from "react-toastify";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import "react-toastify/dist/ReactToastify.css";
 import { LoadderContext } from "../../../App.js";
 import Loader from "../../../helpers/Loader.jsx";
 import { Formikselect } from "../../../Support-sys/components/Formikselect.jsx";

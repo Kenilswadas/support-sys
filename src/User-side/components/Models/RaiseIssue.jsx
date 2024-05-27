@@ -3,48 +3,32 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import { NavLink } from "react-router-dom";
 import { onSnapshot, collection, addDoc } from "firebase/firestore";
-import { CgDetailsLess } from "react-icons/cg";
 import { ToastContainer, toast } from "react-toastify";
 import emailjs from "@emailjs/browser";
-import {
-  createUserWithEmailAndPassword,
-  signOut,
-  updateProfile,
-} from "firebase/auth";
-import { LoadderContext } from "../../../App.js";
-import { auth, db } from "../../../FirebaseConfig.jsx";
-import Loader from "../../../helpers/Loader.jsx";
-import { Formikselect } from "../../../Support-sys/components/Formikselect.jsx";
-import { FormikInput } from "../../../Support-sys/components/FormikInput.jsx";
-import Button from "../../../Support-sys/components/Button.jsx";
-import { option } from "../../../Support-sys/components/Data.jsx";
+
 import { RxCross1 } from "react-icons/rx";
 import { v4 as uuidv4 } from "uuid";
+import { LoadderContext } from "../../../App";
+import { auth, db } from "../../../FirebaseConfig";
+import Loader from "../../../helpers/Loader";
+import { Formikselect } from "../../../Support-sys/components/Formikselect";
+import { FormikInput } from "../../../Support-sys/components/FormikInput";
+import Button from "../../../Support-sys/components/Button";
 
-function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
+function RaiseIssue({
+  RaiseIssueModel,
+  setOpenRaiseIssueModel,
+  selectedProduct,
+}) {
   const { isLoading, setIsloading } = useContext(LoadderContext);
   const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [values, setValues] = useState([]);
 
-  // //handleLogout
-  // const handleLogout = () => {
-  //   signOut(auth)
-  //     .then((res) => {
-  //       // toast.success("Sign-out Successfully.");
-  //       localStorage.clear();
-  //       // navigate("/");
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       toast.error(error.message);
-  //     });
-  // };
   //handleClose
-  const handleClose = () => setShowAddTicketForm(!AddTicketForm);
+  const handleClose = () => setOpenRaiseIssueModel(!RaiseIssueModel);
   //email sending
   const handlegetHelp = (values) => {
     setIsloading(true);
@@ -138,7 +122,6 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
           const filteredData = allProducts.filter((product) =>
             userCategories.includes(product.Category)
           );
-          console.log(filteredData);
           setProducts(filteredData);
           setCategories([...new Set(filteredData.map((e) => e.Category))]);
         }
@@ -226,7 +209,7 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
           </button>
         </div>
         <h2 className="text-2xl sm:text-4xl font-semibold mb-6 text-center text-red-600">
-          Support - Ticket
+          Issue
         </h2>
         <Formik
           initialValues={{
@@ -241,7 +224,6 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
           }}
           validationSchema={Yup.object({
             product: Yup.string().required("*required"),
-            // issue: Yup.string().required("*required"),
           })}
           onSubmit={(values) => {
             handlegetHelp(values);
@@ -255,6 +237,8 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
                   name="category"
                   value={values.category}
                   data={categories}
+                  placeholder={"Category"}
+                  selectedItem={selectedProduct.map((e) => e.Category)}
                   onChange={(selectedCategory) => {
                     setFieldValue("category", selectedCategory);
                     setFieldValue("product", "");
@@ -323,67 +307,6 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
                   />
                 </div>
               ) : null}
-              {/* <Formikselect
-                label="Select Your Issue"
-                name="issue"
-                data={products
-                  .filter((product) => product.ProductName === values.product)
-                  .flatMap((product) =>
-                    product.Allissues.filter(
-                      (issue) => issue.Assigned_Model_No === values.modelno
-                    )
-                  )
-                  .map((issue) => issue.issue)}
-                onChange={(selectedIssue) => {
-                  setFieldValue("issue", selectedIssue);
-                  setFieldValue("haveyougonethrough", "");
-                }}
-              /> */}
-              {/* {values.issue && values.issue !== "Other" && (
-                <div className="flex items-center justify-between">
-                  <p className="text-[#77B0AA] text-xl font-medium">
-                    Have you gone through the Online Support?
-                  </p>
-                  <Formikselect
-                    name="haveyougonethrough"
-                    data={option.map((e) => e.name)}
-                    onChange={(selectedOption) => {
-                      setFieldValue("haveyougonethrough", selectedOption);
-                    }}
-                  />
-                </div>
-              )} */}
-              {/* {values.haveyougonethrough === "yes" && values.issue && (
-                <div className="space-y-4">
-                  <p className="text-[#056674] flex items-center">
-                    <CgDetailsLess size={20} className="mr-2" />
-                    If you still haven't found a solution, please describe your
-                    issue:
-                  </p>
-                  <FormikInput
-                    name="other"
-                    label="Describe Your Issue"
-                    placeholder="Other issue"
-                    onChange={(event) => {
-                      setFieldValue("other", event.currentTarget.value);
-                    }}
-                  />
-                </div>
-              )} */}
-              {/* {values.haveyougonethrough === "no" && (
-                <div className="space-y-4">
-                  <p className="text-[#77B0AA] text-xl font-medium">
-                    Please go to the Online Support:
-                  </p>
-                  <NavLink
-                    to="/OnlineSupport"
-                    className="text-xl text-green-900 underline underline-offset-2"
-                  >
-                    Online Support
-                  </NavLink>
-                </div>
-              )} */}
-              {/* {(values.getsolution === "no" || values.issue === "Other") && ( */}
               <FormikInput
                 name="other"
                 label="Describe Your Issue"
@@ -392,14 +315,9 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
                   setFieldValue("other", event.currentTarget.value);
                 }}
               />
-              {/* )} */}
-              {/* {(values.issue === "Other" ||
-                values.haveyougonethrough === "yes" ||
-                values.issue === "") && ( */}
               <div className="mt-6 flex justify-between">
                 <Button name="Create Ticket" type="submit" />
               </div>
-              {/* )} */}
             </Form>
           )}
         </Formik>
@@ -408,4 +326,4 @@ function AddTickets({ AddTicketForm, setShowAddTicketForm }) {
   );
 }
 
-export default AddTickets;
+export default RaiseIssue;

@@ -16,7 +16,6 @@ import {
   MdKeyboardArrowRight,
 } from "react-icons/md";
 import { FaFilterCircleXmark } from "react-icons/fa6";
-import { ToastContainer } from "react-toastify";
 import { useContext } from "react";
 import { TicketStatusContext } from "../../../App";
 import { IconButton } from "@mui/material";
@@ -67,7 +66,6 @@ function UserTicketsTable({
   };
   return (
     <div>
-      <ToastContainer />
       <div className="p-4 flex w-full justify-between">
         <h1 className="text-3xl text-[#056674] dark:text-[#F39422]">
           {"Tickets"}

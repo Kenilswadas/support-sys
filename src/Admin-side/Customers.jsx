@@ -2,16 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import VericalNavbar from "./components/VerticalNavbar";
 import CustomerDetailTable from "./components/Tables/CustomerDetailTable";
 import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
-import { auth, db } from "../FirebaseConfig";
+import { db } from "../FirebaseConfig";
 import Navbar from "../helpers/Navbar";
 import { LoadderContext, LoginContext, UserContext } from "../App";
 import SquareBtn from "../Support-sys/components/SquareBtn";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
 import AddUserForm from "./components/Form/AddUserForm";
 import UpdateUserForm from "./components/Form/UpdateUserForm";
-import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import Loader from "../helpers/Loader";
 import Swal from "sweetalert2";
 
@@ -71,7 +69,6 @@ function Customers() {
         setUserName={setUserName}
       />
       <VericalNavbar ToggleView={ToggleView} setToggleView={setToggleView} />
-      <ToastContainer />
       {isLoading ? <Loader /> : null}
       <div className="flex w-full h-screen p-4 overflow-auto ">
         <div
